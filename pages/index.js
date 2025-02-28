@@ -86,42 +86,104 @@ export default function Home() {
             <h2>Explore the Humanities</h2>
           </div>
           <div className="humanities-grid">
-            {/* 4x3 Chessboard layout with alternating colors */}
+            {/* Row 1 */}
             <div className="humanities-item light">
-              <div className="humanities-item-content">Religion</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-pray"></i>
+                <h3>Religion</h3>
+                <p>Spiritual growth and understanding</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item dark">
-              <div className="humanities-item-content">Music</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-music"></i>
+                <h3>Music</h3>
+                <p>Celebrate sound and rhythm</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item light">
-              <div className="humanities-item-content">Theatre Arts</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-theater-masks"></i>
+                <h3>Theatre Arts</h3>
+                <p>Drama and performance</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item dark">
-              <div className="humanities-item-content">STEM</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-atom"></i>
+                <h3>STEM</h3>
+                <p>Science and technology education</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
+            {/* Row 2 */}
             <div className="humanities-item dark">
-              <div className="humanities-item-content">Law & Politics</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-balance-scale"></i>
+                <h3>Law & Politics</h3>
+                <p>Justice and civic engagement</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item light">
-              <div className="humanities-item-content">Philosophy</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-brain"></i>
+                <h3>Philosophy</h3>
+                <p>Critical thinking and wisdom</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item dark">
-              <div className="humanities-item-content">Dance</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-running"></i>
+                <h3>Dance</h3>
+                <p>Movement and expression</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item light">
-              <div className="humanities-item-content">History</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-landmark"></i>
+                <h3>History</h3>
+                <p>Our past and heritage</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
+            {/* Row 3 */}
             <div className="humanities-item light">
-              <div className="humanities-item-content">Economics</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-chart-line"></i>
+                <h3>Economics</h3>
+                <p>Financial literacy and growth</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item dark">
-              <div className="humanities-item-content">Digital Humanities</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-laptop-code"></i>
+                <h3>Digital Humanities</h3>
+                <p>Technology and digital arts</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item light">
-              <div className="humanities-item-content">Performing Arts</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-drum"></i>
+                <h3>Performing Arts</h3>
+                <p>Music, dance, and more</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
             <div className="humanities-item dark">
-              <div className="humanities-item-content">Visual Arts</div>
+              <div className="humanities-item-content">
+                <i className="fas fa-palette"></i>
+                <h3>Visual Arts</h3>
+                <p>Creating and appreciating art</p>
+                <a href="#" className="btn-more">Learn More</a>
+              </div>
             </div>
           </div>
         </section>

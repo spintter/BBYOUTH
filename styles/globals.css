@@ -218,6 +218,7 @@ nav ul li a:hover {
 .humanities-section {
   padding: 4rem 1rem;
   text-align: center;
+  background-color: var(--light);
 }
 
 .humanities-heading h2 {
@@ -259,6 +260,11 @@ nav ul li a:hover {
   cursor: pointer;
 }
 
+.humanities-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
 .humanities-item.light {
   background-color: #e2d5c4;
   color: var(--secondary);
@@ -276,11 +282,53 @@ nav ul li a:hover {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 0.5rem;
   text-align: center;
-  font-weight: 600;
+}
+
+.humanities-item-content i {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.humanities-item-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+  color: inherit;
+}
+
+.humanities-item-content p {
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0 0.3rem;
+}
+
+.humanities-item.light .btn-more {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 0.3rem 0.7rem;
+  border-radius: 15px;
+  font-size: 0.7rem;
+  margin-top: 0.3rem;
+}
+
+.humanities-item.dark .btn-more {
+  color: white;
+  border: 1px solid white;
+  padding: 0.3rem 0.7rem;
+  border-radius: 15px;
+  font-size: 0.7rem;
+  margin-top: 0.3rem;
+}
+
+/* Media queries for humanities grid */
+@media (max-width: 768px) {
+  .humanities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Loading state for dynamically imported components */
