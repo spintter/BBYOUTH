@@ -150,11 +150,13 @@ const Chessboard = ({ textureUrls, fallbackTextureUrls }) => {
           >
             <boxGeometry args={[1.9, 0.2, 1.9]} />
             <meshStandardMaterial
-              color={isDark ? '#2a2d3a' : '#e2d5c4'}
+              color={isDark ? '#121212' : '#ffffff'}
               map={baseColor}
               roughnessMap={roughness}
               normalMap={normal}
               metalness={0.1}
+              emissive={isDark ? '#000000' : '#333333'}
+              emissiveIntensity={isDark ? 0 : 0.1}
             />
           </mesh>
         );
@@ -186,6 +188,13 @@ const BlackPantherFigure = ({ phase }) => {
       ease: 'power2.inOut',
     });
 
+    // Add emissive glow when transformed
+    gsap.to(materialRef.current, {
+      emissiveIntensity: phase === 'transformed' ? 0.3 : 0,
+      duration: 2,
+      ease: 'power2.inOut',
+    });
+
     gsap.to(groupRef.current.position, {
       y: phase === 'transformed' ? 2 : 1.5,
       duration: 1.5,
@@ -211,13 +220,13 @@ const TransformationParticles = ({ active, position }) => {
   const particlesRef = useRef();
   const { clock } = useThree();
 
-  const particleCount = 50;
+  const particleCount = 150; // Increased particle count
   const positions = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 1;
-      pos[i * 3 + 1] = Math.random() * 1.5;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 1;
+      pos[i * 3] = (Math.random() - 0.5) * 2; // Wider spread
+      pos[i * 3 + 1] = Math.random() * 2;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 2;
     }
     return pos;
   }, []);
@@ -226,6 +235,7 @@ const TransformationParticles = ({ active, position }) => {
     if (active && particlesRef.current) {
       const time = clock.getElapsedTime();
       particlesRef.current.position.y += 0.02;
+      particlesRef.current.rotation.y += 0.01;
       particlesRef.current.material.opacity = Math.max(0, 1 - (time % 2));
     }
   });
@@ -242,8 +252,32 @@ const TransformationParticles = ({ active, position }) => {
           itemSize={3}
         />
       </bufferGeometry>
-      <pointsMaterial color="#9333ea" size={0.05} transparent />
+      <pointsMaterial color="#f59e0b" size={0.08} transparent />
     </points>
+  );
+};
+
+// Added rim lights to highlight edge contours
+const RimLights = () => {
+  return (
+    <>
+      <spotLight
+        position={[-10, 5, 5]}
+        angle={0.2}
+        penumbra={0.8}
+        intensity={3}
+        color="#3b82f6"
+        castShadow={false}
+      />
+      <spotLight
+        position={[10, 5, -5]}
+        angle={0.2}
+        penumbra={0.8}
+        intensity={3}
+        color="#f43f5e"
+        castShadow={false}
+      />
+    </>
   );
 };
 
@@ -252,27 +286,70 @@ const HeroScene = ({ textureUrls, fallbackTextureUrls }) => {
   const [animationPhase, setAnimationPhase] = useState('initial');
   const blackPantherRef = useRef();
 
+  // Scene background color reference
+  const sceneRef = useRef();
+  const { scene } = useThree();
+
   useEffect(() => {
+    if (scene) {
+      // Set a very dark background
+      scene.background = new Color('#050505');
+      scene.fog = null; // Remove fog if any
+      sceneRef.current = scene;
+    }
+
     const timer = setTimeout(() => setAnimationPhase('transformed'), 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [scene]);
 
   return (
     <>
-      <ambientLight intensity={1} />
-      <directionalLight position={[10, 10, 10]} intensity={1.5} castShadow />
+      {/* Reduced ambient light for more dramatic shadows */}
+      <ambientLight intensity={0.3} color="#202020" />
+
+      {/* Main directional light with shadows */}
+      <directionalLight
+        position={[10, 15, 10]}
+        intensity={2}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0001}
+      />
+
+      {/* Spotlight that follows the character */}
       <spotLight
-        position={[5, 10, 5]}
+        position={[5, 15, 5]}
         angle={0.3}
         penumbra={0.5}
-        intensity={animationPhase === 'transformed' ? 2 : 0.5}
+        intensity={animationPhase === 'transformed' ? 4 : 1}
+        color="#f59e0b"
         castShadow
         target={blackPantherRef.current}
+        shadow-bias={-0.0001}
       />
+
+      {/* Add dramatic rim lighting */}
+      <RimLights />
+
+      {/* Chessboard with improved contrast */}
       <Chessboard textureUrls={textureUrls} fallbackTextureUrls={fallbackTextureUrls} />
+
+      {/* Character with reference for spotlight targeting */}
       <BlackPantherFigure ref={blackPantherRef} phase={animationPhase} />
+
+      {/* Enhanced particle effects */}
       <TransformationParticles active={animationPhase === 'transformed'} position={[0, 1.5, 0]} />
-      <OrbitControls enableZoom={false} maxPolarAngle={Math.PI / 2.5} minPolarAngle={Math.PI / 4} />
+
+      {/* Camera controls */}
+      <OrbitControls
+        enableZoom={false}
+        maxPolarAngle={Math.PI / 2.5}
+        minPolarAngle={Math.PI / 4}
+        enableDamping
+        dampingFactor={0.05}
+      />
+
+      {/* Scene environment */}
       <Environment files="/hdr/wakanda.hdr" />
     </>
   );
@@ -317,7 +394,18 @@ export default function HeroComponent({
   return (
     <ErrorBoundary>
       <div className="relative h-screen w-full overflow-hidden">
-        <Canvas shadows camera={{ position: [0, 8, 12], fov: 45 }} gl={{ antialias: true }}>
+        {/* Canvas with improved shadow settings */}
+        <Canvas
+          shadows={{ type: 'PCFSoftShadowMap', enabled: true }}
+          camera={{ position: [0, 8, 12], fov: 45 }}
+          gl={{
+            antialias: true,
+            alpha: false,
+            logarithmicDepthBuffer: true,
+            toneMappingExposure: 1.2
+          }}
+          dpr={[1, 2]} // Better performance on high-DPI screens
+        >
           <Suspense fallback={<LoadingIndicator progress={loadingProgress} />}>
             <HeroScene textureUrls={textureUrls} fallbackTextureUrls={fallbackTextureUrls} />
           </Suspense>
