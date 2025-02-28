@@ -1,6 +1,7 @@
 
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
 
 // Dynamically import the HeroComponent to prevent SSR issues with Three.js
 const HeroComponent = dynamic(() => import('../components/HeroComponent'), {
@@ -9,6 +10,26 @@ const HeroComponent = dynamic(() => import('../components/HeroComponent'), {
 });
 
 export default function Home() {
+  // Add mobile navigation toggle
+  useEffect(() => {
+    const navToggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('nav');
+    
+    if (navToggle && nav) {
+      navToggle.addEventListener('click', () => {
+        nav.classList.toggle('active');
+      });
+    }
+    
+    return () => {
+      if (navToggle && nav) {
+        navToggle.removeEventListener('click', () => {
+          nav.classList.toggle('active');
+        });
+      }
+    };
+  }, []);
+
   return (
     <div>
       <Head>
@@ -50,7 +71,7 @@ export default function Home() {
           <HeroComponent />
         </section>
 
-        {/* Additional Sections */}
+        {/* About Section */}
         <section className="about-section" id="about">
           <div className="about-container">
             <h2>Who We Are</h2>
@@ -59,33 +80,54 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Humanities Grid Section */}
+        {/* Humanities Grid Section (Chessboard Style) */}
         <section className="humanities-section" id="humanities">
           <div className="humanities-heading">
             <h2>Explore the Humanities</h2>
           </div>
           <div className="humanities-grid">
-            {/* Grid items */}
-            {[
-              { name: 'Religion', light: true },
-              { name: 'Music', light: false },
-              { name: 'Theatre Arts', light: true },
-              { name: 'STEM', light: false },
-              { name: 'Law & Politics', light: false },
-              { name: 'Philosophy', light: true },
-              { name: 'Dance', light: false },
-              { name: 'History', light: true },
-              { name: 'Economics', light: true },
-              { name: 'Digital Humanities', light: false },
-              { name: 'Performing Arts', light: true },
-              { name: 'Visual Arts', light: false }
-            ].map((item, index) => (
-              <div key={index} className={`humanities-item ${item.light ? 'light' : 'dark'}`}>
-                <div className="humanities-item-content">{item.name}</div>
-              </div>
-            ))}
+            {/* 4x3 Chessboard layout with alternating colors */}
+            <div className="humanities-item light">
+              <div className="humanities-item-content">Religion</div>
+            </div>
+            <div className="humanities-item dark">
+              <div className="humanities-item-content">Music</div>
+            </div>
+            <div className="humanities-item light">
+              <div className="humanities-item-content">Theatre Arts</div>
+            </div>
+            <div className="humanities-item dark">
+              <div className="humanities-item-content">STEM</div>
+            </div>
+            <div className="humanities-item dark">
+              <div className="humanities-item-content">Law & Politics</div>
+            </div>
+            <div className="humanities-item light">
+              <div className="humanities-item-content">Philosophy</div>
+            </div>
+            <div className="humanities-item dark">
+              <div className="humanities-item-content">Dance</div>
+            </div>
+            <div className="humanities-item light">
+              <div className="humanities-item-content">History</div>
+            </div>
+            <div className="humanities-item light">
+              <div className="humanities-item-content">Economics</div>
+            </div>
+            <div className="humanities-item dark">
+              <div className="humanities-item-content">Digital Humanities</div>
+            </div>
+            <div className="humanities-item light">
+              <div className="humanities-item-content">Performing Arts</div>
+            </div>
+            <div className="humanities-item dark">
+              <div className="humanities-item-content">Visual Arts</div>
+            </div>
           </div>
         </section>
+
+        {/* Add additional sections here as needed */}
+
       </main>
     </div>
   );
