@@ -7,3 +7,14 @@ channel = "stable-23_11"
 [deployment]
 run = ["sh", "-c", "npm run start"]
 build = ["sh", "-c", "npm run build"]
+
+[workflows]
+runButton = "Start Next.js App"
+
+[[workflows.workflow]]
+name = "Start Next.js App"
+author = 39887165
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
