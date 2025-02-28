@@ -43,50 +43,82 @@
         
         .hero-content {
             position: absolute;
-            top: 30%;
+            top: 25%;
             left: 5%;
-            max-width: 500px;
+            max-width: 550px;
             color: white;
             z-index: 2;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            border-radius: 8px;
+            background-color: rgba(21, 21, 21, 0.85);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
         
         .hero-content h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: 1.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            font-weight: 400;
         }
         
         .btn-primary {
             display: inline-block;
             background-color: var(--primary);
             color: white;
-            padding: 12px 24px;
-            border-radius: 4px;
+            padding: 15px 32px;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: background-color 0.3s;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
         
         .btn-primary:hover {
             background-color: #b33e00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content {
+                top: 20%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 85%;
+                padding: 20px;
+            }
         }
         
         .scroll-down {
             position: absolute;
-            bottom: 30px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             color: white;
             font-size: 1.5rem;
             animation: bounce 2s infinite;
             z-index: 2;
+            background-color: rgba(21, 21, 21, 0.8);
+            padding: 15px;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
         
         @keyframes bounce {
@@ -94,11 +126,15 @@
                 transform: translateY(0) translateX(-50%);
             }
             40% {
-                transform: translateY(-20px) translateX(-50%);
+                transform: translateY(-15px) translateX(-50%);
             }
             60% {
-                transform: translateY(-10px) translateX(-50%);
+                transform: translateY(-7px) translateX(-50%);
             }
+        }
+        
+        .scroll-down:hover {
+            background-color: rgba(211, 84, 0, 0.9);
         }
 
         /* About section styles */
@@ -138,35 +174,68 @@
             margin-bottom: 1rem;
         }
 
-        /* Adjusted humanities grid for chessboard look */
+        /* Humanities section styles */
+        .humanities-section {
+            padding: 4rem 1rem;
+            background-color: var(--light);
+        }
+        
+        .humanities-heading {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .humanities-heading h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .humanities-heading h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        
+        /* Improved humanities grid for chessboard look */
         .humanities-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            max-width: 800px;
+            gap: 10px;
+            max-width: 900px;
             margin: 0 auto;
-            background-color: #e2d5c4; /* Light chessboard color */
-            padding: 10px;
-            border: 2px solid var(--secondary);
+            background-color: #2a2d3a; /* Dark background */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .humanities-item {
             position: relative;
-            height: 0;
-            padding-bottom: 100%;
+            aspect-ratio: 1/1;
             overflow: hidden;
             transition: all 0.3s ease;
             cursor: pointer;
+            border-radius: 6px;
         }
 
         .humanities-item.light {
             background-color: #e2d5c4;
-            color: var(--secondary);
+            color: var(--dark);
         }
 
         .humanities-item.dark {
             background-color: #2a2d3a;
             color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .humanities-item-content {
@@ -181,6 +250,22 @@
             padding: 0.5rem;
             text-align: center;
             font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .humanities-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            z-index: 2;
+        }
+        
+        .humanities-item.light:hover {
+            background-color: #f0e8df;
+        }
+        
+        .humanities-item.dark:hover {
+            background-color: #3a3f52;
         }
 
         /* Media queries adjustments */

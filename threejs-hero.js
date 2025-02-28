@@ -80,41 +80,50 @@ function createChessboard() {
 const chessboard = createChessboard();
 let blackPantherModel = null;
 
-// Load Black Panther model
-const loader = new GLTFLoader();
-// This assumes you have a black panther model in your public/models directory
-// If not, this will fail gracefully and just show the chessboard
-try {
-    loader.load(
-        '/models/black_panther.glb',
-        (gltf) => {
-            blackPantherModel = gltf.scene;
-            blackPantherModel.position.set(0, 1.5, 0);
-            blackPantherModel.rotation.y = Math.PI / 4;
-            blackPantherModel.scale.set(1, 1, 1);
-            blackPantherModel.traverse((child) => {
-                if (child.isMesh) {
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                }
-            });
-            scene.add(blackPantherModel);
-            
-            // Start transformation sequence after 3 seconds
-            setTimeout(() => {
-                transformBlackPanther();
-            }, 3000);
-        },
-        (xhr) => {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        (error) => {
-            console.error('An error happened while loading the model:', error);
-        }
-    );
-} catch (e) {
-    console.error('Failed to load Black Panther model:', e);
+// Create a simpler placeholder model since we're getting errors with the Black Panther model
+function createPlaceholderModel() {
+    const group = new THREE.Group();
+    
+    // Create a stylized geometric figure
+    const bodyGeometry = new THREE.CylinderGeometry(0.5, 0.3, 2, 8);
+    const bodyMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0x5a2a17,
+        metalness: 0.3,
+        roughness: 0.7
+    });
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    body.position.y = 0.5;
+    body.castShadow = true;
+    
+    // Head
+    const headGeometry = new THREE.SphereGeometry(0.4, 16, 16);
+    const headMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0x5a2a17,
+        metalness: 0.3,
+        roughness: 0.7
+    });
+    const head = new THREE.Mesh(headGeometry, headMaterial);
+    head.position.y = 1.7;
+    head.castShadow = true;
+    
+    group.add(body);
+    group.add(head);
+    
+    // Position the whole figure
+    group.position.set(0, 1.5, 0);
+    group.rotation.y = Math.PI / 4;
+    scene.add(group);
+    
+    return group;
 }
+
+// Create our placeholder model
+blackPantherModel = createPlaceholderModel();
+
+// Start transformation sequence after 3 seconds
+setTimeout(() => {
+    transformBlackPanther();
+}, 3000);
 
 // Transform animation
 function transformBlackPanther() {
