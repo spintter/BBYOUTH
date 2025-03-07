@@ -1,0 +1,52 @@
+---
+description: Best practices for Next.js App Router in apps/web
+globs: apps/web/**/*.{ts,tsx}
+---
+# Next.js Rules
+
+
+---
+description: Best practices for Next.js App Router in apps/web
+globs: apps/web/**/*.{ts,tsx}
+---
+# Next.js Rules
+
+- Prefer server components (RSCs) for data fetching, performance, SEO, and simplicity.
+  # Example: async function Page() { const data = await fetchData(); return <ShowData data={data} />; }
+  # AI Suggestion: Detect data-fetching logic and suggest server components.
+
+- Use client components only when interactivity is required.
+  # Example: 'use client'; import { useState } from 'react'; export function Counter() { const [count, setCount] = useState(0); }
+  # AI Validation: Check if client directive is only used for components with state or event handlers.
+
+- Implement consistent loading states using Suspense boundaries.
+  # Example: <Suspense fallback={<Loading />}><ProfileData /></Suspense>
+  # AI Suggestion: Suggest adding loading.tsx when creating new route segments.
+
+- Add error boundaries for graceful failure handling.
+  # Example: export default function Error({ error, reset }) { return <ErrorUI message={error.message} onReset={reset} />; }
+  # AI Validation: Check for missing error.tsx in route segments with data fetching.
+
+- Optimize data fetching with React cache and deduplication.
+  # Example: import { cache } from 'react'; const getData = cache(async (id) => { /* fetch data */ });
+  # AI Enhancement: Suggest caching for repeated data-fetching patterns.
+
+- Use metadata API for SEO optimization.
+  # Example: export const metadata = { title: 'My Page', description: 'Page description' };
+  # AI Suggestion: Prompt to add metadata when detecting new page components.
+
+- Implement progressive enhancement with staged component rollout.
+  # Example: Start with static version, then add interactivity, then add optimization.
+  # AI Process: Suggest incremental improvements to existing components.
+
+- Enforce proper route segmentation for code organization.
+  # Example: Use folders like (auth), (dashboard) for logical grouping.
+  # AI Organization: Suggest route organization based on component relationships.
+
+# Self-learning patterns
+- Adapt to your specific route organization and naming conventions.
+- Learn from your error handling patterns and suggest similar ones.
+- Observe how you implement server/client boundaries and match that style.
+- Identify common refactorings you make and suggest them proactively.
+
+# Example AI-powered implementation

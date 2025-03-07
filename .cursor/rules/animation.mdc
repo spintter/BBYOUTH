@@ -1,0 +1,26 @@
+---
+description: Advanced Framer Motion techniques
+globs: **/*.{ts,tsx}
+---
+
+1. Use layout animations with layout prop for smooth transitions.
+   # Example: <motion.div layout />;
+2. Implement gesture controls with useDrag/useGesture.
+   # Example: const drag = useDrag({ onDrag: () => {} });
+3. Apply SVG morphing with path transition.
+   # Example: <motion.path d="..." animate={{ d: newPath }} />;
+4. Use AnimatePresence for mount/unmount animations.
+   # Example: <AnimatePresence><motion.div exit={{ opacity: 0 }} /></AnimatePresence>;
+5. Implement scroll-linked animations.
+   # Example: useViewportScroll() for scroll tracking.
+6. Apply performance optimizations with will-change.
+   # Example: style={{ willChange: 'transform, opacity' }};
+7. Use motion value synchronization.
+   # Example: const x = useMotionValue(0);
+8. Implement hardware acceleration patterns.
+   # Example: transform: translate3d(0, 0, 0) for GPU acceleration.
+9. Apply reduced motion accessibility.
+   # Example: if (prefersReducedMotion) return null;
+10. Use keyframes for complex sequences.
+    # Example: animate={{ x: [0, 100, 0], transition: { duration: 2 } }};
+# Update monthly with Cursor AI: Review Framer Motion updates and performance metrics.

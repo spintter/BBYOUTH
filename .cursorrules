@@ -1,0 +1,78 @@
+Before diving into the best practices, please note that you may need to adapt the globs depending on your project's specific file structure and requirements.
+
+---
+  /**
+   * Best practices for Next.js applications and routing.
+   *
+   * @remarks
+   * Use Next.js 13's App Router for improved performance and simpler data fetching.
+   * Implement server-side rendering for better SEO and initial load performance.
+   * Use Next.js Image component for optimized image loading.
+   * Leverage Next.js built-in internationalization features for multi-language support.
+   *
+   * @globs **/*.{ts,tsx,js,jsx}
+   */
+name: nextjs-best-practices.mdc
+description: Best practices for Next.js applications and routing
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Utilize Next.js 13's App Router for improved performance and simpler data fetching
+- Implement server-side rendering for better SEO and initial load performance
+- Use Next.js Image component for optimized image loading
+- Leverage Nexnot.js built-in internationalization features for multi-language support
+
+---
+name: react-best-practices.mdc
+description: Best practices for React component development and state management
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use functional components with hooks instead of class components
+- Implement proper prop type validation using PropTypes or TypeScript
+- Utilize React.memo for performance optimization of functional components
+- Use context API or state management libraries for global state management
+
+---
+name: react-three-fiber-best-practices.mdc
+description: Best practices for 3D rendering with React Three Fiber
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use the `<Canvas>` component as the root of your 3D scene
+- Implement proper lighting using `<ambientLight>` and `<pointLight>` components
+- Utilize `<Suspense>` for loading 3D models and assets
+- Optimize performance by using `useFrame` hook judiciously
+
+---
+name: drei-best-practices.mdc
+description: Best practices for using @react-three/drei components
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use `<Html>` component for rendering HTML elements within the 3D scene
+- Implement `<OrbitControls>` for user-friendly camera controls
+- Utilize `<Environment>` for realistic lighting and reflections
+- Optimize performance by using `<BakeShadows>` for static shadows
+
+---
+name: gsap-best-practices.mdc
+description: Best practices for animations using GSAP
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+- Use GSAP's timeline feature for complex, synchronized animations
+- Implement GSAP's ScrollTrigger plugin for scroll-based animations
+- Utilize GSAP's stagger property for creating staggered animations
+- Optimize performance by using GSAP's `invalidateOnRefresh` option
+
+---
+name: tailwindcss-best-practices.mdc
+description: Best practices for styling with Tailwind CSS
+globs: **/*.{ts,tsx,js,jsx,css}
+---
+
+- Use utility-first approach for consistent and maintainable styles
+- Implement responsive design using Tailwind's responsive modifiers
+- Utilize Tailwind's dark mode feature for easy dark mode implementation
+- Optimize performance by using Tailwind's `@apply` directive for repeated styles

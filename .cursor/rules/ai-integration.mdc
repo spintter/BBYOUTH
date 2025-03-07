@@ -1,0 +1,53 @@
+---
+description: Best practices for AI integration and rapid prototyping
+globs: **/*.{ts,tsx,js,jsx}
+---
+---
+description: Best practices for AI integration and rapid prototyping
+globs: **/*.{ts,tsx,js,jsx}
+---
+# AI Integration Best Practices
+
+- Design components with clear props interfaces for AI generation.
+  # Example: interface ButtonProps { variant?: 'primary' | 'secondary'; size?: 'sm' | 'md' | 'lg'; }
+  # AI Suggestion: Generate prop interfaces based on component usage patterns.
+
+- Implement consistent error boundaries around AI-generated content.
+  # Example: <ErrorBoundary fallback={<FallbackUI />}><AIGeneratedContent /></ErrorBoundary>
+  # AI Safety: Auto-suggest error boundaries for components using AI.
+
+- Use explicit typing for AI service responses.
+  # Example: interface CompletionResponse { text: string; confidence: number; }
+  # AI Type-Safety: Generate response types based on API documentation.
+
+- Implement progressive loading states for AI operations.
+  # Example: { isLoading && <Skeleton /> } { !isLoading && <AIContent /> }
+  # AI UX: Suggest appropriate loading patterns for async AI operations.
+
+- Apply rate limiting and caching strategies for AI API calls.
+  # Example: const cachedCompletion = useMemo(() => getCompletion(prompt), [prompt]);
+  # AI Optimization: Detect repeated API calls and suggest caching.
+
+- Implement client-side streaming for long-running AI tasks.
+  # Example: Use Server-Sent Events or WebSockets for incremental responses.
+  # AI Implementation: Suggest streaming implementation for appropriate API endpoints.
+
+- Structure prompts with consistent templates.
+  # Example: const prompt = `Context: ${context}\nQuestion: ${question}\nAnswer:`;
+  # AI Consistency: Suggest templating patterns for prompt engineering.
+
+- Fail gracefully when AI services are unavailable.
+  # Example: try { await aiService.complete() } catch { return fallbackResponse() }
+  # AI Resilience: Auto-suggest fallback mechanisms for AI service calls.
+
+# Rapid Prototyping Workflow
+- Start with minimal viable component structure.
+- Add interactivity with client components where needed.
+- Integrate AI capabilities one feature at a time.
+- Refine based on feedback and actual usage patterns.
+
+# Self-Optimization Guide
+- AI should adapt to your programming style and patterns.
+- Learn from your corrections and feedback on generated code.
+- Maintain consistent patterns established in your codebase.
+- Suggest optimizations based on observed usage patterns.

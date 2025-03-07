@@ -1,0 +1,63 @@
+---
+description: Self-optimization rules for AI-generated code
+globs: **/*.{ts,tsx,js,jsx}
+---
+# Self-Optimization Rules
+
+## Code Adaptation Rules
+
+- Learn from user modifications and corrections
+  # Example: If user consistently changes arrow functions to function declarations, adapt to this style.
+  # AI Implementation: Track diff patterns between generated and edited code.
+
+- Match existing code style patterns
+  # Example: Follow project-specific indentation, naming conventions, comment style.
+  # AI Validation: Compare generated code with surrounding context before submission.
+
+- Improve based on feedback loops
+  # Example: If certain component structures are rejected, modify generation patterns.
+  # AI Enhancement: Maintain context of what code patterns were previously rejected.
+
+- Adapt to component complexity level
+  # Example: Simple components for solo developer, more abstracted for team scale.
+  # AI Adaptation: Assess codebase complexity and match accordingly.
+
+## Component Improvement Workflow
+
+1. After component generation:  
+   - Check for matching design system tokens  
+   - Verify TypeScript interface coverage  
+   - Validate Zod schema implementation
+   - Ensure component has proper JSDoc with examples
+
+2. On user correction:  
+   - Analyze diff between AI-generated and modified code  
+   - Update rule patterns accordingly  
+   - Create regression test examples
+
+3. Progressive implementation:
+   - Start with core functionality  
+   - Suggest enhancements iteratively  
+   - Prioritize working code over perfect adherence to patterns
+
+## Self-Improvement Patterns
+
+- Error analysis: When errors occur, analyze root causes and adapt generation
+  # Example: If TypeScript errors appear, check imports and type definitions first.
+
+- Contextual awareness: Consider the broader codebase when generating code
+  # Example: Reference existing utility functions instead of creating duplicates.
+
+- Pattern recognition: Identify recurring code structures and replicate them
+  # Example: Notice how error handling is implemented and follow the same pattern.
+
+- Complexity assessment: Generate appropriately complex solutions based on context
+  # Example: Solo developer needs simpler, more maintainable code than enterprise team.
+
+## AI Quality Standards
+
+- Prioritize working code over perfect patterns
+- Generate code that's easy to understand and maintain
+- Follow project-specific conventions consistently
+- Make iterative improvements over time
+- Learn from feedback to improve future generations 

@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+---
+# React Rules
+# Inherits from: root.mdc
+# Globs: **/*.{ts,tsx,js,jsx}
+# Description: Advanced component architecture for React
+1. Use compound components with createContext + useContext patterns for reusability.
+   # Example: Context.Provider with useContext consumers.
+2. Implement custom hooks with useSyncExternalStore for state sharing across components.
+   # Example: const useUserStore = createStore(userData);
+3. Apply error boundaries with react-error-boundary fallback strategies.
+   # Example: <ErrorBoundary FallbackComponent={ErrorFallback} />;
+4. Optimize context providers with memoized value objects.
+   # Example: useMemo(() => ({ user: userData }), [userData]);
+5. Use transition boundaries with useTransition for async operations.
+   # Example: const [isPending, startTransition] = useTransition();
+6. Implement virtualized lists with @tanstack/react-virtual for performance.
+   # Example: <Virtualizer data={items} renderItem={Item} />;
+7. Enforce component contracts with TypeScript utility types.
+   # Example: type Props = { label: string; onClick: () => void };
+8. Use React Server Components for non-interactive segments (via Next.js).
+   # Negative Rule: Don't use client-side rendering for static content unless needed.
+   # AI Suggestion: Suggest server components when editing Next.js files.
+9. Apply concurrent mode patterns with Suspense and lazy() for lazy loading.
+   # Example: const LazyComponent = lazy(() => import('./LazyComponent'));
+10. Structure components with atomic design methodology (atoms, molecules, organisms).
+    # Example: Atoms for buttons, molecules for forms, organisms for pages.
+# Update monthly with Cursor AI: Review React 19+ features and performance patterns.

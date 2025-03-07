@@ -1,0 +1,49 @@
+---
+description: Optimization strategies for Tailwind CSS
+globs: **/*.{ts,tsx,css}
+---
+---
+description: Optimization strategies for Tailwind CSS
+globs: **/*.{ts,tsx,css}
+---
+# Tailwind CSS Rules
+
+- Use tailwind-merge with cn() utility for conditional classes.
+  # Example: import { cn } from '@/lib/utils'; cn('base-class', condition && 'conditional-class');
+  # AI Suggestion: Auto-detect class merging scenarios and suggest using cn().
+
+- Implement variant-driven styles with class-variance-authority.
+  # Example: const buttonVariants = cva('base', { variants: { intent: { primary: 'bg-blue-500' } } });
+  # AI Detection: Identify component variants and suggest cva implementation.
+
+- Use @layer for component abstractions to reduce duplicated classes.
+  # Example: @layer components { .btn-primary { @apply px-4 py-2 bg-blue-500; } }
+  # AI Enhancement: Detect repeated class patterns and suggest @layer abstractions.
+
+- Apply consistent responsive design patterns.
+  # Example: Use mobile-first approach with sm:, md:, lg: breakpoints.
+  # AI Consistency: Maintain consistent breakpoint patterns in generated code.
+
+- Optimize for dark mode with data-theme approach.
+  # Example: <html data-theme="dark"> with dark:bg-slate-900 classes.
+  # AI Implementation: Auto-suggest dark mode variants when implementing UI components.
+
+- Group related utility classes for readability.
+  # Example: Group layout, spacing, colors, typography classes together.
+  # AI Formatting: Organize utility classes in a consistent, grouped order.
+
+- Prioritize semantic HTML with appropriate Tailwind styling.
+  # Example: Use <button> with button styling, not <div> with click handlers.
+  # AI Validation: Check for accessibility issues in element-class combinations.
+
+- Implement theme consistency using CSS variables.
+  # Example: --primary: theme('colors.blue.500'); color: var(--primary);
+  # AI Theming: Detect color patterns and suggest using theme variables.
+
+# Self-optimization patterns
+- Learn from your class organization and maintain consistency.
+- Detect common component patterns and suggest abstractions.
+- Adapt to your preferred responsive design approach.
+- Improve suggestions based on your feedback and corrections.
+
+# Examples of successful patterns
