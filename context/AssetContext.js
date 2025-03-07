@@ -1,7 +1,10 @@
 // context/AssetContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { preloadAssets, ASSET_MANIFEST } from '../utils/assetLoader';
+import assetLoader from '../utils/assetLoader';
 import { useAnimation } from './AnimationContext';
+
+// Get the asset manifest from the loader
+const { ASSET_MANIFEST } = assetLoader;
 
 // Create context
 const AssetContext = createContext();
@@ -25,7 +28,7 @@ export const AssetProvider = ({ children }) => {
         setIsLoading(true);
         startLoading();
         
-        const loadedAssets = await preloadAssets(ASSET_MANIFEST, (progress) => {
+        const loadedAssets = await assetLoader.preloadAssets(ASSET_MANIFEST, (progress) => {
           if (isMounted) {
             updateProgress(progress);
           }

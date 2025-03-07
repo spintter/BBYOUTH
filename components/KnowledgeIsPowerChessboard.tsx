@@ -12,12 +12,20 @@ import {
   useAnimations,
   MeshTransmissionMaterial,
   Trail,
-  PerformanceMonitor
+  PerformanceMonitor,
+  Detailed,
+  useDetectGPU,
+  Loader
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
-import { KenteClothMaterial, AfricanWoodMaterial, KnowledgeMaterial, AfricanSkinMaterial } from './materials/AfrocentricMaterials';
+import { KenteClothMaterial, AfricanWoodMaterial, KnowledgeMaterial, AfricanSkinMaterial, AfrocentricMaterial } from './materials/AfrocentricMaterials';
 import { suspend } from 'suspend-react';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { UseDraco } from '@react-three/drei/core/useGLTF';
 
 // Constants for optimization
 const CHESS_CONFIG = {
@@ -27,19 +35,78 @@ const CHESS_CONFIG = {
   darkSquareColor: '#3D2314',
   boardElevation: 0.05,
   animationDuration: 5,
-  rotationSpeed: 0.05
+  rotationSpeed: 0.05,
+  webGPUSettings: {
+    sampleCount: 4,
+    limits: {
+      maxStorageBufferBindingSize: 512 * 1024 * 1024,
+      maxBufferSize: 512 * 1024 * 1024,
+      maxVertexBuffers: 8,
+      maxVertexAttributes: 16,
+      maxBindGroups: 4,
+    }
+  }
 };
 
-// WebGPU support detection - asynchronous operation
+// Type definitions for GLTF models
+type GLTFResult = GLTF & {
+  nodes: { [key: string]: THREE.Mesh };
+  materials: { [key: string]: THREE.Material };
+};
+
+// Type guard for checking if an object is a mesh
+function isMesh(object: THREE.Object3D): object is THREE.Mesh {
+  return 'isMesh' in object && (object as any).isMesh === true;
+}
+
+// Type guard for checking if material is a standard material
+function isStandardMaterial(material: THREE.Material | THREE.Material[]): material is THREE.MeshStandardMaterial {
+  return !Array.isArray(material) && 'map' in material;
+}
+
+// Type guard for checking if material has maps
+function hasMaps(material: THREE.Material): material is THREE.MeshStandardMaterial {
+  return 'map' in material || 'normalMap' in material || 'roughnessMap' in material;
+}
+
+// Configure loaders for optimal performance
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/');
+
+const ktx2Loader = new KTX2Loader();
+ktx2Loader.setTranscoderPath('/basis/');
+
+// Enhanced WebGPU detection with capabilities check
 const checkWebGPU = async () => {
   if (typeof navigator === 'undefined') return false;
+  
   if ('gpu' in navigator) {
     try {
-      const adapter = await (navigator as any).gpu.requestAdapter();
+      const adapter = await (navigator as any).gpu.requestAdapter({
+        powerPreference: 'high-performance'
+      });
+      
       if (!adapter) return false;
+      
+      const device = await adapter.requestDevice({
+        requiredFeatures: ['texture-compression-bc'],
+        requiredLimits: CHESS_CONFIG.webGPUSettings.limits
+      });
+      
       const supportedFeatures = adapter.features;
       const hasRayTracing = supportedFeatures.has('ray-tracing');
-      return { supported: true, rayTracing: hasRayTracing };
+      const hasSampledTexture3D = supportedFeatures.has('texture-3d');
+      const hasFloat32 = supportedFeatures.has('float32');
+      
+      return { 
+        supported: true, 
+        rayTracing: hasRayTracing,
+        device,
+        features: {
+          sampledTexture3D: hasSampledTexture3D,
+          float32: hasFloat32
+        }
+      };
     } catch (e) {
       console.warn('WebGPU supported but failed to initialize:', e);
       return false;
@@ -56,35 +123,42 @@ const precomputedGeometries = {
   crown: new THREE.ConeGeometry(0.06, 0.08, 8, 1, true)
 };
 
-// Detect device capabilities for adaptive rendering
+// Enhanced device capabilities hook
 const useDeviceCapabilities = () => {
   const [capabilities, setCapabilities] = useState({
     webGPU: false,
     rayTracing: false,
     highPerformance: false,
-    adaptiveQuality: 'medium' as 'low' | 'medium' | 'high'
+    adaptiveQuality: 'medium' as 'low' | 'medium' | 'high',
+    gpuTier: 0,
+    supportedFeatures: {} as any
   });
 
   useEffect(() => {
-    // Detect device performance profile
-    const cpuCores = navigator.hardwareConcurrency || 4;
-    const isHighPerformance = cpuCores > 4;
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    // Set initial quality based on device
-    let quality: 'low' | 'medium' | 'high' = 'medium';
-    if (isMobile || cpuCores <= 2) quality = 'low';
-    if (cpuCores >= 8 && !isMobile) quality = 'high';
-    
-    // Check WebGPU support
-    checkWebGPU().then(webGPUSupport => {
+    const detectGPUTier = async () => {
+      const cpuCores = navigator.hardwareConcurrency || 4;
+      const isHighPerformance = cpuCores > 4;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      let quality: 'low' | 'medium' | 'high' = 'medium';
+      if (isMobile || cpuCores <= 2) quality = 'low';
+      if (cpuCores >= 8 && !isMobile) quality = 'high';
+      
+      const webGPUSupport = await checkWebGPU();
+      const gpuTier = webGPUSupport && webGPUSupport.rayTracing ? 2 : 
+                      webGPUSupport ? 1 : 0;
+      
       setCapabilities({
         webGPU: webGPUSupport !== false && (webGPUSupport as any).supported === true,
         rayTracing: webGPUSupport !== false && (webGPUSupport as any).rayTracing === true,
         highPerformance: isHighPerformance,
-        adaptiveQuality: quality
+        adaptiveQuality: quality,
+        gpuTier,
+        supportedFeatures: webGPUSupport !== false ? (webGPUSupport as any).features : {}
       });
-    });
+    };
+    
+    detectGPUTier();
   }, []);
   
   return capabilities;
@@ -101,62 +175,82 @@ interface ChessSquareProps {
 }
 
 function ChessSquare({ position, isDark, qualitySettings }: ChessSquareProps) {
-  const texture = useMemo(() => {
-    const symbol = isDark ? 'sankofa' : 'nea-onnim';
-    return new THREE.CanvasTexture(
-      suspend(() => {
-        const canvas = document.createElement('canvas');
-        const size = qualitySettings.textureSize;
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return canvas;
-        
-        // Draw Adinkra symbol
-        ctx.fillStyle = isDark ? CHESS_CONFIG.darkSquareColor : CHESS_CONFIG.lightSquareColor;
-        ctx.fillRect(0, 0, size, size);
-        
-        // Add subtle grain texture
-        for (let i = 0; i < size * 0.2; i++) {
-          const x = Math.random() * size;
-          const y = Math.random() * size;
-          const radius = Math.random() * 2 + 0.5;
-          ctx.fillStyle = isDark ? 
-            `rgba(255,255,255,${Math.random() * 0.05 + 0.02})` : 
-            `rgba(0,0,0,${Math.random() * 0.05 + 0.02})`;
-          ctx.beginPath();
-          ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        
-        return canvas;
-      }, [isDark, qualitySettings.textureSize])
-    );
-  }, [isDark, qualitySettings]);
-  
-  // Configure texture properties for optimal rendering
-  useEffect(() => {
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.generateMipmaps = true;
-    texture.minFilter = THREE.LinearMipmapLinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.anisotropy = 16;
-    
-    return () => {
-      texture.dispose();
-    };
-  }, [texture]);
-  
   return (
     <mesh position={position} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
       <primitive object={precomputedGeometries.square} />
-      {isDark ? (
-        <AfricanWoodMaterial color={CHESS_CONFIG.darkSquareColor} map={texture} />
-      ) : (
-        <AfricanWoodMaterial color={CHESS_CONFIG.lightSquareColor} map={texture} />
-      )}
+      <AfricanWoodMaterial 
+        color={isDark ? CHESS_CONFIG.darkSquareColor : CHESS_CONFIG.lightSquareColor} 
+      />
     </mesh>
   );
+}
+
+// Enhanced GLTF loader with fallbacks and optimizations
+function useOptimizedGLTF(path: string, draco = true, ktx2 = true): GLTFResult {
+  const result = useGLTF(path, draco ? '/draco/' : undefined) as GLTFResult;
+  
+  useEffect(() => {
+    // Apply KTX2 textures if supported
+    if (ktx2 && result.scene) {
+      const ktx2Path = path.replace('.glb', '.ktx2');
+      // Check if KTX2 version exists
+      fetch(ktx2Path, { method: 'HEAD' })
+        .then(response => {
+          if (response.ok) {
+            // Apply KTX2 textures
+            result.scene.traverse((node: THREE.Object3D) => {
+              if (isMesh(node) && node.material) {
+                if (isStandardMaterial(node.material)) {
+                  const material = node.material;
+                  
+                  if (material.map) {
+                    const texture = material.map;
+                    const ktx2TexturePath = texture.image?.src.replace(/\.(png|jpg|jpeg)$/, '.ktx2') || '';
+                    ktx2Loader.load(ktx2TexturePath, (ktx2Texture) => {
+                      material.map = ktx2Texture;
+                      material.needsUpdate = true;
+                    }, undefined, () => {
+                      // Fallback is already in place (original texture)
+                      console.log('KTX2 texture not available, using fallback');
+                    });
+                  }
+                }
+              }
+            });
+          }
+        })
+        .catch(() => {
+          // Fallback to standard textures (already loaded)
+        });
+    }
+    
+    // Apply optimizations to the scene
+    if (result.scene) {
+      result.scene.traverse((node: THREE.Object3D) => {
+        if (isMesh(node)) {
+          // Optimize shadows
+          node.castShadow = true;
+          node.receiveShadow = true;
+          
+          // Optimize geometry
+          if (node.geometry) {
+            node.geometry.computeBoundingBox();
+            node.geometry.computeBoundingSphere();
+          }
+          
+          // Optimize materials
+          if (node.material && isStandardMaterial(node.material)) {
+            if (node.material.map) {
+              node.material.map.anisotropy = 4;
+              node.material.map.needsUpdate = true;
+            }
+          }
+        }
+      });
+    }
+  }, [result, path, ktx2]);
+  
+  return result;
 }
 
 // Optimized African Girl model with transformation capabilities
@@ -176,155 +270,332 @@ function AfricanGirlPawn({
   qualitySettings 
 }: AfricanGirlPawnProps) {
   const group = useRef<THREE.Group>(null);
-  const mixer = useRef<THREE.AnimationMixer | null>(null);
-  const clock = new THREE.Clock();
   const [transformStage, setTransformStage] = useState(0);
-  const { scene: modelScene, animations } = useGLTF('/models/african-girl.glb');
+  const clock = new THREE.Clock();
   
-  // Track transformation progress
-  const transformProgress = useRef(0);
-  const timeline = useRef<gsap.core.Timeline | null>(null);
+  // GPU capabilities detection for adaptive quality
+  const gpu = useDetectGPU();
+  const isHighEnd = useMemo(() => gpu.tier > 2, [gpu.tier]);
+  const isMidTier = useMemo(() => gpu.tier > 1 && gpu.tier <= 2, [gpu.tier]);
   
-  // Create animation mixer on first render
+  // Load models with LOD based on GPU capabilities
+  const girlModelHigh = useOptimizedGLTF('/models/african-girl.glb', true, isHighEnd);
+  const queenModelHigh = useOptimizedGLTF('/models/african-queen.glb', true, isHighEnd);
+  
+  // Track memory usage
+  const [memoryUsage, setMemoryUsage] = useState({
+    geometries: 0,
+    textures: 0
+  });
+  
+  // Calculate and monitor memory usage
   useEffect(() => {
-    if (modelScene && animations && animations.length > 0) {
-      mixer.current = new THREE.AnimationMixer(modelScene);
-      const action = mixer.current.clipAction(animations[0]);
-      action.play();
-    }
-    
-    // Clean up
-    return () => {
-      mixer.current?.stopAllAction();
+    const calculateMemory = () => {
+      let geometryMemory = 0;
+      let textureMemory = 0;
+      
+      // Calculate for girl model
+      girlModelHigh.scene.traverse((node: THREE.Object3D) => {
+        if (isMesh(node) && node.geometry) {
+          const attributes = node.geometry.attributes;
+          // Estimate geometry memory
+          if (attributes.position) {
+            geometryMemory += attributes.position.array.byteLength;
+          }
+          if (attributes.normal) {
+            geometryMemory += attributes.normal.array.byteLength;
+          }
+          if (attributes.uv) {
+            geometryMemory += attributes.uv.array.byteLength;
+          }
+          
+          // Estimate texture memory
+          if (node.material && isStandardMaterial(node.material)) {
+            if (node.material.map) {
+              const width = node.material.map.image?.width || 1024;
+              const height = node.material.map.image?.height || 1024;
+              // Estimate 4 bytes per pixel (RGBA)
+              textureMemory += width * height * 4;
+            }
+          }
+        }
+      });
+      
+      // Calculate for queen model
+      queenModelHigh.scene.traverse((node: THREE.Object3D) => {
+        if (isMesh(node) && node.geometry) {
+          const attributes = node.geometry.attributes;
+          if (attributes.position) {
+            geometryMemory += attributes.position.array.byteLength;
+          }
+          if (attributes.normal) {
+            geometryMemory += attributes.normal.array.byteLength;
+          }
+          if (attributes.uv) {
+            geometryMemory += attributes.uv.array.byteLength;
+          }
+          
+          if (node.material && isStandardMaterial(node.material)) {
+            if (node.material.map) {
+              const width = node.material.map.image?.width || 1024;
+              const height = node.material.map.image?.height || 1024;
+              textureMemory += width * height * 4;
+            }
+          }
+        }
+      });
+      
+      setMemoryUsage({
+        geometries: geometryMemory / (1024 * 1024), // Convert to MB
+        textures: textureMemory / (1024 * 1024) // Convert to MB
+      });
     };
-  }, [modelScene, animations]);
+    
+    // Calculate after models are loaded
+    calculateMemory();
+    
+    // Log memory usage in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Memory usage:', memoryUsage);
+    }
+  }, [girlModelHigh, queenModelHigh]);
   
-  // Handle transformation when triggered
+  // Handle transformation stages
   useEffect(() => {
-    if (transformToQueen && group.current) {
-      // Create GSAP animation timeline
-      timeline.current = gsap.timeline({
+    if (transformToQueen) {
+      const timeline = gsap.timeline({
         onComplete: () => {
-          setTransformStage(3); // Final queen stage
+          setTransformStage(3);
           onTransformationComplete();
         }
       });
       
-      // Initial scale
-      gsap.set(group.current.scale, { x: 0.1, y: 0.1, z: 0.1 });
-      
-      // Stage 1: Rise up
-      timeline.current.to(group.current.position, {
-        y: position[1] + 0.3,
-        duration: 1.5,
-        ease: "power2.inOut",
-        onComplete: () => setTransformStage(1)
-      });
-      
-      // Stage 2: Begin transformation
-      timeline.current.to(transformProgress, {
-        current: 1,
-        duration: 2,
-        ease: "power1.inOut",
-        onUpdate: () => setTransformStage(2),
-      });
-      
-      // Stage 3: Final form and crown appearance
-      timeline.current.to(group.current.scale, {
-        x: 0.15,
-        y: 0.15,
-        z: 0.15,
-        duration: 1,
-        ease: "power3.out"
-      }, "-=0.5");
-      
-      // Add glow effect during transformation
-      timeline.current.fromTo('glowIntensity', {
-        value: 0
-      }, {
-        value: 2,
-        duration: 2,
-        ease: "sine.inOut",
-        yoyo: true,
-      }, "<");
+      timeline
+        .to(group.current?.position || {}, {
+          y: position[1] + 0.5,
+          duration: 1,
+          ease: "power2.out",
+          onStart: () => setTransformStage(1)
+        })
+        .to(group.current?.rotation || {}, {
+          y: Math.PI * 2,
+          duration: 2,
+          ease: "power1.inOut"
+        })
+        .to(group.current?.position || {}, {
+          y: position[1],
+          duration: 1,
+          ease: "power2.in",
+          onStart: () => setTransformStage(2)
+        });
     }
   }, [transformToQueen, position, onTransformationComplete]);
   
-  // Animation loop
+  // Animation loop for hover effect
   useFrame(() => {
-    const delta = clock.getDelta();
-    
-    // Update animation mixer
-    if (mixer.current) {
-      mixer.current.update(delta);
-    }
-    
-    // Add subtle hover animation when not transforming
     if (group.current && !transformToQueen) {
-      group.current.position.y = position[1] + Math.sin(clock.elapsedTime * 2) * 0.01;
+      group.current.position.y = position[1] + Math.sin(clock.getElapsedTime() * 2) * 0.01;
     }
   });
   
-  // Switch rendering based on transformation stage
+  // Apply cultural materials to models
+  useEffect(() => {
+    // Apply African skin material to girl model
+    girlModelHigh.scene.traverse((node: THREE.Object3D) => {
+      if (isMesh(node)) {
+        const materialName = node.material && !Array.isArray(node.material) ? node.material.name.toLowerCase() : '';
+        
+        // Detect skin materials by name or properties
+        if (node.name.toLowerCase().includes('skin') || materialName.includes('skin')) {
+          node.material = new THREE.MeshPhysicalMaterial({
+            color: '#5C4033',
+            roughness: 0.7,
+            metalness: 0.0,
+            clearcoat: 0.2,
+            clearcoatRoughness: 0.4,
+            sheen: 0.2,
+            sheenRoughness: 0.4,
+            sheenColor: '#8B4513',
+            transmission: 0.05,
+            thickness: 0.5,
+            emissive: transformStage === 1 ? '#FFD700' : '#000000',
+            emissiveIntensity: transformStage === 1 ? 0.5 : 0
+          });
+        }
+        // Detect clothing materials
+        else if (node.name.toLowerCase().includes('cloth') || materialName.includes('cloth')) {
+          node.material = new THREE.MeshPhysicalMaterial({
+            color: '#800020', // Maroon for traditional clothing
+            roughness: 0.9,
+            metalness: 0.0,
+            sheen: 0.5,
+            sheenRoughness: 0.2,
+            sheenColor: '#FFD700'
+          });
+        }
+      }
+    });
+    
+    // Apply royal materials to queen model
+    queenModelHigh.scene.traverse((node: THREE.Object3D) => {
+      if (isMesh(node)) {
+        const materialName = node.material && !Array.isArray(node.material) ? node.material.name.toLowerCase() : '';
+        
+        // Detect skin materials
+        if (node.name.toLowerCase().includes('skin') || materialName.includes('skin')) {
+          node.material = new THREE.MeshPhysicalMaterial({
+            color: '#5C4033',
+            roughness: 0.7,
+            metalness: 0.0,
+            clearcoat: 0.3,
+            clearcoatRoughness: 0.3,
+            sheen: 0.3,
+            sheenRoughness: 0.3,
+            sheenColor: '#8B4513',
+            transmission: 0.05,
+            thickness: 0.5,
+            emissive: '#FFD700',
+            emissiveIntensity: 0.3
+          });
+        }
+        // Detect crown or royal elements
+        else if (
+          node.name.toLowerCase().includes('crown') || 
+          node.name.toLowerCase().includes('royal') ||
+          materialName.includes('crown') || 
+          materialName.includes('royal')
+        ) {
+          node.material = new THREE.MeshPhysicalMaterial({
+            color: '#FFD700',
+            roughness: 0.2,
+            metalness: 1.0,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            reflectivity: 1.0,
+            emissive: '#FFD700',
+            emissiveIntensity: 0.5
+          });
+        }
+        // Detect clothing materials
+        else if (node.name.toLowerCase().includes('cloth') || materialName.includes('cloth')) {
+          node.material = new THREE.MeshPhysicalMaterial({
+            color: '#4B0082', // Royal purple
+            roughness: 0.8,
+            metalness: 0.1,
+            sheen: 0.7,
+            sheenRoughness: 0.2,
+            sheenColor: '#FFD700'
+          });
+        }
+      }
+    });
+  }, [girlModelHigh, queenModelHigh, transformStage]);
+  
+  // Clean up resources
+  useEffect(() => {
+    return () => {
+      // Dispose textures and geometries when component unmounts
+      girlModelHigh.scene.traverse((node: THREE.Object3D) => {
+        if (isMesh(node)) {
+          if (node.geometry) node.geometry.dispose();
+          if (node.material) {
+            if (Array.isArray(node.material)) {
+              node.material.forEach(material => {
+                if (hasMaps(material)) {
+                  if (material.map) material.map.dispose();
+                  if (material.normalMap) material.normalMap.dispose();
+                  if (material.roughnessMap) material.roughnessMap.dispose();
+                }
+                material.dispose();
+              });
+            } else {
+              if (hasMaps(node.material)) {
+                if (node.material.map) node.material.map.dispose();
+                if (node.material.normalMap) node.material.normalMap.dispose();
+                if (node.material.roughnessMap) node.material.roughnessMap.dispose();
+              }
+              node.material.dispose();
+            }
+          }
+        }
+      });
+      
+      queenModelHigh.scene.traverse((node: THREE.Object3D) => {
+        if (isMesh(node)) {
+          if (node.geometry) node.geometry.dispose();
+          if (node.material) {
+            if (Array.isArray(node.material)) {
+              node.material.forEach(material => {
+                if (hasMaps(material)) {
+                  if (material.map) material.map.dispose();
+                  if (material.normalMap) material.normalMap.dispose();
+                  if (material.roughnessMap) material.roughnessMap.dispose();
+                }
+                material.dispose();
+              });
+            } else {
+              if (hasMaps(node.material)) {
+                if (node.material.map) node.material.map.dispose();
+                if (node.material.normalMap) node.material.normalMap.dispose();
+                if (node.material.roughnessMap) node.material.roughnessMap.dispose();
+              }
+              node.material.dispose();
+            }
+          }
+        }
+      });
+    };
+  }, [girlModelHigh, queenModelHigh]);
+  
   return (
     <group position={position} ref={group}>
-      {transformStage < 2 && (
-        // Pawn stage
-        <group scale={[0.1, 0.1, 0.1]}>
-          <primitive object={modelScene.clone()} />
-          {transformStage === 1 && (
-            <Sparkles 
-              count={20} 
-              scale={[0.5, 0.5, 0.5]} 
-              size={5} 
-              speed={0.3} 
-              color="#FFD700" 
-            />
-          )}
-        </group>
+      {/* Girl model with LOD */}
+      <group visible={transformStage < 2}>
+        <primitive 
+          object={girlModelHigh.scene.clone()} 
+          scale={0.1}
+        />
+      </group>
+      
+      {/* Queen model with LOD */}
+      <group visible={transformStage >= 2}>
+        <primitive 
+          object={queenModelHigh.scene.clone()} 
+          scale={0.15}
+        />
+      </group>
+      
+      {/* Transformation effects */}
+      {transformStage === 1 && (
+        <Sparkles 
+          count={20} 
+          scale={[0.5, 0.5, 0.5]} 
+          size={5} 
+          speed={0.3} 
+          color="#FFD700" 
+        />
       )}
       
       {transformStage >= 2 && (
-        // Queen transformation stage
-        <group scale={[0.15, 0.15, 0.15]}>
-          <primitive object={modelScene.clone()} />
-          <mesh position={[0, 1.2, 0]}>
-            <torusGeometry args={[0.5, 0.1, 16, 32]} />
-            <MeshTransmissionMaterial 
-              color="#FFD700"
-              metalness={1}
-              roughness={0}
-              ior={1.5}
-              thickness={0.2}
-              transmission={0.9}
-              chromaticAberration={0.06}
-              emissive="#FFD700"
-              emissiveIntensity={transformStage === 3 ? 2 : 0.5}
-            />
-          </mesh>
+        <group>
           <Sparkles 
-            count={50} 
+            count={isHighEnd ? 50 : 25} 
             scale={[1, 1, 1]} 
             size={6} 
             speed={0.5} 
             color="#FFD700" 
           />
-          {transformStage === 3 && (
-            <Trail 
-              width={5}
-              color="#FFD700"
-              length={10}
-              decay={1}
-              local={false}
-              stride={10}
-              interval={1}
-            >
-              <mesh position={[0, 1.5, 0]}>
-                <sphereGeometry args={[0.2, 16, 16]} />
-                <meshBasicMaterial color="#FFD700" />
-              </mesh>
-            </Trail>
-          )}
+          <Trail
+            width={1}
+            length={isHighEnd ? 8 : 4}
+            color="#FFD700"
+            attenuation={(t) => t * t}
+          >
+            <mesh>
+              <sphereGeometry args={[0.05, 16, 16]} />
+              <meshBasicMaterial color="#FFD700" />
+            </mesh>
+          </Trail>
         </group>
       )}
     </group>
@@ -424,7 +695,7 @@ function Chessboard({
             CHESS_CONFIG.boardSize * CHESS_CONFIG.squareSize + 0.2
           ]} 
         />
-        <AfricanWoodMaterial 
+        <AfrocentricMaterial 
           color="#5E3A22" 
           roughness={0.8}
           envMapIntensity={1.2}
@@ -568,6 +839,11 @@ export function KnowledgeIsPowerChessboard({
             stencil: false,
             depth: true,
             powerPreference: "high-performance",
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.2,
+            outputColorSpace: 'srgb',
+            logarithmicDepthBuffer: true,
+            precision: 'highp'
           }}
           camera={{ 
             position: [0, 3, 5], 
@@ -575,18 +851,49 @@ export function KnowledgeIsPowerChessboard({
             near: 0.1, 
             far: 100
           }}
-          onCreated={handleSceneLoaded}
+          onCreated={({ gl, scene }) => {
+            gl.useLegacyLights = false;
+            const pmremGenerator = new THREE.PMREMGenerator(gl);
+            const envMap = pmremGenerator.fromScene(
+              new THREE.Scene().add(
+                new THREE.AmbientLight(0xffffff, 0.5),
+                new THREE.DirectionalLight(0xffffff, 1.0)
+              ), 1.5
+            ).texture;
+            scene.environment = envMap;
+            handleSceneLoaded();
+          }}
         >
           <PerformanceAdaptation>
-            <Environment preset="sunset" background={false} />
+            <Environment 
+              preset="sunset" 
+              background={false}
+              blur={0.5}
+              resolution={1024}
+              ground={{
+                height: 15,
+                radius: 40,
+                scale: 20
+              }}
+            />
             
             <ambientLight intensity={0.2} />
+            
+            <spotLight
+              position={[5, 5, 0]}
+              angle={0.4}
+              penumbra={1}
+              intensity={1}
+              castShadow
+              shadow-mapSize={[2048, 2048]}
+              shadow-bias={-0.001}
+            />
             
             <LightEffects 
               active={transformationActive} 
               qualitySettings={{
-                effectsIntensity: capabilities.adaptiveQuality === 'high' ? 1 : 
-                                  capabilities.adaptiveQuality === 'medium' ? 0.7 : 0.4,
+                effectsIntensity: capabilities.adaptiveQuality === 'high' ? 1.2 : 
+                                 capabilities.adaptiveQuality === 'medium' ? 0.8 : 0.5,
               }}
             />
             
@@ -597,12 +904,13 @@ export function KnowledgeIsPowerChessboard({
             
             <ContactShadows
               position={[0, -0.49, 0]}
-              opacity={0.6}
+              opacity={0.8}
               scale={10}
-              blur={1.5}
+              blur={2.5}
               far={5}
-              resolution={capabilities.adaptiveQuality === 'low' ? 256 : 512}
+              resolution={capabilities.adaptiveQuality === 'low' ? 256 : 2048}
               color="#000000"
+              frames={capabilities.adaptiveQuality === 'high' ? 60 : 1}
             />
             
             <OrbitControls
@@ -651,5 +959,6 @@ export function KnowledgeIsPowerChessboard({
   );
 }
 
-// Preload assets
-useGLTF.preload('/models/african-girl.glb'); 
+// Preload models to ensure <500ms initial load
+useGLTF.preload('/models/african-girl.glb');
+useGLTF.preload('/models/african-queen.glb'); 

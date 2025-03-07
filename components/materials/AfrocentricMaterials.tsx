@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
@@ -132,14 +132,69 @@ const createAdinkraTexture = (
   return texture;
 };
 
+interface MaterialPropsBase {
+  [key: string]: any;
+}
+
+interface KenteClothMaterialProps extends MaterialPropsBase {
+  color?: string;
+  map?: THREE.Texture;
+  normalMap?: THREE.Texture;
+}
+
+interface AfricanWoodMaterialProps extends MaterialPropsBase {
+  color?: string;
+  map?: THREE.Texture;
+}
+
+interface KnowledgeMaterialProps extends MaterialPropsBase {
+  emissiveIntensity?: number;
+  map?: THREE.Texture;
+  emissiveMap?: THREE.Texture;
+}
+
+interface AfricanSkinMaterialProps extends MaterialPropsBase {
+  baseColor?: string;
+  subsurfaceColor?: string;
+  emissiveColor?: string;
+  emissiveIntensity?: number;
+  map?: THREE.Texture;
+  emissiveMap?: THREE.Texture;
+}
+
+interface KnowledgeTransformationMaterialProps extends MaterialPropsBase {
+  progress?: number;
+  intensity?: number;
+  map?: THREE.Texture;
+  emissiveMap?: THREE.Texture;
+}
+
+interface QueenCrownMaterialProps extends MaterialPropsBase {
+  glowIntensity?: number;
+  knowledgePower?: number;
+  map?: THREE.Texture;
+  emissiveMap?: THREE.Texture;
+}
+
+interface AfrocentricMaterialProps extends MaterialPropsBase {
+  color?: string;
+  roughness?: number;
+  envMapIntensity?: number;
+}
+
 // Kente cloth material with PBR properties
-export function KenteClothMaterial({ color = '#800020', ...props }) {
+export function KenteClothMaterial({ color = '#800020', map, normalMap, ...props }: KenteClothMaterialProps) {
   // Create procedural textures if actual textures aren't available
-  const baseTexture = useMemo(() => createAdinkraTexture('adinkrahene', '#000000', color), [color]);
+  const baseTexture = useMemo(() => {
+    if (map) return map;
+    return createAdinkraTexture('adinkrahene', '#000000', color);
+  }, [color, map]);
+  
   const normalTexture = useMemo(() => {
+    if (normalMap) return normalMap;
     const texture = createAdinkraTexture('adinkrahene', '#888888', '#444444');
     return texture;
-  }, []);
+  }, [normalMap]);
   
   return (
     <meshPhysicalMaterial
@@ -157,29 +212,88 @@ export function KenteClothMaterial({ color = '#800020', ...props }) {
 }
 
 // Wood material with African patterns
-export function AfricanWoodMaterial({ color = '#8B4513', ...props }) {
-  // Create procedural textures if actual textures aren't available
+export function AfricanWoodMaterial({ color = '#8B4513', map, ...props }: AfricanWoodMaterialProps) {
   const baseTexture = useMemo(() => {
-    const texture = createAdinkraTexture('sankofa', '#3D2314', color);
+    if (map) return map;
+    const texture = createAdinkraTexture('sankofa', '#3D2314', color, 2048); // Reduced from 8K to 2K
+    texture.anisotropy = 8; // Reduced anisotropy
+    texture.encoding = THREE.sRGBEncoding;
+    texture.generateMipmaps = true;
     return texture;
-  }, [color]);
-  
+  }, [color, map]);
+
+  // Create normal map for enhanced detail
+  const normalTexture = useMemo(() => {
+    const texture = createAdinkraTexture('sankofa', '#808080', '#404040', 1024);
+    texture.anisotropy = 8;
+    return texture;
+  }, []);
+
+  // Create roughness map for surface variation
+  const roughnessTexture = useMemo(() => {
+    const texture = createAdinkraTexture('sankofa', '#FFFFFF', '#000000', 1024);
+    texture.anisotropy = 8;
+    return texture;
+  }, []);
+
+  // Create AO map for enhanced shadows
+  const aoTexture = useMemo(() => {
+    const texture = createAdinkraTexture('sankofa', '#000000', '#FFFFFF', 1024);
+    texture.anisotropy = 8;
+    return texture;
+  }, []);
+
+  // Cleanup textures on unmount
+  useEffect(() => {
+    return () => {
+      baseTexture.dispose();
+      normalTexture.dispose();
+      roughnessTexture.dispose();
+      aoTexture.dispose();
+    };
+  }, [baseTexture, normalTexture, roughnessTexture, aoTexture]);
+
   return (
     <meshPhysicalMaterial
       map={baseTexture}
+      normalMap={normalTexture}
+      roughnessMap={roughnessTexture}
+      aoMap={aoTexture}
       color={color}
-      roughness={0.7}
-      metalness={0.1}
-      envMapIntensity={1.0}
+      roughness={0.35}
+      metalness={0.2}
+      envMapIntensity={2.5}
+      clearcoat={1.0}
+      clearcoatRoughness={0.2}
+      ior={1.5}
+      transmission={0.15}
+      thickness={2.0}
+      attenuationDistance={2.0}
+      attenuationColor={new THREE.Color('#3D2314')}
+      reflectivity={1}
+      sheen={0.35}
+      sheenRoughness={0.4}
+      sheenColor={new THREE.Color('#A67B5B')}
+      iridescence={0.3}
+      iridescenceIOR={1.3}
+      iridescenceThicknessRange={[100, 400]}
       {...props}
     />
   );
 }
 
 // Knowledge material with glowing properties
-export function KnowledgeMaterial({ emissiveIntensity = 0.5, ...props }) {
+export function KnowledgeMaterial({ emissiveIntensity = 0.5, map, emissiveMap, ...props }: KnowledgeMaterialProps) {
   // Create procedural texture with knowledge symbol
-  const baseTexture = useMemo(() => createAdinkraTexture('nea-onnim', '#FFD700', '#FFFFFF'), []);
+  const baseTexture = useMemo(() => {
+    if (map) return map;
+    return createAdinkraTexture('nea-onnim', '#FFD700', '#FFFFFF');
+  }, [map]);
+  
+  const emissiveTexture = useMemo(() => {
+    if (emissiveMap) return emissiveMap;
+    return baseTexture;
+  }, [baseTexture, emissiveMap]);
   
   return (
     <meshPhysicalMaterial
@@ -187,7 +301,7 @@ export function KnowledgeMaterial({ emissiveIntensity = 0.5, ...props }) {
       color="#FFD700"
       emissive="#FFD700"
       emissiveIntensity={emissiveIntensity}
-      emissiveMap={baseTexture}
+      emissiveMap={emissiveTexture}
       roughness={0.2}
       metalness={0.9}
       envMapIntensity={2.0}
@@ -200,75 +314,84 @@ export function KnowledgeMaterial({ emissiveIntensity = 0.5, ...props }) {
 
 // Enhanced skin material with advanced subsurface scattering and transformation capabilities
 export function AfricanSkinMaterial({ 
-  tone = '#8B5A2B', 
-  knowledgeLevel = 0,
+  baseColor = '#5C4033',
+  subsurfaceColor = '#A52A2A',
+  emissiveColor = '#000000',
+  emissiveIntensity = 0,
+  map,
+  emissiveMap,
   ...props 
-}) {
-  // Create base skin texture with high resolution
+}: AfricanSkinMaterialProps) {
+  // Create procedural texture for skin
   const baseTexture = useMemo(() => {
+    if (map) return map;
+    
     const canvas = document.createElement('canvas');
-    canvas.width = 4096; // 4K resolution for detail
-    canvas.height = 4096;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return new THREE.CanvasTexture(canvas);
+    const size = 512;
+    canvas.width = size;
+    canvas.height = size;
     
-    // Create realistic skin texture pattern
-    ctx.fillStyle = tone;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const context = canvas.getContext('2d');
+    if (!context) return new THREE.CanvasTexture(canvas);
     
-    // Add subtle skin detail variations
-    for (let i = 0; i < 10000; i++) {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
+    // Fill background with base skin tone
+    context.fillStyle = baseColor;
+    context.fillRect(0, 0, size, size);
+    
+    // Add subtle variation to simulate skin texture
+    for (let i = 0; i < 5000; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
       const radius = Math.random() * 2 + 0.5;
-      ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.03})`;
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.fill();
+      
+      // Random color variation
+      const colorShift = Math.random() * 20 - 10;
+      const r = parseInt(baseColor.substring(1, 3), 16) + colorShift;
+      const g = parseInt(baseColor.substring(3, 5), 16) + colorShift;
+      const b = parseInt(baseColor.substring(5, 7), 16) + colorShift;
+      
+      context.fillStyle = `rgb(${Math.min(255, Math.max(0, r))}, ${Math.min(255, Math.max(0, g))}, ${Math.min(255, Math.max(0, b))})`;
+      context.beginPath();
+      context.arc(x, y, radius, 0, Math.PI * 2);
+      context.fill();
     }
     
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(2, 2);
-    return texture;
-  }, [tone]);
-
-  // Calculate enhanced properties based on knowledge level
-  const enhancedTone = useMemo(() => {
-    if (knowledgeLevel <= 0) return tone;
-    const baseColor = new THREE.Color(tone);
-    const enlightenedColor = new THREE.Color('#D4AF37');
-    return baseColor.lerp(enlightenedColor, knowledgeLevel).getStyle();
-  }, [tone, knowledgeLevel]);
-
-  // Advanced subsurface properties
-  const subsurfaceProps = useMemo(() => {
-    const baseTransmission = 0.3; // Increased for more realistic skin
-    const baseThickness = 0.4;
-    const baseIor = 1.4;
     
-    return {
-      transmission: baseTransmission + (knowledgeLevel * 0.2),
-      thickness: baseThickness - (knowledgeLevel * 0.2),
-      ior: baseIor + (knowledgeLevel * 0.3),
-      transmissionSampler: true,
-      backside: true,
-      clearcoat: 0.1 + (knowledgeLevel * 0.4),
-      clearcoatRoughness: 0.4 - (knowledgeLevel * 0.2),
-      attenuationDistance: 0.5 - (knowledgeLevel * 0.2),
-      attenuationColor: new THREE.Color(enhancedTone).multiplyScalar(1.2),
-      anisotropy: 0.1 + (knowledgeLevel * 0.2),
-      roughness: Math.max(0.2, 0.6 - (knowledgeLevel * 0.4)),
-      metalness: Math.min(0.4, knowledgeLevel * 0.4),
-      envMapIntensity: 1.0 + knowledgeLevel
-    };
-  }, [knowledgeLevel, enhancedTone]);
-
+    return texture;
+  }, [baseColor, map]);
+  
+  // Dynamic emissive properties for transformation effects
+  const [time, setTime] = useState(0);
+  useFrame((state) => {
+    setTime(state.clock.getElapsedTime());
+  });
+  
+  // Calculate emissive intensity with subtle pulsing
+  const currentEmissiveIntensity = useMemo(() => {
+    return emissiveIntensity + Math.sin(time * 2) * 0.1 * emissiveIntensity;
+  }, [time, emissiveIntensity]);
+  
+  const emissiveTexture = useMemo(() => {
+    if (emissiveMap) return emissiveMap;
+    return baseTexture;
+  }, [baseTexture, emissiveMap]);
+  
   return (
     <meshPhysicalMaterial
       map={baseTexture}
-      color={enhancedTone}
-      {...subsurfaceProps}
+      color={baseColor}
+      emissive={emissiveColor}
+      emissiveIntensity={currentEmissiveIntensity}
+      emissiveMap={emissiveTexture}
+      roughness={0.7}
+      metalness={0.1}
+      clearcoat={0.3}
+      clearcoatRoughness={0.5}
+      ior={1.4}
+      transmission={0.05}
+      transparent={emissiveIntensity > 0}
       {...props}
     />
   );
@@ -276,43 +399,71 @@ export function AfricanSkinMaterial({
 
 // Knowledge transformation material with dynamic properties
 export function KnowledgeTransformationMaterial({ 
-  progress = 0, // 0 to 1 - represents transformation progress
+  progress = 0,
   intensity = 1.0,
+  map,
+  emissiveMap,
   ...props 
-}) {
-  // Create dynamic Adinkra knowledge symbol texture
-  const symbolTexture = useMemo(() => {
-    // Use different symbols based on transformation stage
-    const symbol = progress < 0.3 ? 'sankofa' : 
-                  progress < 0.7 ? 'nea-onnim' : 'adinkrahene';
-                  
-    // Colors evolve with transformation progress
-    const bgColor = new THREE.Color(0x331800).lerp(new THREE.Color(0xFFD700), progress).getStyle();
-    const fgColor = new THREE.Color(0xFFD700).lerp(new THREE.Color(0xFFFFFF), progress).getStyle();
-    
-    return createAdinkraTexture(symbol, fgColor, bgColor, 2048); // Higher resolution texture
-  }, [progress]);
+}: KnowledgeTransformationMaterialProps) {
+  // Create base knowledge texture
+  const baseTexture = useMemo(() => {
+    if (map) return map;
+    return createAdinkraTexture('nea-onnim', '#FFD700', '#FFFFFF');
+  }, [map]);
   
-  // Dynamic emissive properties based on progress
-  const emissiveIntensity = useMemo(() => {
-    // Pulses during transformation with increasing baseline
-    const baseline = 0.5 + (progress * 1.5);
-    return baseline * intensity;
-  }, [progress, intensity]);
-
+  const emissiveTexture = useMemo(() => {
+    if (emissiveMap) return emissiveMap;
+    return baseTexture;
+  }, [baseTexture, emissiveMap]);
+  
+  // Animation state
+  const [time, setTime] = useState(0);
+  useFrame((state) => {
+    setTime(state.clock.getElapsedTime());
+  });
+  
+  // Calculate dynamic properties based on progress
+  const dynamicProps = useMemo(() => {
+    // Color transitions from subtle to intense as progress increases
+    const baseColor = new THREE.Color('#FFD700');
+    const targetColor = new THREE.Color('#FFFFFF');
+    const lerpedColor = baseColor.clone().lerp(targetColor, progress * 0.7);
+    
+    // Emissive intensity increases with progress
+    const emissiveIntensity = 0.2 + progress * 1.8 * intensity;
+    
+    // Roughness decreases with progress (becomes smoother/more refined)
+    const roughness = Math.max(0.05, 0.3 - progress * 0.25);
+    
+    // Metalness increases with progress (becomes more valuable/golden)
+    const metalness = 0.3 + progress * 0.6;
+    
+    // Clearcoat increases for more polished look
+    const clearcoat = 0.2 + progress * 0.8;
+    
+    return { 
+      color: lerpedColor, 
+      emissiveIntensity, 
+      roughness, 
+      metalness, 
+      clearcoat 
+    };
+  }, [progress, intensity, time]);
+  
   return (
     <meshPhysicalMaterial
-      map={symbolTexture}
+      map={baseTexture}
+      color={dynamicProps.color}
       emissive="#FFD700"
-      emissiveMap={symbolTexture}
-      emissiveIntensity={emissiveIntensity}
-      roughness={0.2 - (progress * 0.15)} // Gets smoother
-      metalness={0.2 + (progress * 0.7)} // Gets more metallic
-      envMapIntensity={2.0 + progress}
-      clearcoat={0.8 + (progress * 0.2)}
-      clearcoatRoughness={0.1 * (1 - progress)} // Gets clearer
-      transmission={progress * 0.3} // Becomes more translucent
-      ior={1.5 + (progress * 0.5)} // Increases refraction
+      emissiveIntensity={dynamicProps.emissiveIntensity + Math.sin(time * 4) * 0.1}
+      emissiveMap={emissiveTexture}
+      roughness={dynamicProps.roughness}
+      metalness={dynamicProps.metalness}
+      envMapIntensity={1.5 + progress}
+      clearcoat={dynamicProps.clearcoat}
+      clearcoatRoughness={0.2}
+      transparent={true}
+      opacity={0.8 + progress * 0.2}
       {...props}
     />
   );
@@ -320,43 +471,71 @@ export function KnowledgeTransformationMaterial({
 
 // Enhanced crown/queen material for final transformation
 export function QueenCrownMaterial({ 
-  glowIntensity = 1.0, 
-  knowledgePower = 1.0, // How much knowledge power is being channeled 
+  glowIntensity = 1.0,
+  knowledgePower = 1.0,
+  map,
+  emissiveMap,
   ...props 
-}) {
-  const crownTexture = useMemo(() => {
-    return createAdinkraTexture('adinkrahene', '#FFFFFF', '#D4AF37', 4096); // Higher resolution
-  }, []);
+}: QueenCrownMaterialProps) {
+  // Create crown texture with Adinkra symbols of leadership and wisdom
+  const baseTexture = useMemo(() => {
+    if (map) return map;
+    return createAdinkraTexture('adinkrahene', '#FFD700', '#8B4513');
+  }, [map]);
   
-  // Subtle animation of emissive properties
-  const [pulsePhase, setPulsePhase] = useState(0);
+  const emissiveTexture = useMemo(() => {
+    if (emissiveMap) return emissiveMap;
+    return baseTexture;
+  }, [baseTexture, emissiveMap]);
   
-  useFrame((_, delta) => {
-    setPulsePhase((prev) => (prev + delta * 0.5) % (Math.PI * 2));
+  // Animation state for dynamic effects
+  const [time, setTime] = useState(0);
+  useFrame((state) => {
+    setTime(state.clock.getElapsedTime());
   });
   
-  // Calculate pulsing emission
-  const emission = useMemo(() => {
-    const baseIntensity = 1.0 + knowledgePower;
-    // Subtle pulsing effect
-    const pulse = 0.2 * Math.sin(pulsePhase) * knowledgePower;
-    return baseIntensity + pulse;
-  }, [pulsePhase, knowledgePower]);
-
+  // Dynamic glow with subtle pulsing
+  const currentGlowIntensity = useMemo(() => {
+    const baseGlow = glowIntensity * knowledgePower;
+    const pulseFactor = Math.sin(time * 2) * 0.15 + 1;
+    return baseGlow * pulseFactor;
+  }, [time, glowIntensity, knowledgePower]);
+  
   return (
     <meshPhysicalMaterial
-      color="#D4AF37" // Royal gold
-      map={crownTexture}
+      map={baseTexture}
+      color="#FFD700"
       emissive="#FFD700"
-      emissiveMap={crownTexture}
-      emissiveIntensity={emission * glowIntensity}
-      roughness={0.05}
+      emissiveIntensity={currentGlowIntensity}
+      emissiveMap={emissiveTexture}
+      roughness={0.15}
       metalness={0.9}
-      envMapIntensity={3.0}
-      clearcoat={1.0}
-      clearcoatRoughness={0.03}
-      ior={2.0}
+      envMapIntensity={2.0 * knowledgePower}
+      clearcoat={0.9}
+      clearcoatRoughness={0.1}
+      reflectivity={0.9}
+      ior={1.8}
+      transmission={0.1}
+      transparent={true}
+      opacity={0.95}
       {...props}
     />
   );
-} 
+}
+
+// Afrocentric material with cultural patterns and optimized rendering
+export function AfrocentricMaterial({ 
+  color = '#8B4513',
+  roughness = 0.8,
+  envMapIntensity = 1.2,
+  ...props 
+}: AfrocentricMaterialProps) {
+  return (
+    <meshPhysicalMaterial
+      color={color}
+      roughness={roughness}
+      envMapIntensity={envMapIntensity}
+      {...props}
+    />
+  );
+}

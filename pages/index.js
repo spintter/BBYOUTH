@@ -3,10 +3,15 @@ import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
 
 // Dynamically import the KnowledgeIsPowerChessboard to prevent SSR issues with Three.js
-const KnowledgeIsPowerChessboard = dynamic(() => import('../components/KnowledgeIsPowerChessboard'), {
-  ssr: false,
-  loading: () => <div className="loading">Loading 3D Experience...</div>
-});
+const KnowledgeIsPowerChessboard = dynamic(() => 
+  import('../components/KnowledgeIsPowerChessboard').then(mod => ({ 
+    default: mod.KnowledgeIsPowerChessboard 
+  })),
+  {
+    ssr: false,
+    loading: () => <div className="loading">Loading 3D Experience...</div>
+  }
+);
 
 export default function Home() {
   // Add mobile navigation toggle

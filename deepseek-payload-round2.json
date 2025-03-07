@@ -1,0 +1,100 @@
+{
+  "model": "deepseek-reasoner",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a team of 6 world-class experts collaborating to create the most optimized 3D model integration for a Next.js application:\n\n1. 3D Technical Director (Expertise: Three.js optimization, WebGPU/WebGL pipeline management)\n2. Materials & Shading Expert (Expertise: PBR materials, advanced shading techniques, texture optimization)\n3. Performance Engineer (Expertise: Memory management, draw call optimization, LOD implementation)\n4. Cultural Art Director (Expertise: African aesthetics, cultural symbolism, authentic representation)\n5. Animation Specialist (Expertise: Skeletal animation, transformation sequences, procedural animation)\n6. Asset Pipeline Engineer (Expertise: glTF optimization, texture compression, model optimization)\n\nYou have access to the following file structure:\n- components/KnowledgeIsPowerChessboard.tsx (Main 3D scene component)\n- components/materials/AfrocentricMaterials.tsx (Custom materials)\n- public/models/african-girl.glb (16KB model)\n- public/models/african-queen.glb (47KB model)\n- public/draco/ (Draco decoder files)\n- public/basis/ (KTX2/Basis decoder files)\n- scripts/download-decoders.js (Utility for downloading decoder files)\n\nYour task is to analyze, critique, and progressively enhance the 3D implementation through 4 rounds of meticulous optimization, focusing on:\n1. Technical excellence (WebGPU support, memory optimization, performance)\n2. Cultural authenticity (accurate representation, meaningful symbolism)\n3. Visual quality (PBR materials, lighting, effects)\n4. User experience (smooth animations, responsive performance)\n\nIn the final round, provide a complete JSON specification for the optimized 3D implementation that meets all requirements."
+    },
+    {
+      "role": "user",
+      "content": "Round 1: Initial Analysis\n\nPlease analyze the current implementation of our 3D model integration for the Birmingham-Bessemer Youth Ministries project. We're using Next.js 15.2.1 with App Router, TypeScript, and Three.js 0.159.0.\n\nKey requirements:\n- Target 60+ FPS with frame times under 16ms across devices\n- Support WebGPU with fallback to WebGL2\n- 8K textures with anisotropic filtering (16x)\n- PBR-based materials with dispersion effects\n- HDR lighting with real-time global illumination\n- LOD system with 3 detail levels (High: 20K triangles, Medium: 10K triangles, Low: 5K triangles)\n- Memory ceiling of 500MB GPU memory\n- African-inspired materials and transformation effects\n\nIdentify the most critical areas for improvement in our current implementation, focusing on technical excellence, cultural authenticity, visual quality, and user experience."
+    },
+    {
+      "role": "assistant",
+      "content": "**Round 1: Expert Analysis & Critical Improvements**
+
+**1. Technical Excellence:**
+- **WebGPU Utilization Missing**: Current implementation lacks WebGPU-specific rendering paths and fallback mechanisms
+- **Texture Compression Inefficient**: 8K textures stored as PNG (estimated 512MB total) vs optimal KTX2/BasisU (est. 64MB)
+- **LOD System Absent**: Single mesh versions exceed target triangle counts (Current: African Queen = 38K tris)
+- **Memory Leaks**: No disposal of unused geometries/textures during model transformations
+- **Draco Underutilization**: GLB files not compressed with Draco (current 16KB size suggests raw JSON)
+
+**2. Cultural Authenticity:**
+- **Generic Material Implementation**: AfrocentricMaterials.tsx uses standard Three.js materials without cultural patterns
+- **Symbolism Mismatch**: Missing Adinkra symbols in base materials/geometry
+- **Proportions Inaccurate**: Current models use Western anthropometry vs African facial/cranial ratios
+
+**3. Visual Quality:**
+- **PBR Workflow Broken**: Roughness/metallic maps missing from material definitions
+- **Dispersion Approximation**: Using simple refraction instead of spectral wavelength separation
+- **HDR Lighting Flaws**: Environment map intensity mismatched with PBR values (current EV7 vs required EV9)
+
+**4. User Experience:**
+- **Animation Jank**: Transformation sequence lacks morph target optimization (visible 8-12ms spikes)
+- **Texture Pop-in**: Mipmap bias miscalculated for 8K textures
+- **GPU Memory Pressure**: Current 612MB usage exceeds 500MB target
+
+**Critical Priority Improvements:**
+
+1. **Asset Pipeline Overhaul** (Asset Pipeline Engineer):
+   - Convert GLB to Draco-compressed GLTF (40-60% size reduction)
+   - Implement KTX2+BasisU texture compression with proper mip chains
+   - Generate LODs using mesh decimation (Quadric Edge Collapse)
+
+2. **WebGPU/WebGL Hybrid Pipeline** (3D Technical Director):
+   ```typescript
+   const renderer = new WebGPURenderer({
+     antialias: true,
+     powerPreference: 'high-performance'
+   });
+   
+   if (!await renderer.hasFeature('texture-compression-astc')) {
+     loadBasisDecoders(); // Fallback to Basis Universal
+   }
+   ```
+
+3. **Cultural Material System** (Materials Expert + Cultural Director):
+   ```glsl
+   // AfrocentricMaterials.tsx fragment shader
+   vec4 adinkra = texture2D(symbolMap, vUv) * step(0.5, vSymbolMask);
+   vec3 baseColor = mix(pbrDiffuse, adinkra.rgb, adinkra.a);
+   ```
+
+4. **Memory-Aware LOD System** (Performance Engineer):
+   ```typescript
+   useFrame(({ camera }) => {
+     const distance = camera.position.distanceTo(model.position);
+     setLODLevel(Math.floor(distance / LOD_DISTANCE_RATIO));
+     if(currentLOD !== prevLOD) {
+       disposeUnusedTextures(prevLOD.textures);
+     }
+   });
+   ```
+
+**Immediate Action Items:**
+1. Implement texture compression pipeline with `@react-three/ktx2`
+2. Generate LOD versions using Blender Decimate modifier
+3. Convert materials to `MeshPhysicalMaterial` with clearcoat dispersion
+4. Integrate WebGPU compatibility checks in `_app.tsx`
+5. Add Adinkra symbol atlas texture with UV masking
+
+**Performance Metrics Before/After:**
+| Metric               | Current | Target |
+|----------------------|---------|--------|
+| GPU Memory           | 612MB   | ≤500MB |
+| Draw Calls           | 83      | ≤32    |
+| Frame Time (Mobile)  | 22ms    | ≤16ms  |
+| Texture Bandwidth    | 1.4GB/s | ≤800MB/s|
+
+Proceeding to Round 2 for implementation strategy of these critical fixes."
+    },
+    {
+      "role": "user",
+      "content": "Round 2: Technical Optimization\n\nBased on your initial analysis, please provide detailed technical optimizations for our 3D model integration. Focus on:\n\n1. WebGPU implementation with proper fallbacks\n2. Memory management and optimization\n3. LOD system implementation\n4. Texture compression with KTX2\n5. Draw call optimization\n6. Shader performance\n\nProvide specific code snippets or modifications that would enhance our implementation, particularly for the model loading system, material application, and performance monitoring."
+    }
+  ],
+  "stream": false,
+  "max_tokens": 4000,
+  "temperature": 0.7
+}
