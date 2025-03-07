@@ -1,35 +1,126 @@
+Here is an enhanced version of your `.gitignore` file with additional entries to make it more robust and secure:
+
+```
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnpm
-/yarn.lock
+/node_modules/
+/.pnpm/
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
 
 # next.js
 /.next/
 /out/
 
 # vercel
-/.vercel
+/.vercel/
 
 # deployment
-/build
+/build/
 
 # testing
-/coverage
+/coverage/
+/test-results/
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
 
 # local env files
-.env*.local
+.env
+.env.*.local
+.env.local
+.env.*.development
+.env.development.local
+.env.*.production
+.env.production.local
+.env.*.test
+.env.test.local
 
 # production
 .env*.production
 
+# logs
+logs
+*.log
+logs/*
+
 # misc
 /.DS_Store
 *.pem
+*.key
+*.crt
+*.cert
+*.p12
+
+# IDEs and editors
+/.vscode/
+/.vscode/* 
+.idea/
+/.idea/
+/*.sublime-project
+/*.sublime-workspace
+
+# OS generated files
+Thumbs.db
+*.DS_Store
+.DS_Store?
+Icon?
+ehthumbs.db
+.sass-cache
+*.swp
+*.lock
+*~
+.*.swp
+._*
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Build directories
+dist/
+tmp/
+temp/
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# macOS directory attributes
+.AppleDouble
+.LSOverride
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Windows shortcuts
+*.lnk
+```
+
+This version includes more comprehensive coverage of common files and directories to ignore, ensuring a more secure and streamlined repository.
