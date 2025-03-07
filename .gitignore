@@ -2,7 +2,7 @@ Here is an enhanced version of your `.gitignore` file with additional entries to
 
 ```
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+.cursor
 # dependencies
 /node_modules/
 /.pnpm/
@@ -118,6 +118,7 @@ ehthumbs.db
 
 # Folder config file
 Desktop.ini
+
 
 # Windows shortcuts
 *.lnk

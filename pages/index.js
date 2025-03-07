@@ -2,8 +2,8 @@ import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
 
-// Dynamically import the HeroComponent to prevent SSR issues with Three.js
-const HeroComponent = dynamic(() => import('../components/HeroComponent'), {
+// Dynamically import the KnowledgeIsPowerChessboard to prevent SSR issues with Three.js
+const KnowledgeIsPowerChessboard = dynamic(() => import('../components/KnowledgeIsPowerChessboard'), {
   ssr: false,
   loading: () => <div className="loading">Loading 3D Experience...</div>
 });
@@ -28,6 +28,14 @@ export default function Home() {
       }
     };
   }, []);
+
+  // Handle explore button click
+  const handleExplore = () => {
+    const humanitiesSection = document.getElementById('humanities');
+    if (humanitiesSection) {
+      humanitiesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div>
@@ -61,9 +69,14 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Hero Section with React Three Fiber */}
+        {/* Hero Section with Knowledge is Power Chessboard */}
         <section className="hero" id="home">
-          <HeroComponent />
+          <KnowledgeIsPowerChessboard 
+            title="Knowledge is Power"
+            subtitle="From Potential to Wisdom"
+            ctaText="Explore Our Programs"
+            onExplore={handleExplore}
+          />
         </section>
 
         {/* About Section */}

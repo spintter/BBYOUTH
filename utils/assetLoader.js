@@ -1,10 +1,21 @@
 import { TextureLoader, RepeatWrapping, LinearSRGBColorSpace } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
-// Asset manifest for the church website
+// Enhanced asset manifest
 export const ASSET_MANIFEST = {
   models: {
-    // panther entry removed to resolve 404 error
+    africanGirl: {
+      path: '/models/african-girl.glb',
+      preload: true,
+      optimizations: {
+        draco: true,
+        meshopt: true,
+        textureCompression: 'ktx2'
+      }
+    }
   },
   textures: {
     wood: {
@@ -21,6 +32,26 @@ export const ASSET_MANIFEST = {
   environment: {
     church: '/hdr/wakanda.hdr'
   }
+};
+
+// Setup optimized loaders
+const setupLoaders = () => {
+  const dracoLoader = new DRACOLoader();
+  dracoLoader.setDecoderPath('/draco/');
+  
+  const ktx2Loader = new KTX2Loader();
+  ktx2Loader.setTranscoderPath('/basis/');
+  
+  const gltfLoader = new GLTFLoader();
+  gltfLoader.setDRACOLoader(dracoLoader);
+  gltfLoader.setKTX2Loader(ktx2Loader);
+  gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+  
+  return {
+    gltfLoader,
+    dracoLoader,
+    ktx2Loader
+  };
 };
 
 // Texture loader with AbortController support
@@ -52,10 +83,37 @@ export const loadTextures = async (urls, options = {}) => {
   }
 };
 
-// Model loader with progress tracking
-export const loadModel = async (url, onProgress = () => {}) => {
-  const loader = new GLTFLoader();
-  return loader.loadAsync(url, onProgress);
+// Model loader with optimizations
+export const loadModel = async (url, options = {}) => {
+  const { 
+    signal, 
+    onProgress = () => {}, 
+    optimizations = {} 
+  } = options;
+  
+  if (signal?.aborted) {
+    return Promise.reject(new DOMException('Aborted', 'AbortError'));
+  }
+  
+  const loaders = setupLoaders();
+  
+  try {
+    const model = await loaders.gltfLoader.loadAsync(url, onProgress);
+    
+    // Apply post-load optimizations
+    if (optimizations.mergeGeometries) {
+      // Merge geometries to reduce draw calls
+      // Implementation depends on your needs
+    }
+    
+    return model;
+  } catch (err) {
+    console.error(`Model Load Error:`, err);
+    throw err;
+  } finally {
+    loaders.dracoLoader.dispose();
+    loaders.ktx2Loader.dispose();
+  }
 };
 
 // Preload assets based on manifest
@@ -99,7 +157,7 @@ export const preloadAssets = async (manifest = ASSET_MANIFEST, onProgress = () =
         modelPromises.push(
           (async () => {
             try {
-              const result = await loadModel(model.path, updateProgress);
+              const result = await loadModel(model.path, { onProgress: updateProgress });
               assets.models[key] = result;
             } catch (err) {
               console.error(`Failed to load model: ${key}`, err);
