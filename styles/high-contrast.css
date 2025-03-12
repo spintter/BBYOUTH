@@ -1,0 +1,38 @@
+/* High contrast mode styles for accessibility */
+body.high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast .bg-black {
+  background-color: #000 !important;
+}
+
+.high-contrast .text-white {
+  color: #fff !important;
+}
+
+.high-contrast .bg-orange-500 {
+  background-color: #ff9500 !important;
+}
+
+.high-contrast .bg-gray-800 {
+  background-color: #333 !important;
+}
+
+.high-contrast .border-yellow-500 {
+  border-color: #ffeb3b !important;
+  border-width: 3px !important;
+}
+
+.high-contrast .hero-container {
+  outline: 3px solid #ffeb3b !important;
+}
+
+.high-contrast button,
+.high-contrast a.button {
+  background-color: #ff9500 !important;
+  color: #000 !important;
+  border: 2px solid #fff !important;
+  font-weight: bold !important;
+}

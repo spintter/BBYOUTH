@@ -19,16 +19,19 @@
     "@gltf-transform/extensions": "^3.10.0",
     "@gltf-transform/functions": "^3.10.0",
     "@gsap/react": "^2.0.2",
-    "@react-three/postprocessing": "^2.7.1",
+    "@headlessui/react": "^2.2.0",
+    "@react-three/postprocessing": "^2.19.1",
     "canvas": "^2.11.2",
     "draco3d": "^1.5.7",
     "filereader": "^0.10.3",
+    "framer-motion": "^12.5.0",
     "gltf-pipeline": "^4.1.0",
+    "gltf-validator": "^2.0.0-dev.3.10",
     "gsap": "^3.12.7",
     "ktx2-encoder": "^0.1.1",
     "next": "^15.2.1",
     "node-fetch": "^3.3.2",
-    "postprocessing": "^6.33.4",
+    "postprocessing": "^6.37.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^5.0.0",
@@ -44,11 +47,19 @@
     "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
     "@types/three": "^0.159.0",
-    "autoprefixer": "^10.4.14",
+    "autoprefixer": "^10.4.21",
     "gltfjsx": "^6.5.3",
-    "postcss": "^8.4.14",
-    "tailwindcss": "^3.3.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spintter/BBYOUTH.git"
+  },
+  "bugs": {
+    "url": "https://github.com/spintter/BBYOUTH/issues"
+  },
+  "homepage": "https://github.com/spintter/BBYOUTH#readme"
 }

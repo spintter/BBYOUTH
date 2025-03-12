@@ -1,0 +1,1581 @@
+Consolidated 3D Assets - Tue Mar 11 21:27:42 CDT 2025
+Generated on: Tue Mar 11 21:27:42 CDT 2025
+----------------------------------------
+
+
+--- File: components/materials/AfrocentricMaterials.tsx ---
+Size: 1327 bytes
+Last Modified: Mar 10 23:46:37 2025
+Content:
+import * as THREE from 'three';
+
+/**
+ * African skin material with realistic properties
+ * @param color Base color for the skin
+ * @param roughness Material roughness (0-1)
+ * @param metalness Material metalness (0-1)
+ * @returns THREE.MeshStandardMaterial
+ */
+export function AfricanSkinMaterial(
+  color: string = '#8B4513', 
+  roughness: number = 0.7, 
+  metalness: number = 0.1
+): THREE.MeshStandardMaterial {
+  return new THREE.MeshStandardMaterial({
+    color: new THREE.Color(color),
+    roughness,
+    metalness,
+    envMapIntensity: 0.5,
+    flatShading: false,
+  });
+}
+
+/**
+ * Kente cloth material with vibrant colors and patterns
+ * @param baseColor Primary color for the cloth
+ * @param accentColor Secondary color for patterns
+ * @param roughness Material roughness (0-1)
+ * @returns THREE.MeshStandardMaterial
+ */
+export function KenteClothMaterial(
+  baseColor: string = '#FFD700', 
+  accentColor: string = '#800080',
+  roughness: number = 0.8
+): THREE.MeshStandardMaterial {
+  // In a real implementation, this would use textures for the kente patterns
+  // For now, we'll use a simple material with the base color
+  return new THREE.MeshStandardMaterial({
+    color: new THREE.Color(baseColor),
+    roughness,
+    metalness: 0.1,
+    emissive: new THREE.Color(accentColor),
+    emissiveIntensity: 0.2,
+  });
+}
+
+
+--- File: components/models/AfricanChessPieces.tsx ---
+Size: 5032 bytes
+Last Modified: Mar 10 23:46:37 2025
+Content:
+'use client';
+
+import React, { useRef } from 'react';
+import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
+import { AfricanSkinMaterial, KenteClothMaterial } from '../materials/AfrocentricMaterials';
+
+interface AfricanPawnProps {
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+  scale?: number;
+  knowledgeLevel?: number;
+}
+
+export function AfricanPawn({ 
+  position = [0, 0, 0], 
+  rotation = [0, 0, 0], 
+  scale = 1,
+  knowledgeLevel = 0 
+}: AfricanPawnProps) {
+  const groupRef = useRef<THREE.Group>(null);
+
+  return (
+    <group 
+      ref={groupRef}
+      position={new THREE.Vector3(...position)}
+      rotation={new THREE.Euler(...rotation)}
+      scale={scale}
+    >
+      {/* Head - African features */}
+      <mesh position={[0, 1.6, 0]}>
+        <sphereGeometry args={[0.3, 32, 32]} />
+        <primitive object={AfricanSkinMaterial("#8B4513")} attach="material" />
+      </mesh>
+
+      {/* Hair - Afro style */}
+      <mesh position={[0, 1.8, 0]}>
+        <sphereGeometry args={[0.35, 32, 32]} />
+        <meshStandardMaterial 
+          color="#1a1a1a"
+          roughness={1}
+          metalness={0}
+        />
+      </mesh>
+
+      {/* Body - Traditional dress */}
+      <mesh position={[0, 0.8, 0]}>
+        <cylinderGeometry args={[0.25, 0.4, 1.2, 32]} />
+        <primitive object={KenteClothMaterial("#800020")} attach="material" />
+      </mesh>
+
+      {/* Base */}
+      <mesh position={[0, 0.1, 0]}>
+        <cylinderGeometry args={[0.4, 0.4, 0.2, 32]} />
+        <meshStandardMaterial 
+          color="#2a1810"
+          roughness={0.8}
+          metalness={0.2}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+interface AfricanQueenProps {
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+  scale?: number;
+  knowledgeLevel?: number;
+}
+
+export function AfricanQueen({ 
+  position = [0, 0, 0], 
+  rotation = [0, 0, 0], 
+  scale = 1,
+  knowledgeLevel = 1 
+}: AfricanQueenProps) {
+  const groupRef = useRef<THREE.Group>(null);
+
+  return (
+    <group 
+      ref={groupRef}
+      position={new THREE.Vector3(...position)}
+      rotation={new THREE.Euler(...rotation)}
+      scale={scale}
+    >
+      {/* Crown */}
+      <group position={[0, 2.2, 0]}>
+        {/* Crown base */}
+        <mesh>
+          <cylinderGeometry args={[0.4, 0.45, 0.2, 32]} />
+          <meshStandardMaterial 
+            color="#FFD700"
+            metalness={0.8}
+            roughness={0.2}
+            emissive="#FFD700"
+            emissiveIntensity={0.5}
+          />
+        </mesh>
+
+        {/* Crown points */}
+        {Array.from({ length: 5 }).map((_, i) => (
+          <mesh 
+            key={i}
+            position={[
+              Math.cos(i * Math.PI * 2 / 5) * 0.3,
+              0.2,
+              Math.sin(i * Math.PI * 2 / 5) * 0.3
+            ]}
+          >
+            <coneGeometry args={[0.08, 0.3, 8]} />
+            <meshStandardMaterial 
+              color="#FFD700"
+              metalness={0.8}
+              roughness={0.2}
+              emissive="#FFD700"
+              emissiveIntensity={0.5}
+            />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Head - African features */}
+      <mesh position={[0, 1.8, 0]}>
+        <sphereGeometry args={[0.35, 32, 32]} />
+        <primitive object={AfricanSkinMaterial("#8B4513")} attach="material" />
+      </mesh>
+
+      {/* Hair - Elaborate African style */}
+      <group position={[0, 2, 0]}>
+        {/* Base hair */}
+        <mesh>
+          <sphereGeometry args={[0.4, 32, 32]} />
+          <meshStandardMaterial 
+            color="#1a1a1a"
+            roughness={1}
+            metalness={0}
+          />
+        </mesh>
+
+        {/* Decorative braids */}
+        {Array.from({ length: 8 }).map((_, i) => (
+          <mesh 
+            key={i}
+            position={[
+              Math.cos(i * Math.PI / 4) * 0.3,
+              -0.2,
+              Math.sin(i * Math.PI / 4) * 0.3
+            ]}
+          >
+            <torusGeometry args={[0.1, 0.03, 8, 16]} />
+            <meshStandardMaterial 
+              color="#1a1a1a"
+              roughness={1}
+              metalness={0}
+            />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Body - Royal dress */}
+      <group position={[0, 0.9, 0]}>
+        {/* Upper body */}
+        <mesh position={[0, 0.4, 0]}>
+          <cylinderGeometry args={[0.35, 0.45, 0.8, 32]} />
+          <primitive object={KenteClothMaterial("#800020")} attach="material" />
+        </mesh>
+
+        {/* Lower body - wider dress */}
+        <mesh position={[0, -0.3, 0]}>
+          <cylinderGeometry args={[0.45, 0.6, 0.8, 32]} />
+          <primitive object={KenteClothMaterial("#800020")} attach="material" />
+        </mesh>
+      </group>
+
+      {/* Base */}
+      <mesh position={[0, 0.15, 0]}>
+        <cylinderGeometry args={[0.6, 0.6, 0.3, 32]} />
+        <meshStandardMaterial 
+          color="#2a1810"
+          roughness={0.8}
+          metalness={0.2}
+        />
+      </mesh>
+    </group>
+  );
+} 
+
+--- File: components/KnowledgeIsPowerHero.tsx ---
+Size: 5150 bytes
+Last Modified: Mar 11 17:10:37 2025
+Content:
+'use client';
+
+import React, { Suspense, useState, useEffect } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Preload, useGLTF, Text } from '@react-three/drei';
+import { EffectComposer, Bloom, ToneMapping } from '@react-three/postprocessing';
+import { useFPS } from '../context/FPSContext';
+
+interface ChessSceneProps {
+  qualityLevel: 'low' | 'medium' | 'high';
+}
+
+function ChessScene({ qualityLevel }: ChessSceneProps) {
+  const { scene: pawn } = useGLTF('/models/african-girl.glb');
+  const { scene: queen } = useGLTF('/models/african-queen.glb');
+  const { transformationProgress, transformationActive, startTransformation } = useFPS();
+
+  useEffect(() => {
+    if (!transformationActive) {
+      startTransformation();
+    }
+  }, [transformationActive, startTransformation]);
+
+  const squareSize = 1;
+  const boardSize = 8 * squareSize;
+  const boardOffsetX = -(boardSize / 2) + (squareSize / 2);
+  const boardOffsetZ = -(boardSize / 2) + (squareSize / 2);
+  
+  return (
+    <>
+      <group position={[0, -1, 0]}>
+        {/* Chessboard Squares */}
+      {Array.from({ length: 8 }).map((_, row) =>
+        Array.from({ length: 8 }).map((_, col) => {
+          const isBlack = (row + col) % 2 === 1;
+            const xPos = boardOffsetX + col * squareSize;
+            const zPos = boardOffsetZ + row * squareSize;
+          return (
+            <mesh
+              key={`${row}-${col}`}
+                position={[xPos, 0, zPos]}
+          receiveShadow
+                castShadow
+            >
+                <boxGeometry args={[squareSize, 0.2, squareSize]} />
+              <meshStandardMaterial
+                  color={isBlack ? '#4A2C2A' : '#F5E6CC'}
+                  roughness={0.5}
+                  metalness={0.1}
+              />
+            </mesh>
+          );
+        })
+      )}
+        {/* Pawn-to-Queen Transformation */}
+        <group position={[0, 0.2, 0]} scale={[1 - transformationProgress, 1, 1]}>
+          <primitive object={pawn} />
+        </group>
+        <group position={[0, 0.2, 0]} scale={[transformationProgress, 1, 1]}>
+          <primitive object={queen} />
+        </group>
+        {/* Sankofa Symbol */}
+        <mesh position={[0, 2, 0]}>
+          <torusGeometry args={[0.5, 0.1, 16, 100]} />
+          <meshStandardMaterial color="#FFD700" />
+      </mesh>
+      </group>
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[5, 5, 5]} intensity={1} castShadow />
+      <OrbitControls enablePan={false} minDistance={5} maxDistance={10} />
+    </>
+  );
+}
+
+interface KnowledgeIsPowerHeroProps {
+  title: string;
+  subtitle: string;
+  ctaText: string;
+  onExplore?: () => void;
+}
+
+export default function KnowledgeIsPowerHero({ title, subtitle, ctaText, onExplore }: KnowledgeIsPowerHeroProps) {
+  const { qualityLevel } = useFPS();
+  const [loaded, setLoaded] = useState(false);
+  const [webGLSupported, setWebGLSupported] = useState(true);
+
+  useEffect(() => {
+      const canvas = document.createElement('canvas');
+    const context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!context) {
+      setWebGLSupported(false);
+    }
+      setLoaded(true);
+  }, []);
+  
+  if (!webGLSupported) {
+  return (
+          <div className="absolute inset-0 flex items-center justify-center bg-black text-white p-6">
+            <div className="max-w-md text-center">
+              <h2 className="text-2xl font-bold mb-4">3D Experience Not Available</h2>
+              <p>Your browser doesn't support WebGL, which is required for the 3D experience. Please try a different browser or device.</p>
+            </div>
+          </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full h-screen overflow-hidden hero-container">
+      {!loaded && <div className="absolute inset-0 flex items-center justify-center bg-black text-white">Loading...</div>}
+        <Canvas
+        shadows={qualityLevel !== 'low'}
+        dpr={[1, qualityLevel === 'high' ? 2 : 1.5]}
+          gl={{
+          antialias: qualityLevel !== 'low',
+            powerPreference: 'high-performance',
+            stencil: false,
+            depth: true,
+            alpha: false,
+          preserveDrawingBuffer: true,
+          }}
+        style={{ touchAction: 'none' }}
+        >
+            <Suspense fallback={null}>
+          <ChessScene qualityLevel={qualityLevel} />
+                  <EffectComposer>
+            <Bloom intensity={0.5} luminanceThreshold={0.8} luminanceSmoothing={0.9} />
+                    <ToneMapping />
+                  </EffectComposer>
+                <Preload all />
+            </Suspense>
+        </Canvas>
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+        <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">{title}</h1>
+        <p className="text-xl md:text-2xl text-gray-300 mb-8">{subtitle}</p>
+        <button
+          className="pointer-events-auto px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+          onClick={onExplore}
+        >
+          {ctaText}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+-
+
+
+--- File: public/textures/checkerboard-texture.svg ---
+Size: 2532 bytes
+Last Modified: Feb 28 15:08:20 2025
+Content:
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
+  <defs>
+    <!-- Enhanced Gradients -->
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a192f" />
+      <stop offset="100%" stop-color="#1a3650" />
+    </linearGradient>
+    
+    <radialGradient id="spotlight-gradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4d9de080" />
+      <stop offset="100%" stop-color="#1a365000" />
+    </radialGradient>
+
+    <!-- Enhanced Noise Filter -->
+    <filter id="noise" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" />
+      <feColorMatrix type="saturate" values="0" />
+      <feBlend in="SourceGraphic" mode="multiply" />
+    </filter>
+
+    <!-- Dynamic Glow Effect -->
+    <filter id="dynamic-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Animated Grid Pattern -->
+    <pattern id="grid-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M80 0H0V80" fill="none" stroke="#4d9de033" stroke-width="1"/>
+      <animateTransform attributeName="patternTransform" type="translate" values="0 0;80 80" dur="20s" repeatCount="indefinite"/>
+    </pattern>
+    
+    <!-- Checker Pattern -->
+    <pattern id="checker-pattern" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="50" height="50" fill="#2a2d3a" />
+      <rect x="50" width="50" height="50" fill="#e2d5c4" />
+      <rect y="50" width="50" height="50" fill="#e2d5c4" />
+      <rect x="50" y="50" width="50" height="50" fill="#2a2d3a" />
+    </pattern>
+  </defs>
+
+  <!-- Animated Background -->
+  <rect width="1200" height="600" fill="url(#bg-gradient)">
+    <animate attributeName="opacity" values="0.9;1;0.9" dur="8s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Dynamic Grid Overlay -->
+  <rect width="1200" height="600" fill="url(#grid-pattern)" opacity="0.3"/>
+  
+  <!-- Checkerboard Pattern -->
+  <rect width="1200" height="600" fill="url(#checker-pattern)" opacity="0.8"/>
+  
+  <!-- Spotlight Effect -->
+  <circle cx="600" cy="300" r="300" fill="url(#spotlight-gradient)">
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="10s" repeatCount="indefinite"/>
+  </circle>
+</svg>
+
+
+
+
+--- File: scripts/optimize-assets.js ---
+Size: 7117 bytes
+Last Modified: Mar  7 16:24:10 2025
+Content:
+#!/usr/bin/env node
+
+/**
+ * Asset Optimization Script
+ * 
+ * This script optimizes 3D models and textures to reduce memory usage and improve performance.
+ * It performs the following optimizations:
+ * 
+ * 1. Compresses textures to KTX2 format
+ * 2. Generates mipmaps for textures
+ * 3. Resizes large textures to reasonable dimensions
+ * 4. Compresses 3D models with Draco compression
+ * 5. Generates LOD (Level of Detail) versions of models
+ * 6. Optimizes meshes by removing unnecessary data
+ * 
+ * Usage:
+ * npm run optimize-assets
+ */
+
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+const sharp = require('sharp');
+const glob = require('glob');
+const chalk = require('chalk');
+
+// Configuration
+const config = {
+  textureMaxSize: 2048, // Maximum texture size (2K)
+  textureFormats: ['.jpg', '.jpeg', '.png', '.webp'],
+  modelFormats: ['.glb', '.gltf'],
+  outputDir: 'public/optimized',
+  hdriDir: 'public/hdri',
+  modelsDir: 'public/models',
+  texturesDir: 'public/textures',
+  ktx2Quality: 'medium', // Options: low, medium, high
+  generateLODs: true,
+  lodLevels: [100, 50, 25], // Percentage of original vertices
+};
+
+// Create output directories if they don't exist
+function createDirectories() {
+  const dirs = [
+    config.outputDir,
+    path.join(config.outputDir, 'models'),
+    path.join(config.outputDir, 'textures'),
+    path.join(config.outputDir, 'hdri'),
+  ];
+  
+  dirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+      console.log(chalk.green(`Created directory: ${dir}`));
+    }
+  });
+}
+
+// Find all textures to optimize
+function findTextures() {
+  let textures = [];
+  
+  config.textureFormats.forEach(format => {
+    const textureFiles = glob.sync(`${config.texturesDir}/**/*${format}`);
+    textures = textures.concat(textureFiles);
+  });
+  
+  // Also include HDRI files
+  const hdriFiles = glob.sync(`${config.hdriDir}/**/*.hdr`);
+  textures = textures.concat(hdriFiles);
+  
+  return textures;
+}
+
+// Find all models to optimize
+function findModels() {
+  let models = [];
+  
+  config.modelFormats.forEach(format => {
+    const modelFiles = glob.sync(`${config.modelsDir}/**/*${format}`);
+    models = models.concat(modelFiles);
+  });
+  
+  return models;
+}
+
+// Optimize a texture
+async function optimizeTexture(texturePath) {
+  const filename = path.basename(texturePath);
+  const ext = path.extname(texturePath).toLowerCase();
+  const baseName = path.basename(texturePath, ext);
+  const relativePath = path.relative(
+    ext === '.hdr' ? config.hdriDir : config.texturesDir,
+    path.dirname(texturePath)
+  );
+  
+  const outputDir = path.join(
+    config.outputDir,
+    ext === '.hdr' ? 'hdri' : 'textures',
+    relativePath
+  );
+  
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+  
+  // Output paths
+  const ktx2Path = path.join(outputDir, `${baseName}.ktx2`);
+  const resizedPath = path.join(outputDir, filename);
+  
+  console.log(chalk.blue(`Optimizing texture: ${texturePath}`));
+  
+  try {
+    // For HDR files, use toktx directly
+    if (ext === '.hdr') {
+      // Convert HDR to KTX2
+      execSync(`toktx --genmipmap --assign_oetf linear --target_type RGBA --bcmp ${ktx2Path} ${texturePath}`);
+      console.log(chalk.green(`  ✓ Converted to KTX2: ${ktx2Path}`));
+      return;
+    }
+    
+    // For regular textures, resize first if needed
+    const metadata = await sharp(texturePath).metadata();
+    
+    if (metadata.width > config.textureMaxSize || metadata.height > config.textureMaxSize) {
+      // Resize the texture
+      await sharp(texturePath)
+        .resize(
+          metadata.width > metadata.height 
+            ? config.textureMaxSize 
+            : Math.round(metadata.width * (config.textureMaxSize / metadata.height)),
+          metadata.height > metadata.width 
+            ? config.textureMaxSize 
+            : Math.round(metadata.height * (config.textureMaxSize / metadata.width)),
+          { fit: 'inside' }
+        )
+        .toFile(resizedPath);
+      
+      console.log(chalk.green(`  ✓ Resized to ${config.textureMaxSize}px: ${resizedPath}`));
+      
+      // Convert to KTX2
+      execSync(`toktx --genmipmap --assign_oetf srgb --bcmp ${ktx2Path} ${resizedPath}`);
+    } else {
+      // Just copy the file and convert to KTX2
+      fs.copyFileSync(texturePath, resizedPath);
+      execSync(`toktx --genmipmap --assign_oetf srgb --bcmp ${ktx2Path} ${texturePath}`);
+    }
+    
+    console.log(chalk.green(`  ✓ Converted to KTX2: ${ktx2Path}`));
+  } catch (error) {
+    console.error(chalk.red(`  ✗ Error optimizing texture: ${error.message}`));
+  }
+}
+
+// Optimize a model
+async function optimizeModel(modelPath) {
+  const filename = path.basename(modelPath);
+  const ext = path.extname(modelPath).toLowerCase();
+  const baseName = path.basename(modelPath, ext);
+  const relativePath = path.relative(config.modelsDir, path.dirname(modelPath));
+  
+  const outputDir = path.join(config.outputDir, 'models', relativePath);
+  
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+  
+  // Output paths
+  const optimizedPath = path.join(outputDir, filename);
+  
+  console.log(chalk.blue(`Optimizing model: ${modelPath}`));
+  
+  try {
+    // Use gltf-transform to optimize the model
+    execSync(`gltf-transform optimize ${modelPath} ${optimizedPath} --draco.compressionLevel=7 --texture-compress ktx2 --texture-resize "1024x1024"`);
+    
+    console.log(chalk.green(`  ✓ Optimized model: ${optimizedPath}`));
+    
+    // Generate LOD versions if enabled
+    if (config.generateLODs) {
+      for (const level of config.lodLevels) {
+        const lodPath = path.join(outputDir, `${baseName}_lod${level}${ext}`);
+        
+        execSync(`gltf-transform simplify ${optimizedPath} ${lodPath} --ratio ${level / 100} --error 0.01`);
+        
+        console.log(chalk.green(`  ✓ Generated LOD (${level}%): ${lodPath}`));
+      }
+    }
+  } catch (error) {
+    console.error(chalk.red(`  ✗ Error optimizing model: ${error.message}`));
+  }
+}
+
+// Main function
+async function main() {
+  console.log(chalk.yellow('Starting asset optimization...'));
+  
+  // Create output directories
+  createDirectories();
+  
+  // Find assets to optimize
+  const textures = findTextures();
+  const models = findModels();
+  
+  console.log(chalk.yellow(`Found ${textures.length} textures and ${models.length} models to optimize.`));
+  
+  // Optimize textures
+  console.log(chalk.yellow('\nOptimizing textures...'));
+  for (const texture of textures) {
+    await optimizeTexture(texture);
+  }
+  
+  // Optimize models
+  console.log(chalk.yellow('\nOptimizing models...'));
+  for (const model of models) {
+    await optimizeModel(model);
+  }
+  
+  console.log(chalk.green('\nAsset optimization complete!'));
+  console.log(chalk.yellow(`Optimized assets are in: ${config.outputDir}`));
+  console.log(chalk.yellow('Remember to update your code to use the optimized assets.'));
+}
+
+// Run the script
+main().catch(error => {
+  console.error(chalk.red(`Error: ${error.message}`));
+  process.exit(1);
+}); 
+
+--- File: scripts/download-decoders.js ---
+Size: 2175 bytes
+Last Modified: Mar  7 15:25:37 2025
+Content:
+const fs = require('fs');
+const path = require('path');
+const https = require('https');
+
+// Create directories if they don't exist
+const directories = ['public/draco', 'public/basis'];
+directories.forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+    console.log(`Created directory: ${dir}`);
+  }
+});
+
+// Files to download
+const files = [
+  {
+    url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/draco_decoder.js',
+    dest: 'public/draco/draco_decoder.js'
+  },
+  {
+    url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/draco_decoder.wasm',
+    dest: 'public/draco/draco_decoder.wasm'
+  },
+  {
+    url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/draco_encoder.js',
+    dest: 'public/draco/draco_encoder.js'
+  },
+  {
+    url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/draco_encoder.wasm',
+    dest: 'public/draco/draco_encoder.wasm'
+  },
+  {
+    url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/basis/basis_transcoder.js',
+    dest: 'public/basis/basis_transcoder.js'
+  },
+  {
+    url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/basis/basis_transcoder.wasm',
+    dest: 'public/basis/basis_transcoder.wasm'
+  }
+];
+
+// Download function
+function downloadFile(url, dest) {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(dest);
+    https.get(url, response => {
+      response.pipe(file);
+      file.on('finish', () => {
+        file.close();
+        console.log(`Downloaded: ${dest}`);
+        resolve();
+      });
+    }).on('error', err => {
+      fs.unlink(dest, () => {}); // Delete the file if there's an error
+      console.error(`Error downloading ${url}: ${err.message}`);
+      reject(err);
+    });
+  });
+}
+
+// Download all files
+async function downloadAll() {
+  for (const file of files) {
+    try {
+      await downloadFile(file.url, file.dest);
+    } catch (error) {
+      console.error(`Failed to download ${file.url}`);
+    }
+  }
+  console.log('All downloads completed!');
+}
+
+downloadAll(); 
+
+--- File: scripts/generateChessPieces.ts ---
+Size: 7856 bytes
+Last Modified: Mar  7 10:06:09 2025
+Content:
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { createCanvas } from 'canvas';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Blob, FileReader } from 'vblob';
+import { promisify } from 'util';
+import { exec } from 'child_process';
+
+const execAsync = promisify(exec);
+
+console.log('Starting script...');
+
+// Patch global scope with minimal required functionality
+(global as any).window = global;
+(global as any).THREE = THREE;
+(global as any).Blob = Blob;
+(global as any).FileReader = FileReader;
+(global as any).document = {
+  createElement: (nodeName: string) => {
+    if (nodeName !== 'canvas') throw new Error(`Cannot create node ${nodeName}`);
+    return createCanvas(256, 256);
+  }
+};
+
+console.log('Global scope patched...');
+
+// Create the African Pawn model
+function createAfricanPawn(): THREE.Group {
+  console.log('Creating African Pawn...');
+  const pawn = new THREE.Group();
+
+  // Head - African features
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.3, 32, 32),
+    new THREE.MeshStandardMaterial({ 
+      color: '#8B4513',
+      roughness: 0.7,
+      metalness: 0.1
+    })
+  );
+  head.position.y = 1.6;
+  pawn.add(head);
+
+  // Hair - Afro style
+  const hair = new THREE.Mesh(
+    new THREE.SphereGeometry(0.35, 32, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#1a1a1a',
+      roughness: 1,
+      metalness: 0
+    })
+  );
+  hair.position.y = 1.8;
+  pawn.add(hair);
+
+  // Body - Traditional dress
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.25, 0.4, 1.2, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#800020',
+      roughness: 0.8,
+      metalness: 0.1
+    })
+  );
+  body.position.y = 0.8;
+  pawn.add(body);
+
+  // Base
+  const base = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.4, 0.4, 0.2, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#2a1810',
+      roughness: 0.8,
+      metalness: 0.2
+    })
+  );
+  base.position.y = 0.1;
+  pawn.add(base);
+
+  console.log('African Pawn created successfully');
+  return pawn;
+}
+
+// Create the African Queen model
+function createAfricanQueen(): THREE.Group {
+  console.log('Creating African Queen...');
+  const queen = new THREE.Group();
+
+  // Crown base
+  const crownBase = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.4, 0.45, 0.2, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#FFD700',
+      metalness: 0.8,
+      roughness: 0.2,
+      emissive: '#FFD700',
+      emissiveIntensity: 0.5
+    })
+  );
+  crownBase.position.y = 2.2;
+  queen.add(crownBase);
+
+  // Crown points
+  for (let i = 0; i < 5; i++) {
+    const point = new THREE.Mesh(
+      new THREE.ConeGeometry(0.08, 0.3, 8),
+      new THREE.MeshStandardMaterial({
+        color: '#FFD700',
+        metalness: 0.8,
+        roughness: 0.2,
+        emissive: '#FFD700',
+        emissiveIntensity: 0.5
+      })
+    );
+    point.position.set(
+      Math.cos(i * Math.PI * 2 / 5) * 0.3,
+      2.4,
+      Math.sin(i * Math.PI * 2 / 5) * 0.3
+    );
+    queen.add(point);
+  }
+
+  // Head
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.35, 32, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#8B4513',
+      roughness: 0.7,
+      metalness: 0.1
+    })
+  );
+  head.position.y = 1.8;
+  queen.add(head);
+
+  // Hair base
+  const hairBase = new THREE.Mesh(
+    new THREE.SphereGeometry(0.4, 32, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#1a1a1a',
+      roughness: 1,
+      metalness: 0
+    })
+  );
+  hairBase.position.y = 2.0;
+  queen.add(hairBase);
+
+  // Decorative braids
+  for (let i = 0; i < 8; i++) {
+    const braid = new THREE.Mesh(
+      new THREE.TorusGeometry(0.1, 0.03, 8, 16),
+      new THREE.MeshStandardMaterial({
+        color: '#1a1a1a',
+        roughness: 1,
+        metalness: 0
+      })
+    );
+    braid.position.set(
+      Math.cos(i * Math.PI / 4) * 0.3,
+      1.8,
+      Math.sin(i * Math.PI / 4) * 0.3
+    );
+    queen.add(braid);
+  }
+
+  // Upper body
+  const upperBody = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.35, 0.45, 0.8, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#800020',
+      roughness: 0.8,
+      metalness: 0.1
+    })
+  );
+  upperBody.position.y = 1.3;
+  queen.add(upperBody);
+
+  // Lower body
+  const lowerBody = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.45, 0.6, 0.8, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#800020',
+      roughness: 0.8,
+      metalness: 0.1
+    })
+  );
+  lowerBody.position.y = 0.6;
+  queen.add(lowerBody);
+
+  // Base
+  const base = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.6, 0.6, 0.3, 32),
+    new THREE.MeshStandardMaterial({
+      color: '#2a1810',
+      roughness: 0.8,
+      metalness: 0.2
+    })
+  );
+  base.position.y = 0.15;
+  queen.add(base);
+
+  console.log('African Queen created successfully');
+  return queen;
+}
+
+// Export to GLB function using a two-step process
+async function exportToGLB(
+  scene: THREE.Scene | THREE.Object3D,
+  outputPath: string
+): Promise<void> {
+  try {
+    console.log('Starting GLB export...');
+    console.log('Using GLTFExporter to convert to GLTF...');
+    
+    // First export to GLTF using Three.js exporter
+    const exporter = new GLTFExporter();
+    
+    const gltf = await new Promise((resolve, reject) => {
+      exporter.parse(
+        scene,
+        (result) => {
+          console.log('GLTFExporter parse successful');
+          resolve(result);
+        },
+        (error) => {
+          console.error('GLTFExporter parse failed:', error);
+          reject(error);
+        },
+        {
+          binary: false,
+          embedImages: true,
+          forceIndices: true,
+          includeCustomExtensions: true
+        }
+      );
+    });
+
+    // Save temporary GLTF file
+    const tempGltfPath = outputPath.replace('.glb', '.gltf');
+    const outputDir = path.dirname(outputPath);
+    
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    fs.writeFileSync(tempGltfPath, JSON.stringify(gltf, null, 2));
+    console.log(`Temporary GLTF saved to: ${tempGltfPath}`);
+
+    // Convert GLTF to GLB using gltf-pipeline CLI
+    console.log('Converting GLTF to GLB using gltf-pipeline...');
+    const command = `gltf-pipeline -i "${tempGltfPath}" -o "${outputPath}" -d`;
+    
+    const { stdout, stderr } = await execAsync(command);
+    if (stdout) console.log(stdout);
+    if (stderr) console.error(stderr);
+
+    // Clean up temporary GLTF file
+    fs.unlinkSync(tempGltfPath);
+    
+    console.log(`Successfully exported GLB to: ${outputPath}`);
+  } catch (error) {
+    console.error('Error exporting to GLB:', error);
+    throw error;
+  }
+}
+
+// Generate and export the models
+async function generateModels() {
+  try {
+    console.log('Starting model generation...');
+    
+    // Create scene for proper lighting
+    const scene = new THREE.Scene();
+    
+    // Add lights
+    const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
+    light1.position.set(5, 5, 5);
+    scene.add(light1);
+    
+    const light2 = new THREE.DirectionalLight(0xffffff, 0.6);
+    light2.position.set(-5, 3, -5);
+    scene.add(light2);
+
+    console.log('Scene and lighting set up');
+
+    // Create and export pawn
+    const pawn = createAfricanPawn();
+    scene.add(pawn);
+    await exportToGLB(scene, 'public/models/african-pawn.glb');
+    scene.remove(pawn);
+
+    // Create and export queen
+    const queen = createAfricanQueen();
+    scene.add(queen);
+    await exportToGLB(scene, 'public/models/african-queen.glb');
+    scene.remove(queen);
+
+    console.log('Successfully generated chess piece models!');
+  } catch (error) {
+    console.error('Error generating models:', error);
+    throw error;
+  }
+}
+
+// Run the generation
+console.log('Starting script execution...');
+generateModels().catch(error => {
+  console.error('Fatal error:', error);
+  process.exit(1);
+}); 
+
+--- File: scripts/exportGLB.ts ---
+Size: 3330 bytes
+Last Modified: Mar  7 09:50:27 2025
+Content:
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { createCanvas } from 'canvas';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as gltfPipeline from 'gltf-pipeline';
+
+// Minimal type declarations for browser globals
+declare global {
+  namespace NodeJS {
+    interface Global {
+      document: Partial<Document>;
+      window: Partial<Window>;
+      THREE: typeof THREE;
+    }
+  }
+}
+
+// Patch global scope with minimal required functionality
+(global as any).window = global;
+(global as any).THREE = THREE;
+(global as any).document = {
+  createElement: (nodeName: string) => {
+    if (nodeName !== 'canvas') throw new Error(`Cannot create node ${nodeName}`);
+    return createCanvas(256, 256);
+  }
+};
+
+interface ExportOptions {
+  binary?: boolean;
+  onlyVisible?: boolean;
+  maxTextureSize?: number;
+  animations?: THREE.AnimationClip[];
+  includeCustomExtensions?: boolean;
+  embedImages?: boolean;
+  dracoCompression?: boolean;
+  dracoOptions?: gltfPipeline.GltfToGlbOptions['dracoOptions'];
+}
+
+/**
+ * Exports a Three.js scene or object to GLB format
+ * @param input - Three.js Scene, Object3D, or Mesh to export
+ * @param outputPath - Path where the GLB file should be saved
+ * @param options - Export options
+ */
+export async function exportToGLB(
+  input: THREE.Object3D | THREE.Scene | THREE.Mesh,
+  outputPath: string,
+  options: ExportOptions = {}
+): Promise<void> {
+  try {
+    // First export to GLTF using Three.js exporter
+    const exporter = new GLTFExporter();
+    
+    const gltf = await new Promise((resolve, reject) => {
+      exporter.parse(
+        input,
+        (result) => resolve(result),
+        (error) => reject(error),
+        {
+          binary: false, // We'll convert to binary (GLB) in the next step
+          onlyVisible: options.onlyVisible ?? true,
+          maxTextureSize: options.maxTextureSize,
+          animations: options.animations,
+          includeCustomExtensions: options.includeCustomExtensions,
+          embedImages: options.embedImages ?? true
+        }
+      );
+    });
+
+    // Convert GLTF to GLB using gltf-pipeline
+    const pipelineOptions: gltfPipeline.GltfToGlbOptions = {
+      dracoOptions: options.dracoCompression ? {
+        compressionLevel: 7,
+        ...options.dracoOptions
+      } : undefined
+    };
+
+    const results = await gltfPipeline.gltfToGlb(gltf, pipelineOptions);
+    
+    // Ensure output directory exists
+    const outputDir = path.dirname(outputPath);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    // Write the GLB file
+    fs.writeFileSync(outputPath, results.glb);
+    
+    console.log(`Successfully exported GLB to: ${outputPath}`);
+  } catch (error) {
+    console.error('Error exporting to GLB:', error);
+    throw error;
+  }
+}
+
+// Example usage:
+/*
+import { Scene, Mesh, BoxGeometry, MeshStandardMaterial } from 'three';
+
+const scene = new Scene();
+const geometry = new BoxGeometry(1, 1, 1);
+const material = new MeshStandardMaterial({ color: 0xff0000 });
+const mesh = new Mesh(geometry, material);
+scene.add(mesh);
+
+exportToGLB(scene, 'output/model.glb', {
+  dracoCompression: true,
+  dracoOptions: {
+    compressionLevel: 7
+  }
+})
+  .then(() => console.log('Export complete'))
+  .catch(console.error);
+*/ 
+
+--- File: utils/assetLoader.js ---
+Size: 10438 bytes
+Last Modified: Mar 10 21:24:07 2025
+Content:
+import { TextureLoader, RepeatWrapping, LinearSRGBColorSpace, CanvasTexture } from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+
+// Enhanced asset manifest
+export const ASSET_MANIFEST = {
+  models: {
+    africanGirl: {
+      path: '/models/african-girl.glb',
+      preload: true,
+      optimizations: {
+        draco: true,
+        meshopt: true,
+        textureCompression: 'ktx2'
+      }
+    }
+  },
+  textures: {
+    wood: {
+      base: '/textures/african-wood-base.jpg',
+      roughness: '/textures/african-wood-roughness.jpg',
+      normal: '/textures/african-wood-normal.jpg',
+      // Remove fallback paths that don't exist
+      useProceduralFallback: true // Flag to generate procedural texture if loading fails
+    }
+  },
+  environment: {
+    church: '/hdr/wakanda.hdr'
+  }
+};
+
+// Create a procedural texture as fallback
+const createProceduralTexture = (type = 'base', color = '#8B4513') => {
+  const canvas = document.createElement('canvas');
+  const size = 512;
+  canvas.width = size;
+  canvas.height = size;
+  
+  const context = canvas.getContext('2d');
+  if (!context) return new CanvasTexture(canvas);
+  
+  // Base color
+  context.fillStyle = color;
+  context.fillRect(0, 0, size, size);
+  
+  // Add texture pattern based on type
+  if (type === 'normal') {
+    // Normal map - mostly flat with some variation
+    for (let i = 0; i < 5000; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const radius = Math.random() * 2 + 0.5;
+      
+      context.fillStyle = `rgba(128, 128, 255, ${Math.random() * 0.1 + 0.05})`;
+      context.beginPath();
+      context.arc(x, y, radius, 0, Math.PI * 2);
+      context.fill();
+    }
+  } else if (type === 'roughness') {
+    // Roughness map - grayscale with grain
+    for (let i = 0; i < 10000; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const radius = Math.random() * 1.5 + 0.5;
+      
+      const brightness = Math.random() * 40 + 140;
+      context.fillStyle = `rgb(${brightness}, ${brightness}, ${brightness})`;
+      context.beginPath();
+      context.arc(x, y, radius, 0, Math.PI * 2);
+      context.fill();
+    }
+  } else {
+    // Base color texture - add wood grain pattern
+    for (let y = 0; y < size; y += 4) {
+      const grainWidth = Math.sin(y * 0.1) * 10 + 20;
+      const brightness = Math.sin(y * 0.05) * 20 + 10;
+      
+      context.fillStyle = `rgba(60, 30, 15, ${brightness/100})`;
+      context.fillRect(0, y, size, grainWidth);
+    }
+    
+    // Add noise
+    for (let i = 0; i < 5000; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const radius = Math.random() * 1 + 0.2;
+      
+      context.fillStyle = `rgba(60, 30, 15, ${Math.random() * 0.1 + 0.05})`;
+      context.beginPath();
+      context.arc(x, y, radius, 0, Math.PI * 2);
+      context.fill();
+    }
+  }
+  
+  const texture = new CanvasTexture(canvas);
+  texture.wrapS = texture.wrapT = RepeatWrapping;
+  texture.colorSpace = LinearSRGBColorSpace;
+  return texture;
+};
+
+// Setup optimized loaders
+const setupLoaders = () => {
+  const dracoLoader = new DRACOLoader();
+  dracoLoader.setDecoderPath('/draco/');
+  
+  const ktx2Loader = new KTX2Loader();
+  ktx2Loader.setTranscoderPath('/basis/');
+  
+  const gltfLoader = new GLTFLoader();
+  gltfLoader.setDRACOLoader(dracoLoader);
+  gltfLoader.setKTX2Loader(ktx2Loader);
+  gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+  
+  return {
+    textureLoader: new TextureLoader(),
+    gltfLoader,
+    dracoLoader,
+    ktx2Loader
+  };
+};
+
+// Texture loader with AbortController support and procedural fallbacks
+const loadTextures = (urls, options = {}) => {
+  return new Promise((resolve, reject) => {
+    const { 
+      onProgress = () => {}, 
+      signal,
+      useProceduralFallback = true,
+      defaultColor = '#8B4513'
+    } = options;
+    
+    // Handle AbortController signal
+    if (signal && signal.aborted) {
+      return reject(new DOMException('Loading aborted', 'AbortError'));
+    }
+    
+    const { textureLoader } = setupLoaders();
+    const textures = {};
+    const totalUrls = Object.keys(urls).length;
+    let loadedCount = 0;
+    let hasErrors = false;
+    
+    // Setup abort handler
+    const abortHandler = () => {
+      reject(new DOMException('Loading aborted', 'AbortError'));
+    };
+    
+    if (signal) {
+      signal.addEventListener('abort', abortHandler);
+    }
+    
+    // Process each texture type (base, normal, roughness, etc)
+    Object.entries(urls).forEach(([type, url]) => {
+      if (typeof url !== 'string') return; // Skip non-string values like useProceduralFallback
+      
+      textureLoader.load(
+        url,
+        // Success callback
+        (texture) => {
+          texture.wrapS = texture.wrapT = RepeatWrapping;
+          texture.colorSpace = LinearSRGBColorSpace;
+          textures[type] = texture;
+          
+          loadedCount++;
+          onProgress(loadedCount / totalUrls);
+          
+          if (loadedCount === totalUrls) {
+            if (signal) {
+              signal.removeEventListener('abort', abortHandler);
+            }
+            resolve(textures);
+          }
+        },
+        // Progress callback
+        undefined,
+        // Error callback
+        (error) => {
+          console.error(`Texture Load Error:`, error);
+          console.error(`Failed to load texture: ${type}`, error);
+          
+          hasErrors = true;
+          
+          // Create procedural fallback if enabled
+          if (useProceduralFallback) {
+            console.info(`Creating procedural fallback for: ${type}`);
+            textures[type] = createProceduralTexture(type, defaultColor);
+            
+            loadedCount++;
+            onProgress(loadedCount / totalUrls);
+            
+            if (loadedCount === totalUrls) {
+              if (signal) {
+                signal.removeEventListener('abort', abortHandler);
+              }
+              resolve(textures);
+            }
+          } else {
+            if (signal) {
+              signal.removeEventListener('abort', abortHandler);
+            }
+            reject(error);
+          }
+        }
+      );
+    });
+  });
+};
+
+// Model loader with optimizations
+const loadModel = (url, options = {}) => {
+  return new Promise((resolve, reject) => {
+    const { 
+      onProgress = () => {}, 
+      signal,
+      optimizations = {
+        draco: true,
+        meshopt: true,
+        textureCompression: false
+      }
+    } = options;
+    
+    if (signal && signal.aborted) {
+      return reject(new DOMException('Loading aborted', 'AbortError'));
+    }
+    
+    const { gltfLoader } = setupLoaders();
+    
+    const abortHandler = () => {
+      reject(new DOMException('Loading aborted', 'AbortError'));
+    };
+    
+    if (signal) {
+      signal.addEventListener('abort', abortHandler);
+    }
+    
+    gltfLoader.load(
+      url,
+      (gltf) => {
+        if (signal) {
+          signal.removeEventListener('abort', abortHandler);
+        }
+        resolve(gltf);
+      },
+      (progress) => {
+        if (progress.lengthComputable) {
+          onProgress(progress.loaded / progress.total);
+        }
+      },
+      (error) => {
+        console.error('Model Load Error:', error);
+        if (signal) {
+          signal.removeEventListener('abort', abortHandler);
+        }
+        reject(error);
+      }
+    );
+  });
+};
+
+// Preload assets based on manifest
+const preloadAssets = (manifest = ASSET_MANIFEST, onProgress = () => {}) => {
+  return new Promise((resolve) => {
+    const assets = { models: {}, textures: {}, environment: {} };
+    const controller = new AbortController();
+    const { signal } = controller;
+    
+    const totalAssets = 
+      Object.keys(manifest.models || {}).length + 
+      Object.keys(manifest.textures || {}).length +
+      Object.keys(manifest.environment || {}).length;
+    
+    let loadedCount = 0;
+    
+    const updateProgress = () => {
+      loadedCount++;
+      onProgress(loadedCount / totalAssets);
+      
+      if (loadedCount === totalAssets) {
+        resolve(assets);
+      }
+    };
+    
+    // Preload models
+    if (manifest.models) {
+      Object.entries(manifest.models).forEach(([key, config]) => {
+        if (config.preload) {
+          loadModel(config.path, { 
+            signal,
+            optimizations: config.optimizations || {},
+            onProgress: (progress) => {
+              onProgress((loadedCount + progress) / totalAssets);
+            }
+          })
+            .then(model => {
+              assets.models[key] = model;
+              updateProgress();
+            })
+            .catch(error => {
+              console.error(`Failed to preload model: ${key}`, error);
+              updateProgress();
+            });
+        } else {
+          // Skip non-preloaded models
+          updateProgress();
+        }
+      });
+    }
+    
+    // Preload textures
+    if (manifest.textures) {
+      Object.entries(manifest.textures).forEach(([key, paths]) => {
+        const { useProceduralFallback, ...textureUrls } = paths; // Extract the flag
+        
+        loadTextures(textureUrls, { 
+          signal, 
+          useProceduralFallback, 
+          onProgress: (progress) => {
+            onProgress((loadedCount + progress) / totalAssets);
+          }
+        })
+          .then(textures => {
+            assets.textures[key] = textures;
+            updateProgress();
+          })
+          .catch(error => {
+            console.error(`Failed to preload textures: ${key}`, error);
+            updateProgress();
+          });
+      });
+    }
+    
+    // Preload environment maps
+    if (manifest.environment) {
+      // Implementation for environment map preloading...
+      // For now, just mark them as loaded
+      Object.keys(manifest.environment).forEach(() => {
+        updateProgress();
+      });
+    }
+    
+    // Handle timeout
+    setTimeout(() => {
+      if (loadedCount < totalAssets) {
+        console.warn('Asset preloading timed out, continuing with partial assets');
+        controller.abort();
+        resolve(assets);
+      }
+    }, 30000); // 30 second timeout
+  });
+};
+
+export default {
+  loadTextures,
+  loadModel,
+  preloadAssets,
+  createProceduralTexture
+};----------------------------------------
+Consolidation complete. Total files processed: 19
+Output file size: 443486 bytes

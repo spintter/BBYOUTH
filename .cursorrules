@@ -1,78 +1,140 @@
-Before diving into the best practices, please note that you may need to adapt the globs depending on your project's specific file structure and requirements.
+You are an expert software engineer with a deep understanding of React, TypeScript, and Vite. Your role is to provide guidance and best practices for building scalable, maintainable, and performant web applications.
 
 ---
-  /**
-   * Best practices for Next.js applications and routing.
-   *
-   * @remarks
-   * Use Next.js 13's App Router for improved performance and simpler data fetching.
-   * Implement server-side rendering for better SEO and initial load performance.
-   * Use Next.js Image component for optimized image loading.
-   * Leverage Next.js built-in internationalization features for multi-language support.
-   *
-   * @globs **/*.{ts,tsx,js,jsx}
-   */
-name: nextjs-best-practices.mdc
-description: Best practices for Next.js applications and routing
-globs: **/*.{ts,tsx,js,jsx}
----
 
-- Utilize Next.js 13's App Router for improved performance and simpler data fetching
-- Implement server-side rendering for better SEO and initial load performance
-- Use Next.js Image component for optimized image loading
-- Leverage Nexnot.js built-in internationalization features for multi-language support
+**name: react-best-practices.mdc**
 
----
-name: react-best-practices.mdc
-description: Best practices for React component development and state management
-globs: **/*.{ts,tsx,js,jsx}
----
+**description:** Best practices for React component development and state management
 
-- Use functional components with hooks instead of class components
-- Implement proper prop type validation using PropTypes or TypeScript
-- Utilize React.memo for performance optimization of functional components
-- Use context API or state management libraries for global state management
+**globs:** **/*.{ts,tsx,js,jsx}
 
----
-name: react-three-fiber-best-practices.mdc
-description: Best practices for 3D rendering with React Three Fiber
-globs: **/*.{ts,tsx,js,jsx}
----
+**rules:**
 
-- Use the `<Canvas>` component as the root of your 3D scene
-- Implement proper lighting using `<ambientLight>` and `<pointLight>` components
-- Utilize `<Suspense>` for loading 3D models and assets
-- Optimize performance by using `useFrame` hook judiciously
+- Use functional components with hooks instead of class components.
+    - *Example:* Replace `class App extends React.Component` with `const App = () => {}`.
+    - *Benefits:* Functional components are easier to read and maintain, and hooks provide a more straightforward way to manage state and side effects.
+- Keep components small and focused on a single responsibility.
+    - *Example:* Break down a large `UserCard` component into smaller components like `UserProfilePicture`, `UserName`, and `UserStats`.
+    - *Benefits:* Smaller components are easier to test, reuse, and understand.
+- Utilize memoization with `useMemo` and `useCallback` for performance optimization.
+    - *Example:* Use `useMemo` to memoize a complex calculation or `useCallback` to memoize a callback function.
+    - *Benefits:* Memoization can prevent unnecessary re-renders and improve performance.
+- Implement proper prop type validation using PropTypes or TypeScript.
+    - *Example:* Use PropTypes to validate props like `PropTypes.string` or TypeScript to define a type for props.
+    - *Benefits:* Prop type validation helps catch errors early and ensures components receive the expected props.
+- Use the `useEffect` hook to handle side effects.
+    - *Example:* Use `useEffect` to fetch data or subscribe to events.
+    - *Benefits:* `useEffect` provides a clear and concise way to handle side effects in functional components.
+- Follow the naming conventions for React components and hooks.
+    - *Example:* Use PascalCase for component names like `UserProfile` and camelCase for hooks like `useFetchData`.
+    - *Benefits:* Consistent naming conventions make the code more readable and maintainable.
+- Avoid unnecessary re-renders by using `React.memo` for functional components.
+    - *Example:* Wrap a component with `React.memo` to prevent re-renders when props or state haven't changed.
+    - *Benefits:* `React.memo` can improve performance by reducing the number of re-renders.
+- Use the `useState` hook to manage local state.
+    - *Example:* Use `useState` to manage the state of a form input or a toggle button.
+    - *Benefits:* `useState` provides a simple and intuitive way to manage local state in functional components.
+- Follow the React component lifecycle methods when using class components.
+    - *Example:* Use `componentDidMount` to fetch data and `componentWillUnmount` to clean up event listeners.
+    - *Benefits:* Understanding the lifecycle methods helps ensure components behave correctly and efficiently.
 
 ---
-name: drei-best-practices.mdc
-description: Best practices for using @react-three/drei components
-globs: **/*.{ts,tsx,js,jsx}
+
+**name: react-router-dom-best-practices.mdc**
+
+**description:** Best practices for routing and navigation in React applications
+
+**globs:** **/*.{ts,tsx,js,jsx}
+
+**rules:**
+
+- Use the `Routes` and `Route` components for declarative routing.
+    - *Example:* Use `<Routes><Route path="/" element={<Home />} /></Routes>`.
+    - *Benefits:* Declarative routing makes the code more readable and maintainable.
+- Implement nested routes for better organization of your app structure.
+    - *Example:* Use `<Route path="dashboard" element={<Dashboard />}> <Route path="settings" element={<Settings />} /></Route>`.
+    - *Benefits:* Nested routes help organize complex app structures and improve navigation.
+- Use the `useNavigate` hook for programmatic navigation.
+    - *Example:* Use `const navigate = useNavigate(); navigate('/dashboard');`.
+    - *Benefits:* `useNavigate` provides a simple and intuitive way to navigate programmatically.
+- Utilize route parameters and query strings for dynamic routing.
+    - *Example:* Use `const { userId } = useParams();` to access route parameters and `const queryParams = new URLSearchParams(location.search);` to access query strings.
+    - *Benefits:* Dynamic routing allows for more flexible and interactive navigation.
+- Use the `Link` component for client-side navigation.
+    - *Example:* Use `<Link to="/about">About</Link>` to navigate to the "About" page.
+    - *Benefits:* `Link` provides a simple and efficient way to navigate between routes.
+- Use the `Outlet` component to render nested routes.
+    - *Example:* Use `<Outlet />` in a parent route component to render its nested routes.
+    - *Benefits:* `Outlet` helps organize nested routes and improves code readability.
+- Use the `useLocation` hook to access the current location.
+    - *Example:* Use `const location = useLocation();` to access the current URL path and query parameters.
+    - *Benefits:* `useLocation` provides a convenient way to access the current location and perform actions based on it.
+- Use the `useParams` hook to access route parameters.
+    - *Example:* Use `const { id } = useParams();` to access the `id` parameter in a route like `/users/:id`.
+    - *Benefits:* `useParams` makes it easy to access route parameters and use them in your components.
+- Use the `useSearchParams` hook to manage query strings.
+    - *Example:* Use `const [searchParams, setSearchParams] = useSearchParams();` to read and update query strings.
+    - *Benefits:* `useSearchParams` provides a simple and efficient way to manage query strings in your routes.
+
 ---
 
-- Use `<Html>` component for rendering HTML elements within the 3D scene
-- Implement `<OrbitControls>` for user-friendly camera controls
-- Utilize `<Environment>` for realistic lighting and reflections
-- Optimize performance by using `<BakeShadows>` for static shadows
+**name: typescript-best-practices.mdc**
+
+**description:** TypeScript coding standards and type safety guidelines
+
+**globs:** **/*.{ts,tsx}
+
+**rules:**
+
+- Enable `strict` mode in your `tsconfig.json` for better type checking.
+    - *Example:* Set `"strict": true` in your `tsconfig.json`.
+    - *Benefits:* Strict mode helps catch type-related errors early and ensures more reliable code.
+- Use type aliases for complex types to improve readability.
+    - *Example:* Use `type User = { id: string; name: string; };`.
+    - *Benefits:* Type aliases make complex types easier to understand and maintain.
+- Leverage union types and intersection types for more flexible type definitions.
+    - *Example:* Use union types like `type Color = 'red' | 'green' | 'blue';` and intersection types like `type Person = User & { age: number; };`.
+    - *Benefits:* Union and intersection types provide more flexibility and precision in type definitions.
+- Implement custom type guards for runtime type checking.
+    - *Example:* Use `if (typeof value === 'string') { /* value is a string */ }`.
+    - *Benefits:* Custom type guards help ensure type safety at runtime and improve code reliability.
+- Use the `as` keyword for type assertions when necessary.
+    - *Example:* Use `const value = element as HTMLElement;`.
+    - *Benefits:* Type assertions allow you to inform TypeScript about the type of a value when it cannot be inferred.
+- Use the `unknown` type for unknown values.
+    - *Example:* Use `let value: unknown;`.
+    - *Benefits:* The `unknown` type helps prevent type-related errors by requiring explicit type checks.
+- Use the `never` type for functions that never return.
+    - *Example:* Use `function throwError(): never { throw new Error('Error'); }`.
+    - *Benefits:* The `never` type helps ensure that functions that never return are handled correctly.
+- Use the `readonly` keyword for immutable properties.
+    - *Example:* Use `type User = { readonly id: string; name: string; };`.
+    - *Benefits:* The `readonly` keyword helps ensure that properties are not modified accidentally.
+- Use the `enum` type for sets of related constants.
+    - *Example:* Use `enum Color { Red, Green, Blue };`.
+    - *Benefits:* Enums provide a convenient way to define sets of related constants and improve code readability.
 
 ---
-name: gsap-best-practices.mdc
-description: Best practices for animations using GSAP
-globs: **/*.{ts,tsx,js,jsx}
----
 
-- Use GSAP's timeline feature for complex, synchronized animations
-- Implement GSAP's ScrollTrigger plugin for scroll-based animations
-- Utilize GSAP's stagger property for creating staggered animations
-- Optimize performance by using GSAP's `invalidateOnRefresh` option
+**name: vite-best-practices.mdc**
 
----
-name: tailwindcss-best-practices.mdc
-description: Best practices for styling with Tailwind CSS
-globs: **/*.{ts,tsx,js,jsx,css}
----
+**description:** Best practices for using Vite as a build tool and development server
 
-- Use utility-first approach for consistent and maintainable styles
-- Implement responsive design using Tailwind's responsive modifiers
-- Utilize Tailwind's dark mode feature for easy dark mode implementation
-- Optimize performance by using Tailwind's `@apply` directive for repeated styles
+**globs:** **/*.{ts,tsx,js,jsx}
+
+**rules:**
+
+- Use the `vite.config.ts` file for configuration instead of `vite.config.js`.
+    - *Example:* Create a `vite.config.ts` file and configure Vite using TypeScript.
+    - *Benefits:* Using TypeScript for configuration provides better type checking and autocompletion.
+- Leverage Vite's built-in support for TypeScript and JSX.
+    - *Example:* Use TypeScript and JSX in your Vite project without additional configuration.
+    - *Benefits:* Vite's built-in support simplifies the setup process and improves developer experience.
+- Utilize Vite's plugin system for extending functionality.
+    - *Example:* Use plugins like `@vitejs/plugin-react` for React support or `vite-plugin-eslint` for ESLint integration.
+    - *Benefits:* Vite's plugin system allows you to customize and extend its functionality easily.
+- Optimize build performance by using the `build.rollupOptions` configuration.
+    - *Example:* Configure `build.rollupOptions` to optimize the build process.
+    - *Benefits:* Customizing the build options can improve build performance and reduce bundle size.
+- Use the `vite` command for development and production builds.
+    - *Example:* Use `vite` for development and `vite build` for production builds.

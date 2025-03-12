@@ -2,13 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    // Disable Turbopack to prevent excessive memory usage
-    turbo: false,
     // Ensure we're using Webpack
     forceSwcTransforms: true,
   },
-  // Optimize for production
-  swcMinify: true,
   // Configure Webpack for better performance
   webpack: (config, { dev, isServer }) => {
     // Optimize for production builds
