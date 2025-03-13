@@ -2,32 +2,27 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    // Ensure we're using Webpack
-    forceSwcTransforms: true,
+    optimizeCss: true,
   },
-  // Configure Webpack for better performance
-  webpack: (config, { dev, isServer }) => {
-    // Optimize for production builds
-    if (!dev) {
-      config.optimization.minimize = true;
-    }
-    
-    // Add specific optimizations for 3D content
+  // Configure webpack to handle glb/gltf files
+  webpack(config) {
     config.module.rules.push({
       test: /\.(glb|gltf)$/,
-      use: {
-        loader: 'file-loader',
-        options: {
-          publicPath: '/_next/static/media',
-          outputPath: 'static/media',
-          name: '[hash].[ext]',
-        },
-      },
+      type: 'asset/resource'
     });
-    
     return config;
   },
-  transpilePackages: ['three'],
-};
+  // Optimize images
+  images: {
+    domains: [],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    formats: ['image/webp'],
+  },
+  // Compiler options
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+}
 
 module.exports = nextConfig;

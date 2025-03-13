@@ -1,11 +1,17 @@
-import '../styles/globals.css';
-import { AppProps } from 'next/app';
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
 import { FPSProvider } from '../context/FPSContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useEffect } from 'react';
+import Head from 'next/head';
 
 // MyApp Component
-function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }: AppProps) {
+  // Optimize performance by removing 300ms delay on mobile devices
+  useEffect(() => {
+    document.documentElement.classList.remove('no-js');
+  }, []);
+
   // Add performance monitoring
   useEffect(() => {
     // Skip on server-side rendering
@@ -41,12 +47,15 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <ErrorBoundary>
-      <FPSProvider initialQuality="medium">
-        <Component {...pageProps} />
-      </FPSProvider>
-    </ErrorBoundary>
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+      </Head>
+      <ErrorBoundary>
+        <FPSProvider initialQuality="medium">
+          <Component {...pageProps} />
+        </FPSProvider>
+      </ErrorBoundary>
+    </>
   );
 }
-
-export default MyApp; // Ensure proper default export

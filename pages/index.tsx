@@ -1,240 +1,61 @@
+//pages/index.tsx
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import { HUMANITIES } from '../data/humanities';
-import { useRouter } from 'next/router';
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import HumanitiesGrid from '../components/HumanitiesGrid';
+import HighlightsSection from '../components/HighlightsSection';
+import PhotoCarousel from '../components/PhotoCarousel';
+import DigitalHumanitiesSection from '../components/DigitalHumanitiesSection';
+import { debounce } from 'lodash';
 
-const KnowledgeIsPowerHero = dynamic(() => import('../components/KnowledgeIsPowerHero'), { ssr: false });
-
-const HumanitiesGrid = () => {
-  const router = useRouter();
-  const topics = HUMANITIES.slice(0, 12);
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (gridRef.current) {
-      const tiles = gridRef.current.children;
-      gsap.fromTo(
-        tiles,
-        { opacity: 0, scale: 0.5, y: 50 },
-        {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          stagger: 0.1,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-    }
-  }, []);
-
-  return (
-    <div ref={gridRef} className="humanities-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-      {topics.map((topic, index) => {
-        const row = Math.floor(index / 4);
-        const col = index % 4;
-        const isDark = (row + col) % 2 === 1;
-        return (
-          <div
-            key={topic.id}
-            className={`grid-item ${isDark ? 'dark' : 'light'} p-4 text-center cursor-pointer`}
-            onClick={() => router.push(`/topics/${topic.id}`)}
-          >
-            {topic.name}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-const Footer = () => {
-  const navLinks = ['About', 'Ministry', 'Programs', 'Events', 'Team', 'Contact'];
-  const footerRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (footerRef.current) {
-      gsap.fromTo(
-        footerRef.current,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: 'top 90%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-    }
-  }, []);
-
-  return (
-    <footer ref={footerRef} className="bg-bbym-neutral text-bbym-light py-10">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-        <div>
-          <div className="text-6xl font-bold text-bbym-primary mb-4">B</div>
-          <p className="font-inter text-sm">Empowering Youth Through Faith, Arts, and Community</p>
-        </div>
-        <div>
-          <h3 className="text-lg font-bold mb-4">Navigation</h3>
-          <ul className="space-y-2">
-            {navLinks.map((link) => (
-              <li key={link}>
-                <a href="#" className="hover:text-bbym-secondary">{link}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="text-lg font-bold mb-4">Contact</h3>
-          <p className="font-inter text-sm">3715 Jefferson Ave, Birmingham, AL 35221</p>
-          <p className="font-inter text-sm">info@bbym.org</p>
-          <p className="font-inter text-sm">(205) 555-1234</p>
-          <div className="mt-4 flex space-x-4">
-            <a href="#" className="text-bbym-secondary text-2xl">F</a>
-            <a href="#" className="text-bbym-secondary text-2xl">I</a>
-            <a href="#" className="text-bbym-secondary text-2xl">Y</a>
-          </div>
-        </div>
+// Dynamically import the KnowledgeIsPowerHero component to avoid SSR issues
+const KnowledgeIsPowerHero = dynamic(
+  () => import('../components/KnowledgeIsPowerHeroClient'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <div className="loading-text">Loading experience...</div>
       </div>
-    </footer>
-  );
-};
-
-const MissionSection = () => {
-  const missionRef = useRef<HTMLElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Mission section animation
-    if (missionRef.current) {
-      gsap.fromTo(
-        missionRef.current.children,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          stagger: 0.2,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: missionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-    }
-
-    // Path following animation for SVG
-    if (pathRef.current) {
-      gsap.fromTo(
-        pathRef.current,
-        { strokeDashoffset: 200 },
-        {
-          strokeDashoffset: 0,
-          duration: 2,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: missionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-    }
-
-    // Scroll-triggered counter
-    if (counterRef.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            gsap.to(counterRef.current, {
-              innerText: 1000,
-              duration: 2,
-              ease: 'power1.inOut',
-              snap: { innerText: 1 },
-              onUpdate: function () {
-                if (counterRef.current) {
-                  counterRef.current.innerText = Math.ceil(Number(counterRef.current.innerText)).toString();
-                }
-              },
-            });
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.5 }
-      );
-      observer.observe(counterRef.current);
-    }
-  }, []);
-
-  return (
-    <section ref={missionRef} className="py-12 bg-gray-100 text-center relative">
-      <h2 className="text-3xl font-bold">Our Mission</h2>
-      <p className="mt-4 text-lg">
-        Empowering youth through Afrocentric wisdom, arts, and community leadership.
-      </p>
-      <div className="mt-6">
-        <p>
-          Impacted <span ref={counterRef} className="text-orange-500 font-bold">0</span> lives and counting
-        </p>
-      </div>
-      <svg className="absolute bottom-0 left-0 w-full h-16" viewBox="0 0 100 20">
-        <path
-          ref={pathRef}
-          d="M0,10 Q25,0 50,10 T100,10"
-          stroke="#ff6200"
-          strokeWidth="2"
-          fill="none"
-          strokeDasharray="200"
-          strokeDashoffset="200"
-        />
-      </svg>
-    </section>
-  );
-};
+    )
+  }
+);
 
 export default function Home() {
-  const separatorRef = useRef<HTMLDivElement>(null);
-
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const missionRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
+  
+  // Parallax effect for hero section
+  const heroY = useTransform(scrollY, [0, 500], [0, -50]);
+  
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Separator animation
-    if (separatorRef.current) {
-      gsap.fromTo(
-        separatorRef.current,
-        { width: '0%' },
-        {
-          width: '100%',
-          duration: 1.5,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: separatorRef.current,
-            start: 'top 90%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-    }
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 800);
+    return () => clearTimeout(timer);
   }, []);
-
+  
+  // Smooth scroll function
+  const scrollTo = debounce((to: number) => {
+    window.scrollTo({ top: to, behavior: 'smooth' });
+  }, 100);
+  
+  // Handle scroll to mission section
+  const handleScrollToMission = () => {
+    if (missionRef.current) {
+      const top = missionRef.current.offsetTop;
+      scrollTo(top);
+    }
+  };
+  
   return (
     <>
       <Head>
@@ -244,49 +65,325 @@ export default function Home() {
           content="Birmingham-Bessemer Youth Ministries (BBYM) empowers youth with Afrocentric wisdom, transforming potential into leadership through the humanities."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="header">
-        <div className="header-content">
-          <h1 className="text-4xl font-bold">BBYM</h1>
-          <nav>
-            <ul className="flex space-x-6">
-              <li><a href="#" className="hover:text-orange-500">Home</a></li>
-              <li><a href="#" className="hover:text-orange-500">About</a></li>
-              <li><a href="#" className="hover:text-orange-500">Programs</a></li>
-              <li><a href="#" className="hover:text-orange-500">Events</a></li>
-              <li><a href="#" className="hover:text-orange-500">Contact</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
-      <main>
-        <section className="hero-section">
-          <KnowledgeIsPowerHero
-            title="Knowledge Is Our Power"
-            subtitle="Afrocentric Wisdom for Tomorrow's Leaders"
-            ctaText="Begin Your Journey"
-          />
-        </section>
-
-        <div
-          ref={separatorRef}
-          className="h-20 bg-gradient-to-r from-orange-500 to-black"
-        />
-
-        <MissionSection />
-
-        <section className="px-4 py-12 bg-gray-100">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-8">Explore Our Programs</h2>
-            <HumanitiesGrid />
+      <main className="overflow-hidden">
+        {/* Hero Section */}
+        <section className="hero-section" ref={heroRef}>
+          <motion.div 
+            className="hero-background parallax-element"
+            style={{ y: heroY }}
+          >
+            <div className="solid-bg-overlay"></div>
+          </motion.div>
+          
+          <div className="hero-overlay"></div>
+          
+          <div className="hero-container">
+            <div className="text-column">
+              <div className="text-content">
+                <h1 
+                  data-text="Empowering Tomorrow's Leaders"
+                  className="hero-title"
+                >
+                  Empowering Tomorrow's Leaders
+                </h1>
+                <p className="hero-subtitle">
+                  Through Afrocentric wisdom, cultural understanding, and strategic thinking
+                </p>
+                <a 
+                  href="#mission" 
+                  className="hero-cta"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleScrollToMission();
+                  }}
+                >
+                  Begin Your Journey
+                </a>
+              </div>
+            </div>
+            
+            <div className="animation-column">
+              <div className="animation-container">
+                <KnowledgeIsPowerHero />
+              </div>
+            </div>
           </div>
         </section>
-      </main>
 
-      <Footer />
+        {/* Transition bridge */}
+        <div className="hero-to-content-bridge" />
+
+        {/* Mission Section */}
+        <section 
+          id="mission" 
+          ref={missionRef}
+          className="section-container py-20 section-transition mission-section"
+          onMouseEnter={() => setShowPreview(true)}
+          onMouseLeave={() => setShowPreview(false)}
+        >
+          <div className="container mx-auto px-4 grid grid-cols-12 gap-8">
+            <motion.div 
+              className="col-span-12 md:col-span-6 flex flex-col justify-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="section-title mb-6">Our Mission</h2>
+              <p className="section-text mb-8">
+                Empowering youth through knowledge, creativity, and cultural understanding. 
+                We believe in nurturing young minds to become tomorrow's leaders through our 
+                innovative humanities programs and Afrocentric perspective.
+              </p>
+              <motion.button 
+                className="primary-button self-start"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                data-tooltip="Our mission focuses on empowering youth through education, mentorship, and cultural enrichment"
+              >
+                Learn More About Our Mission
+              </motion.button>
+            </motion.div>
+            <motion.div 
+              className="col-span-12 md:col-span-6"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="relative">
+                <img 
+                  src="/images/blackhistory.jpeg" 
+                  alt="Youth learning chess" 
+                  className="rounded-lg shadow-xl w-full h-auto object-cover"
+                  style={{ maxHeight: '500px' }}
+                />
+                <div className="absolute -bottom-4 -right-4 bg-amber-100 p-4 rounded shadow-lg">
+                  <p className="text-amber-800 font-semibold">
+                    <span className="block text-2xl font-bold">500+</span>
+                    Youth Impacted
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+          
+          <div className={`section-transition-preview ${showPreview ? 'visible' : ''}`}></div>
+        </section>
+
+        {/* Section Divider */}
+        <div className="section-divider max-w-4xl mx-auto my-12 h-px bg-gradient-to-r from-transparent via-[#8B4513]/30 to-transparent relative">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#8B4513]"></div>
+        </div>
+
+        {/* Photo Carousel Section */}
+        <PhotoCarousel />
+
+        {/* Humanities Grid Section - Featured prominently */}
+        <HumanitiesGrid />
+
+        {/* Section Divider */}
+        <div className="section-divider max-w-4xl mx-auto my-12 h-px bg-gradient-to-r from-transparent via-[#8B4513]/30 to-transparent relative">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#8B4513]"></div>
+        </div>
+
+        {/* Digital Humanities Section */}
+        <DigitalHumanitiesSection />
+
+        {/* Section Divider */}
+        <div className="section-divider max-w-4xl mx-auto my-12 h-px bg-gradient-to-r from-transparent via-[#8B4513]/30 to-transparent relative">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#8B4513]"></div>
+        </div>
+
+        {/* Programs Grid Section */}
+        <section className="section-container bg-white py-20 section-transition">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="section-title text-5xl font-bold text-[#1A1A1A] tracking-tight mb-6 font-['Montserrat']">Our Programs</h2>
+              <p className="section-subtitle text-xl text-[#4A4A4A] max-w-3xl mx-auto font-medium">
+                Discover our transformative educational initiatives
+              </p>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Chess Mastery Program */}
+              <motion.div 
+                className="program-card bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden transform transition-all duration-300 hover:scale-102 border border-[#F5F5F5]"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="aspect-ratio-4-3 rounded-t-lg overflow-hidden">
+                  <img 
+                    src="/images/16thst_bap.jpg" 
+                    alt="Chess Program"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-600 hover:scale-105"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-2xl font-semibold mb-2 text-[#1A1A1A] font-['Montserrat']">Chess Mastery</h3>
+                  <p className="text-[#4A4A4A] mb-4 font-['Open Sans']">
+                    Strategic thinking and problem-solving through the royal game.
+                  </p>
+                  <div className="border-t border-[#F5F5F5] pt-4 mt-2">
+                    <small className="block mb-2 text-[#8B4513] text-sm font-medium">90% Engagement Rate</small>
+                    <blockquote className="text-sm italic text-[#4A4A4A]">
+                      "Transformative experience" - Participant
+                    </blockquote>
+                  </div>
+                </div>
+                <div className="tooltip opacity-0 absolute top-0 left-0 right-0 bg-[#1A1A1A]/80 text-white p-4 transition-opacity duration-300">
+                  Learn strategic thinking through our comprehensive chess program
+                </div>
+              </motion.div>
+
+              {/* Cultural Arts Program */}
+              <motion.div 
+                className="program-card bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden transform transition-all duration-300 hover:scale-102 border border-[#F5F5F5]"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <div className="aspect-ratio-4-3 rounded-t-lg overflow-hidden">
+                  <img 
+                    src="/images/blackhistory.jpeg" 
+                    alt="Cultural Arts"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-600 hover:scale-105"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-2xl font-semibold mb-2 text-[#1A1A1A] font-['Montserrat']">Cultural Arts</h3>
+                  <p className="text-[#4A4A4A] mb-4 font-['Open Sans']">
+                    Exploring heritage through creative expression and storytelling.
+                  </p>
+                  <div className="border-t border-[#F5F5F5] pt-4 mt-2">
+                    <small className="block mb-2 text-[#8B4513] text-sm font-medium">85% Participation Rate</small>
+                    <blockquote className="text-sm italic text-[#4A4A4A]">
+                      "Life-changing program" - Student
+                    </blockquote>
+                  </div>
+                </div>
+                <div className="tooltip opacity-0 absolute top-0 left-0 right-0 bg-[#1A1A1A]/80 text-white p-4 transition-opacity duration-300">
+                  Explore cultural heritage through various art forms and storytelling
+                </div>
+              </motion.div>
+
+              {/* Digital Humanities */}
+              <motion.div 
+                className="program-card bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden transform transition-all duration-300 hover:scale-102 border border-[#F5F5F5]"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <div className="aspect-ratio-4-3 rounded-t-lg overflow-hidden">
+                  <img 
+                    src="/images/mlk.jpeg" 
+                    alt="Digital Humanities"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-600 hover:scale-105"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-2xl font-semibold mb-2 text-[#1A1A1A] font-['Montserrat']">Digital Humanities</h3>
+                  <p className="text-[#4A4A4A] mb-4 font-['Open Sans']">
+                    Bridging tradition with technology for modern learning.
+                  </p>
+                  <div className="border-t border-[#F5F5F5] pt-4 mt-2">
+                    <small className="block mb-2 text-[#8B4513] text-sm font-medium">95% Digital Literacy Rate</small>
+                    <blockquote className="text-sm italic text-[#4A4A4A]">
+                      "Opened new opportunities" - Graduate
+                    </blockquote>
+                  </div>
+                </div>
+                <div className="tooltip opacity-0 absolute top-0 left-0 right-0 bg-[#1A1A1A]/80 text-white p-4 transition-opacity duration-300">
+                  Bridge traditional knowledge with modern technology skills
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Highlights Section */}
+        <HighlightsSection />
+
+        {/* Events Section */}
+        <section className="section-container py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="section-title text-5xl font-bold text-[#1A1A1A] tracking-tight mb-6 font-['Montserrat']">Upcoming Events</h2>
+              <p className="section-subtitle text-xl text-[#4A4A4A] max-w-3xl mx-auto font-medium">
+                Join us in our upcoming community gatherings and workshops
+              </p>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <motion.div 
+                className="event-card bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden transform transition-all duration-300 hover:scale-102 border border-[#F5F5F5] flex"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="event-date bg-[#8B4513] text-white p-6 flex flex-col items-center justify-center min-w-[100px]">
+                  <span className="month text-sm font-semibold uppercase">JUN</span>
+                  <span className="day text-3xl font-bold">15</span>
+                </div>
+                <div className="event-content p-6 flex-1">
+                  <h3 className="text-xl font-semibold mb-2 text-[#1A1A1A] font-['Montserrat']">Chess Tournament</h3>
+                  <p className="text-[#4A4A4A] mb-4 font-['Open Sans']">
+                    Annual youth chess championship featuring workshops and mentoring sessions.
+                  </p>
+                  <button className="px-6 py-2 border-2 border-[#8B4513] text-[#8B4513] font-medium rounded-lg hover:bg-[#8B4513] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#8B4513]">Register Now</button>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="event-card bg-white rounded-lg shadow-sm hover:shadow-md overflow-hidden transform transition-all duration-300 hover:scale-102 border border-[#F5F5F5] flex"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <div className="event-date bg-[#8B4513] text-white p-6 flex flex-col items-center justify-center min-w-[100px]">
+                  <span className="month text-sm font-semibold uppercase">JUL</span>
+                  <span className="day text-3xl font-bold">01</span>
+                </div>
+                <div className="event-content p-6 flex-1">
+                  <h3 className="text-xl font-semibold mb-2 text-[#1A1A1A] font-['Montserrat']">Cultural Festival</h3>
+                  <p className="text-[#4A4A4A] mb-4 font-['Open Sans']">
+                    Celebration of African heritage through art, music, and storytelling.
+                  </p>
+                  <button className="px-6 py-2 border-2 border-[#8B4513] text-[#8B4513] font-medium rounded-lg hover:bg-[#8B4513] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#8B4513]">Learn More</button>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+        
+        <Footer />
+      </main>
     </>
   );
 }

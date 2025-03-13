@@ -1,0 +1,336 @@
+/* Hero Section Styles */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background-color: #1A1A1A;
+}
+
+.hero-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.hero-wrapper.loaded {
+  opacity: 1;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* Solid background overlay */
+.solid-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  background-image: radial-gradient(circle at 50% 50%, #1A1A1A 0%, #000000 100%);
+  z-index: 0;
+}
+
+/* Add subtle pattern to the background */
+.solid-bg-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%, transparent 75%, rgba(212, 175, 55, 0.05) 75%, rgba(212, 175, 55, 0.05)), 
+                    linear-gradient(45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%, transparent 75%, rgba(212, 175, 55, 0.05) 75%, rgba(212, 175, 55, 0.05));
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.hero-picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-picture img,
+.hero-picture source {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(26, 26, 26, 0.7) 0%,
+    rgba(26, 26, 26, 0.5) 50%,
+    rgba(26, 26, 26, 0.8) 100%
+  );
+  z-index: 1;
+}
+
+.hero-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media (min-width: 768px) {
+  .hero-container {
+    flex-direction: row;
+    align-items: center;
+    padding: 2rem 4rem;
+  }
+}
+
+.animation-column {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .animation-column {
+    width: 55%;
+    margin-bottom: 0;
+  }
+}
+
+.animation-container {
+  width: 85%;
+  height: clamp(250px, 50vh, 500px);
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background-color: rgba(26, 26, 26, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.text-column {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .text-column {
+    width: 45%;
+    padding: 2rem;
+  }
+}
+
+.text-content {
+  text-align: center;
+  max-width: 500px;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #F5E6CC;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  animation: clipText 1s ease forwards 0.5s;
+}
+
+.hero-title::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #D4AF37;
+  overflow: hidden;
+  border-right: 3px solid #D4AF37;
+  animation: typewriter 1.5s steps(30) forwards 0.5s;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  margin-bottom: 2rem;
+  color: rgba(245, 230, 204, 0.9);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease forwards 1s;
+}
+
+.hero-cta {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background-color: #D4AF37;
+  color: #1A1A1A;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease forwards 1.5s;
+}
+
+.hero-cta:hover {
+  background-color: #F5E6CC;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+}
+
+/* Loading Styles */
+.loading-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #F5E6CC;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  border-top-color: #D4AF37;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+.loading-text {
+  font-size: 1rem;
+  color: #F5E6CC;
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes clipText {
+  from {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+  to {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optimize for low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  .hero-title,
+  .hero-subtitle,
+  .hero-cta {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .hero-title::before {
+    animation: none;
+    width: 100%;
+    border-right: none;
+  }
+  
+  .loading-spinner {
+    animation: none;
+  }
+}
+
+/* Chess visual styles */
+.chess-visual {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.chess-board {
+  width: 80%;
+  height: auto;
+  transform: rotateX(45deg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+
+.chess-piece {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.pawn {
+  background-image: url('/textures/african-motif.png');
+  transform: translateY(-20px);
+  animation: float 3s ease-in-out infinite;
+}
+
+.queen {
+  background-image: url('/textures/board-base.png');
+  transform: translateY(20px) scale(1.2);
+  animation: float 3s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+} 

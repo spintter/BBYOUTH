@@ -116,4 +116,24 @@ header {
 @media (prefers-contrast: high) {
     .overlay { background: #000; color: #fff; }
     .grid-item { border: 2px solid #fff; }
-}
+} 
+
+.scale-in {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.8s ease;
+  }
+  .scale-in.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  .humanities-grid {
+    display: grid;
+  }
+  .humanities-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px; /* Rounded corners for chessboard effect */
+  }
