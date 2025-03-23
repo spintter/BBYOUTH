@@ -30,13 +30,13 @@ interface ChessCoordinate {
 // Constants for chess board
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const RANKS = [1, 2, 3, 4, 5, 6, 7, 8];
-const SQUARE_SIZE = 0.15; // Adjusted for new scale
-const BOARD_OFFSET: Vector3Array = [-0.6, 0, -0.6]; // Adjusted for new SQUARE_SIZE
+const SQUARE_SIZE = 0.125;
+const BOARD_OFFSET: Vector3Array = [-0.5, 0, -0.5];
 
 // User preferences for styling
 const userPreferences = {
   glowIntensity: 1.5,
-  rotationSpeed: 0.2,
+  rotationSpeed: 0.1,
   colorScheme: {
     primary: '#FFD700', // Gold
     secondary: '#800080', // Purple
@@ -69,37 +69,56 @@ function chessToPosition(coord: ChessCoordinate): Vector3Array {
   return [x, 0, z];
 }
 
-// Chessboard model with Afrocentric styling
 function ChessboardModel({ position = [0, 0, 0] as Vector3Array }) {
   const { scene } = useGLTF('/models/chessboard.glb');
   const boardRef = useRef<THREE.Group>(null);
-  
-  // Add debug logging for model loading
+  const highlightMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
+
+  // Log loading status for debugging
   useEffect(() => {
     console.log("Chessboard model loaded:", scene ? "success" : "failed");
     if (scene) {
       console.log("Chessboard children count:", scene.children.length);
     }
   }, [scene]);
-  
-  // Subtle animation
-  useFrame((state) => {
+
+  // Continuous spin animation with a fixed slant
+  useFrame((state, delta) => {
     if (boardRef.current) {
-      boardRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.05;
-      boardRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.05;
+      boardRef.current.rotation.y += delta * 0.05 * (1 - Math.exp(-state.clock.elapsedTime * 0.5)); // Slow continuous spin with easing
+    }
+    
+    // Animate the d4 square highlight
+    if (highlightMaterialRef.current) {
+      highlightMaterialRef.current.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
     }
   });
-  
+
   return (
-    <group position={position} ref={boardRef}>
-      {/* Chess board - increased size */}
-      <primitive object={scene} scale={[0.025, 0.025, 0.025]} />
+    <group
+      position={position} // [0, -0.1, 0] from Scene, relative to parent at [0.5, -0.2, 0]
+      ref={boardRef}
+      rotation={[-Math.PI / 6, 0, Math.PI / 12]} // Maintain slant: tilt top backward, right side down
+    >
+      <primitive object={scene} scale={[0.03, 0.03, 0.03]} />
       
       {/* Highlight the d4 square where the pawn is */}
-      <mesh position={[chessToPosition({file: 'd', rank: 4})[0], 0.01, chessToPosition({file: 'd', rank: 4})[2]]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh
+        position={[chessToPosition({ file: 'd', rank: 4 })[0], 0.01, chessToPosition({ file: 'd', rank: 4 })[2]]}
+        rotation={[-Math.PI / 2, 0, 0]}
+      >≠
         <planeGeometry args={[SQUARE_SIZE * 0.7, SQUARE_SIZE * 0.7]} />
-        <meshBasicMaterial color={userPreferences.colorScheme.highlight} transparent opacity={0.3} toneMapped={false} />
+        <meshBasicMaterial
+          ref={highlightMaterialRef}
+          color={userPreferences.colorScheme.highlight}
+          transparent
+          opacity={0.3}
+          toneMapped={false}
+        />
       </mesh>
+
+      {/* Pawn parented to the chessboard, inheriting transformations */}
+      <ChessPawn />
     </group>
   );
 }
@@ -109,6 +128,8 @@ function ChessPawn() {
   const pawnPosition = chessToPosition({file: 'd', rank: 4});
   const pawnGltf = useGLTF('/models/chess_pawn.glb');
   const pawnRef = useRef<THREE.Group>(null);
+  const highlightMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
+  const shadowMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
   
   useEffect(() => {
     console.log("Pawn model loaded:", pawnGltf.scene ? "success" : "failed");
@@ -137,16 +158,25 @@ function ChessPawn() {
     }
   }, [pawnGltf]);
   
+  // Subtle rotation animation
   useFrame((state, delta) => {
     if (pawnRef.current) {
+      // Remove hover effect to keep pawn attached to board
+      // Maintain rotation for liveliness
       pawnRef.current.rotation.y += delta * userPreferences.rotationSpeed;
+      pawnRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.08) * 0.02;
+    }
+    if (highlightMaterialRef.current) {
+      highlightMaterialRef.current.opacity = 0.2 + Math.sin(state.clock.elapsedTime * 1.0) * 0.2;
+    }
+    if (shadowMaterialRef.current) {
+      shadowMaterialRef.current.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
     }
   });
   
   return (
-    <group position={[pawnPosition[0], pawnPosition[1] + 0.02, pawnPosition[2]]} ref={pawnRef}>
-      {/* Pawn Model - adjusted scale */}
-      <group scale={[0.12, 0.12, 0.12]}>
+    <group position={[pawnPosition[0], 0.01, pawnPosition[2]]} ref={pawnRef}>
+      <group scale={[0.144, 0.144, 0.144]}>
         <primitive 
           object={pawnGltf.scene.clone()} 
           rotation={[0, 0, 0]}
@@ -154,10 +184,28 @@ function ChessPawn() {
         />
       </group>
       
-      {/* Highlight beneath the pawn */}
+      {/* Soft shadow under pawn */}
+      <mesh position={[0, -0.0145, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.09, 16]} />
+        <meshBasicMaterial
+          ref={shadowMaterialRef}
+          color="#000000"
+          transparent
+          opacity={0.3}
+          toneMapped={false}
+        />
+      </mesh>
+      
+      {/* Highlight under pawn */}
       <mesh position={[0, -0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[0.08, 16]} />
-        <meshBasicMaterial color={userPreferences.colorScheme.primary} transparent opacity={0.2} toneMapped={false} />
+        <meshBasicMaterial
+          ref={highlightMaterialRef}
+          color={userPreferences.colorScheme.primary}
+          transparent
+          opacity={0.2}
+          toneMapped={false}
+        />
       </mesh>
     </group>
   );
@@ -165,8 +213,8 @@ function ChessPawn() {
 
 // Main scene setup
 function Scene() {
-  // Detect if the device is mobile
   const [isMobile, setIsMobile] = useState(false);
+  const starsRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -184,47 +232,54 @@ function Scene() {
     console.log("Preloading complete");
   }, []);
   
+  // Add subtle rotation to stars
+  useFrame((state, delta) => {
+    if (starsRef.current) {
+      starsRef.current.rotation.y += delta * 0.01; // Slow rotation
+    }
+  });
+  
   return (
     <>
       <color attach="background" args={['#030310']} />
       <ambientLight intensity={0.8} />
       <directionalLight 
         position={[5, 7, 5]}
-        intensity={1.2} 
+        intensity={1.5} // Increased for better visibility
         castShadow 
         shadow-mapSize={[2048, 2048]}
       />
       <directionalLight 
         position={[-5, 5, -5]} 
-        intensity={0.8}
+        intensity={1.0}
       />
       <pointLight 
         position={[0, 3, 0]} 
-        intensity={1.0}
+        intensity={1.2}
         color={userPreferences.colorScheme.primary} 
       />
       <spotLight
-        position={[0, 3, 1]}
-        angle={0.3}
+        position={[0, 4, 0]} // Moved higher for dramatic shadows
+        angle={0.2} // Tighter angle for focus
         penumbra={0.7}
-        intensity={0.8}
+        intensity={1.5} // Increased intensity
         color="#FFFFFF"
         castShadow
       />
       
-      <Stars 
-        radius={100} 
-        depth={50} 
-        count={7000}
-        factor={5}
-        saturation={0.8}
-        fade 
-      />
+      <group ref={starsRef}>
+        <Stars 
+          radius={100} 
+          depth={50} 
+          count={10000} // Increased count from 7000 to 10000
+          factor={7} // Increased factor from 5 to 7 for larger stars
+          saturation={0.8}
+          fade 
+        />
+      </group>
       
-      {/* Lowered the group position */}
-      <group position={[0, 0, 0]}>
+      <group position={[0.5, -0.2, 0]}>
         <ChessboardModel position={[0, -0.1, 0]} />
-        <ChessPawn />
       </group>
       
       <OrbitControls 
@@ -240,7 +295,7 @@ function Scene() {
       
       <PerspectiveCamera 
         makeDefault 
-        position={isMobile ? [2, 2, 2] : [2.5, 2.5, 2.5]}
+        position={isMobile ? [1.8, 1.5, 1.8] : [2.2, 1.8, 2.2]}
         fov={isMobile ? 45 : 35}
         near={0.1}
         far={100}
@@ -249,13 +304,13 @@ function Scene() {
       <Environment preset="night" />
       <EffectComposer>
         <Bloom 
-          intensity={userPreferences.glowIntensity}
-          luminanceThreshold={0.2}
+          intensity={2.0}
+          luminanceThreshold={0.1}
           luminanceSmoothing={0.9}
           height={300}
         />
         <Vignette
-          darkness={0.5}
+          darkness={0.7}
           offset={0.1}
         />
       </EffectComposer>
@@ -263,23 +318,32 @@ function Scene() {
   );
 }
 
-// Hero section text overlay with mobile adjustments
+// Hero section text overlay with improved spacing
 function HeroContent() {
   return (
-    <div className="absolute inset-0 flex flex-col items-start justify-center px-4 sm:px-8 md:px-16 z-10 pointer-events-none">
+    <div className="absolute inset-0 flex flex-col items-start justify-center px-6 sm:px-10 md:px-20 z-10 pointer-events-none">
+      <style>{`
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 1s ease-out;
+        }
+      `}</style>
       <div className="max-w-3xl">
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif mb-4 text-white tracking-tight leading-tight">
-          <span className="block">Empowerment</span>
-          <span className="block">through</span>
-          <span className="block text-yellow-400">strategy</span>
+        <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif mb-4 text-white tracking-tight leading-tight">
+          <span className="block animate-fadeInUp" style={{ animationDelay: '0s' }}>Empowerment</span>
+          <span className="block animate-fadeInUp" style={{ animationDelay: '0.2s' }}>through</span>
+          <span className="block text-yellow-400 animate-fadeInUp" style={{ animationDelay: '0.4s' }}>strategy</span>
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-200 max-w-lg">
+        <p className="text-base sm:text-xl md:text-2xl mb-8 text-gray-200 max-w-md sm:max-w-lg animate-fadeInUp" style={{ animationDelay: '0.6s' }}>
           Guiding Birmingham's youth through <span className="text-cyan-400">critical thinking</span>, <span className="text-purple-400">cultural heritage</span>, and <span className="text-pink-400">creative expression</span> to cultivate the next generation of leaders, thinkers, and innovators in the humanities.
         </p>
-        <div className="pointer-events-auto">
+        <div className="pointer-events-auto animate-fadeInUp" style={{ animationDelay: '0.8s' }}>
           <a 
             href="#mission" 
-            className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-md inline-flex items-center transition-all duration-300"
+            className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-md inline-flex items-center transition-all duration-300 hover:scale-105 hover:shadow-[0_0_10px_rgba(255,215,0,0.5)]"
           >
             Join Our Program
             <svg className="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
