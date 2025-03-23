@@ -4,12 +4,14 @@ const { Validator } = require('gltf-validator');
 const os = require('os');
 
 // Configuration
-const projectRoot = path.join(__dirname, 'public', 'models');
+const projectRoot = path.join(__dirname, '..', 'public', 'models');
 const desktopPath = os.homedir() + '/Desktop';
 const outputFile = path.join(desktopPath, 'glb-validation-results.txt');
 const filesToValidate = [
   path.join(projectRoot, 'african-girl.glb'),
-  path.join(projectRoot, 'african-queen.glb')
+  path.join(projectRoot, 'african-girl-optimized.glb'),
+  path.join(projectRoot, 'chessboard-optimized.glb'),
+  path.join(projectRoot, 'stars.glb')
 ];
 
 // Structural Validation

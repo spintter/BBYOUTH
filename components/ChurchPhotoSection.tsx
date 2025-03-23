@@ -29,10 +29,9 @@ const ChurchPhotoSection = () => {
       <div className="max-w-6xl mx-auto px-4">
         <div className="relative group overflow-hidden rounded-lg shadow-lg">
           <img
-            src="/images/16th_Street_Baptist_Church.jpg"
-            alt="Historic black church"
-            className="w-full h-96 object-cover transform transition-transform duration-500 group-hover:scale-105"
-            suppressHydrationWarning
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+            src="/images/optimized/16th_Street_Baptist_Church_optimized.jpg"
+            alt="16th Street Baptist Church"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
             <div className="text-center text-white p-4">

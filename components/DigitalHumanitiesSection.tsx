@@ -1,89 +1,181 @@
 'use client';
 
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+
+// Updated news articles with more relevant content
+const newsArticles = [
+  {
+    id: 1,
+    title: 'Virtual Reality History Tours Launch for Birmingham Schools',
+    excerpt: 'Students can now explore historical sites through immersive VR experiences developed by our digital humanities team.',
+    imageUrl: '/images/16thst_bap.jpg',
+    date: 'June 15, 2023',
+    category: 'Technology',
+    link: '/news/vr-history-tours'
+  },
+  {
+    id: 2,
+    title: 'Digital Archive of Civil Rights Movement Expands',
+    excerpt: 'Our collaborative project with local libraries has digitized over 5,000 documents and photographs from the Civil Rights era.',
+    imageUrl: '/images/16th_Street_Baptist_Church.jpg',
+    date: 'May 28, 2023',
+    category: 'Archives',
+    link: '/news/digital-archive-expansion'
+  },
+  {
+    id: 3,
+    title: 'Youth Coding Workshop Creates Interactive Literature Map',
+    excerpt: 'Participants in our summer program developed an interactive map showcasing Birmingham\'s literary landmarks and history.',
+    imageUrl: '/images/church4.webp',
+    date: 'July 3, 2023',
+    category: 'Education',
+    link: '/news/coding-workshop-map'
+  }
+];
+
+const projects = [
+  {
+    title: 'Oral History Archive',
+    description: 'Digital collection of community stories and testimonies',
+    imageUrl: '/images/optimized/blackhistory_optimized.jpeg',
+    link: '/projects/oral-history'
+  },
+  {
+    title: 'Civil Rights Timeline',
+    description: 'Interactive timeline of the Civil Rights Movement',
+    imageUrl: '/images/optimized/mlk_optimized.jpeg',
+    link: '/projects/civil-rights'
+  },
+  {
+    title: 'Virtual Museum Tours',
+    description: 'Digital access to cultural heritage sites',
+    imageUrl: '/images/optimized/16thst_bap_optimized.jpg',
+    link: '/projects/virtual-tours'
+  }
+];
 
 const DigitalHumanitiesSection = () => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const rotateX = useTransform(mouseY, [-100, 100], [5, -5]);
-  const rotateY = useTransform(mouseX, [-100, 100], [-5, 5]);
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.43, 0.13, 0.23, 0.96] } },
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3,
+      },
+    },
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left - rect.width / 2);
-    mouseY.set(e.clientY - rect.top - rect.height / 2);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.6,
+        ease: [0.43, 0.13, 0.23, 0.96]
+      } 
+    },
   };
 
   return (
-    <section className="digital-humanities-section py-32 px-4 sm:px-6 lg:px-12 bg-[#F5F5F5]">
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-20">
-          <div className="inline-block mb-6">
-            <div className="h-1 w-32 bg-[#8B4513] mb-6 mx-auto transform scale-x-150 origin-center transition-transform duration-300 hover:scale-x-175"></div>
-            <motion.h2
-              className="section-title text-5xl font-bold mb-6 text-[#1A1A1A] tracking-tight font-['Montserrat']"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeInUp}
-            >
-              Digital Humanities
-            </motion.h2>
-          </div>
-          <motion.p
-            className="section-subtitle text-xl text-[#4A4A4A] max-w-4xl mx-auto leading-relaxed font-medium"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-          >
-            Unlock Afrocentric insights with cutting-edge digital tools and immersive experiences.
-          </motion.p>
-        </div>
+    <section className="py-20 bg-gradient-to-b from-[#2C2F77] to-[#1A1A2E]">
+      <div className="container mx-auto px-6">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-playfair">Digital Humanities</h2>
+          <p className="text-lg text-[#F5F5F5] max-w-3xl mx-auto font-poppins">
+            Exploring the intersection of technology and humanities to create innovative
+            educational experiences for our youth community.
+          </p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8" onMouseMove={handleMouseMove} onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}>
-          {[
-            { icon: '🖥️', title: 'Virtual Exhibits', desc: 'Immersive 3D artifacts and cultural environments.' },
-            { icon: '📚', title: 'Digital Archives', desc: 'Preserve heritage with rare documents and media.' },
-            { icon: '🧠', title: 'AI Analysis', desc: 'Uncover patterns with AI-driven cultural insights.' },
-          ].map((item, index) => (
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
+          {newsArticles.map((article) => (
             <motion.div
-              key={index}
-              className="relative bg-white p-8 rounded-lg shadow-sm hover:shadow-md border border-[#F5F5F5] overflow-hidden"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeInUp}
-              style={{ rotateX, rotateY, transformPerspective: 1000 }}
-              whileHover={{ scale: 1.02, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+              key={article.id}
+              variants={itemVariants}
+              whileHover={{ 
+                scale: 1.03, 
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" 
+              }}
+              className="bg-[#2C2F77] rounded-lg overflow-hidden shadow-lg transform transition-all duration-300"
             >
-              <div className="text-[#8B4513] text-5xl mb-6 transition-transform duration-300">{item.icon}</div>
-              <h3 className="text-2xl font-semibold mb-4 text-[#1A1A1A] tracking-tight font-['Montserrat']">
-                {item.title}
-              </h3>
-              <p className="text-lg text-[#4A4A4A] leading-relaxed font-['Open Sans']">
-                {item.desc}
-              </p>
+              <Link href={article.link} className="block h-full">
+                <div className="relative h-56 overflow-hidden">
+                  <Image
+                    src={article.imageUrl}
+                    alt={article.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] to-transparent opacity-70"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <span className="inline-block px-3 py-1 text-xs font-medium bg-[#00C4FF] text-white rounded-full mb-2">
+                      {article.category}
+                    </span>
+                    <span className="block text-sm text-[#F5F5F5] font-medium">
+                      {article.date}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-3 text-white font-playfair">
+                    {article.title}
+                  </h3>
+                  <p className="text-[#F5F5F5] mb-4 font-poppins">
+                    {article.excerpt}
+                  </p>
+                  <div className="flex items-center">
+                    <span className="text-[#00C4FF] font-medium text-sm font-poppins">
+                      Read More
+                    </span>
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-4 w-4 ml-1 text-[#00C4FF]" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </div>
+                </div>
+              </Link>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="text-center mt-16">
-          <motion.a
-            href="/digital-resources"
-            className="inline-block px-8 py-3 bg-[#8B4513] text-white font-medium rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:bg-[#6D3510] hover:scale-105 focus:ring-2 focus:ring-[#8B4513] focus:outline-none"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
+        <motion.div 
+          className="mt-12 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <Link 
+            href="/digital-humanities" 
+            className="inline-block px-8 py-3 bg-[#00C4FF] text-white font-medium rounded-full hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300 shadow-lg hover:shadow-xl font-poppins"
           >
-            Explore Digital Resources
-          </motion.a>
-        </div>
+            Explore All Digital Projects
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

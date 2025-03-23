@@ -3,7 +3,7 @@ module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
-    './app/**/*.{js,ts,jsx,tsx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -11,6 +11,8 @@ module.exports = {
         sans: ['var(--font-open-sans)', 'Open Sans', 'sans-serif'],
         heading: ['var(--font-abril)', 'Abril Fatface', 'serif'],
         subheading: ['var(--font-montserrat)', 'Montserrat', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
+        playfair: ['"Playfair Display"', 'serif'],
       },
       colors: {
         background: '#1A1A1A',
@@ -35,12 +37,21 @@ module.exports = {
           dark: '#222222',
           muted: '#6B7280',
         },
+        'primary-blue': '#00C4FF',
+        'primary-gold': '#FFD700',
+        'dark-blue': '#1A1A2E',
+        'medium-blue': '#2C2F77',
+        'bbym-orange': '#F5A623',
+        'bbym-orange-light': '#F7B84E',
+        'bbym-black': '#1A1A2E',
       },
       animation: {
         'fade-in': 'fade-in 0.8s ease-out forwards',
         'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'float': 'float 10s infinite ease-in-out',
+        'float': 'float 6s ease-in-out infinite',
         'rotate': 'rotate 120s linear infinite',
+        'spin-slow': 'spin 20s linear infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         'fade-in': {
@@ -51,14 +62,16 @@ module.exports = {
           '0%, 100%': { boxShadow: '0 10px 30px rgba(212, 175, 55, 0.4)' },
           '50%': { boxShadow: '0 15px 40px rgba(212, 175, 55, 0.6)' },
         },
-        'float': {
-          '0%': { transform: 'translate(0, 0)', opacity: '0' },
-          '50%': { opacity: '0.5' },
-          '100%': { transform: 'translate(30px, 30px)', opacity: '0' },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
         },
         'rotate': {
           from: { transform: 'rotate(0deg)' },
           to: { transform: 'rotate(360deg)' },
+        },
+        'ripple': {
+          to: { transform: 'scale(30)', opacity: '0' },
         },
       },
       spacing: {
@@ -70,6 +83,7 @@ module.exports = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
   },

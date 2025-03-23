@@ -1,180 +1,222 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import Link from 'next/link';
 
-// Define the category type
-interface Category {
-  name: string;
-  slug: string;
-  icon: string;
-  description: string;
-  chessPiece: string;
-  iconLabel: string;
-  image: string;
-}
-
-// Categories with semantic chess piece descriptions for accessibility
-const categories: Category[] = [
-  { name: 'African History', slug: '/topics/african-history', icon: '♔', description: 'Explore Africa\'s rich historical legacy.', chessPiece: 'King', iconLabel: 'King icon', image: '/images/blackhistory.jpeg' },
-  { name: 'African Literature', slug: '/topics/african-literature', icon: '♕', description: 'Discover voices of African storytelling.', chessPiece: 'Queen', iconLabel: 'Queen icon', image: '/images/mlk.jpeg' },
-  { name: 'Cultural Studies', slug: '/topics/cultural-studies', icon: '♗', description: 'Dive into African cultural diversity.', chessPiece: 'Bishop', iconLabel: 'Bishop icon', image: '/images/16thst_bap.jpg' },
-  { name: 'Music & Dance', slug: '/topics/music-dance', icon: '♘', description: 'Experience rhythmic African traditions.', chessPiece: 'Knight', iconLabel: 'Knight icon', image: '/images/urban_youth_optimized.webp' },
-  { name: 'African Philosophy', slug: '/topics/african-philosophy', icon: '♖', description: 'Study profound African thought.', chessPiece: 'Rook', iconLabel: 'Rook icon', image: '/images/dad_hig_son_optimized.webp' },
-  { name: 'Visual Arts', slug: '/topics/visual-arts', icon: '♙', description: 'Appreciate African artistic heritage.', chessPiece: 'Pawn', iconLabel: 'Pawn icon', image: '/images/group_graduate_optimized.webp' },
-  { name: 'Performing Arts', slug: '/topics/performing-arts', icon: '♙', description: 'Engage with theatrical expressions.', chessPiece: 'Pawn', iconLabel: 'Pawn icon', image: '/images/church_optimized.webp' },
-  { name: 'Contemporary Issues', slug: '/topics/contemporary-issues', icon: '♙', description: 'Address today\'s African challenges.', chessPiece: 'Pawn', iconLabel: 'Pawn icon', image: '/images/sixth_baptist2_optimized.webp' },
-  { name: 'Language Studies', slug: '/topics/language-studies', icon: '♙', description: 'Learn Africa\'s linguistic diversity.', chessPiece: 'Pawn', iconLabel: 'Pawn icon', image: '/images/dad_son_playing_optimized.webp' },
-  { name: 'Religion & Spirituality', slug: '/topics/religion-spirituality', icon: '♙', description: 'Explore spiritual traditions.', chessPiece: 'Pawn', iconLabel: 'Pawn icon', image: '/images/ruby_UA_optimized.webp' },
-  { name: 'Political Thought', slug: '/topics/political-thought', icon: '♙', description: 'Analyze African governance ideas.', chessPiece: 'Pawn', iconLabel: 'Pawn icon', image: '/images/church3.webp' },
-  { name: 'Social Justice', slug: '/topics/social-justice', icon: '♙', description: 'Advocate for equity and rights.', chessPiece: 'Pawn', iconLabel: 'Pawn icon', image: '/images/church4.webp' },
+// Define the humanities topics with updated content
+const topics = [
+  {
+    id: 1,
+    title: 'History & Heritage',
+    description: 'Exploring African American history and cultural heritage',
+    icon: 'fas fa-landmark',
+    link: '/topics/history'
+  },
+  {
+    id: 2,
+    title: 'Literature & Arts',
+    description: 'Celebrating Black literature, music, and visual arts',
+    icon: 'fas fa-book-open',
+    link: '/topics/literature'
+  },
+  {
+    id: 3,
+    title: 'Social Justice',
+    description: 'Understanding civil rights and social movements',
+    icon: 'fas fa-balance-scale',
+    link: '/topics/social-justice'
+  },
+  {
+    id: 4,
+    title: 'Community Leadership',
+    description: 'Developing leadership skills and civic engagement',
+    icon: 'fas fa-users',
+    link: '/topics/leadership'
+  },
+  {
+    id: 5,
+    title: 'Cultural Identity',
+    description: 'Exploring and celebrating Black identity and culture',
+    icon: 'fas fa-heart',
+    link: '/topics/identity'
+  },
+  {
+    id: 6,
+    title: 'Digital Storytelling',
+    description: 'Creating and sharing our stories digitally',
+    icon: 'fas fa-video',
+    link: '/topics/storytelling'
+  },
+  {
+    id: 7,
+    title: 'Research Methods',
+    description: 'Learning scholarly research techniques',
+    icon: 'fas fa-search',
+    link: '/topics/research'
+  },
+  {
+    id: 8,
+    title: 'Community Archives',
+    description: 'Preserving and sharing community history',
+    icon: 'fas fa-archive',
+    link: '/topics/archives'
+  },
+  {
+    id: 9,
+    title: 'Oral Traditions',
+    description: 'Understanding and preserving oral histories',
+    icon: 'fas fa-microphone',
+    link: '/topics/oral-history'
+  },
+  {
+    id: 10,
+    title: 'Ethics & Philosophy',
+    description: 'Exploring moral and philosophical questions',
+    icon: 'fas fa-brain',
+    link: '/topics/ethics'
+  },
+  {
+    id: 11,
+    title: 'Media Studies',
+    description: 'Analyzing and creating media content',
+    icon: 'fas fa-photo-video',
+    link: '/topics/media'
+  },
+  {
+    id: 12,
+    title: 'Cultural Exchange',
+    description: 'Building bridges between communities',
+    icon: 'fas fa-handshake',
+    link: '/topics/exchange'
+  }
 ];
 
 const HumanitiesGrid = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Added for loading state
-
-  // Ensure a full 4x3 grid to complete the chessboard structure
-  const grid = Array(4).fill(null).map(() => Array(3).fill(null));
-  categories.forEach((cat, i) => {
-    const row = Math.floor(i / 3);
-    const col = i % 3;
-    grid[row][col] = cat;
-  });
-
-  // Intersection Observer with fallback for loading state
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          setIsLoading(false);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    const section = document.querySelector('.humanities-section');
-    if (section) observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
-  // Animation variants with further optimization
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.5,
+        ease: [0.43, 0.13, 0.23, 0.96]
+      } 
+    },
+  };
+
+  // Function to handle card click with ripple effect
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    
+    // Create ripple element
+    const ripple = document.createElement('span');
+    const rect = card.getBoundingClientRect();
+    
+    // Calculate ripple position
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Style the ripple
+    ripple.style.width = ripple.style.height = '1px';
+    ripple.style.position = 'absolute';
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+    ripple.style.borderRadius = '50%';
+    ripple.style.transform = 'scale(0)';
+    ripple.style.animation = 'ripple 0.6s linear';
+    
+    // Add and remove ripple
+    card.appendChild(ripple);
+    setTimeout(() => {
+      card.removeChild(ripple);
+    }, 700);
   };
 
   return (
-    <section className="humanities-section py-20 px-4 sm:px-6 lg:px-12 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <motion.h2
-            className="section-title text-5xl font-bold text-[#1A1A1A] tracking-tight mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
-          >
-            Explore the Humanities
-          </motion.h2>
-          <motion.p
-            className="section-subtitle text-xl text-[#4A4A4A] mt-4 max-w-3xl mx-auto font-medium"
-            initial={{ opacity: 0 }}
-            animate={isVisible ? { opacity: 1 } : {}}
-            transition={{ delay: 0.1, duration: 0.5 }}
-          >
-            A strategic journey through Afrocentric disciplines, inspired by the chessboard of intellectual growth.
-          </motion.p>
-        </div>
+    <section className="py-20 bg-bbym-black">
+      <div className="container mx-auto px-6">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-display">Humanities Topics</h2>
+          <p className="text-lg text-gray-200 max-w-3xl mx-auto font-sans">
+            Explore our diverse range of humanities subjects designed to inspire critical thinking,
+            cultural awareness, and intellectual growth in young minds.
+          </p>
+        </motion.div>
 
-        {isLoading ? (
-          <div className="text-center text-[#1A1A1A]">Loading...</div>
-        ) : (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 max-w-6xl mx-auto relative"
-            initial="hidden"
-            animate={isVisible ? 'visible' : 'hidden'}
-            variants={containerVariants}
-          >
-            {grid.flat().map((cell, index) => {
-              if (!cell) return null;
-              const row = Math.floor(index / 3);
-              const col = index % 3;
-              const isLightSquare = (row + col) % 2 === 0;
-
-              return (
-                <motion.div
-                  key={`${row}-${col}`}
-                  className={`relative flex flex-col rounded-lg overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md backdrop-blur-sm ${
-                    isLightSquare ? 'bg-[#FFFFFF]' : 'bg-[#F5F5F5]'
-                  }`}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                  whileFocus={{ scale: 1.02, boxShadow: '0 0 0 3px #8B4513' }}
-                  data-tooltip-id={`tooltip-${index}`}
-                >
-                  <div className="aspect-ratio-4-3 overflow-hidden">
-                    <img 
-                      src={cell.image} 
-                      alt={`${cell.name} illustration`}
-                      className="w-full h-full object-cover transition-transform duration-600 hover:scale-105"
-                      loading="lazy"
-                    />
-                  </div>
-                  <Link
-                    href={cell.slug}
-                    className="w-full h-full flex flex-col items-center justify-center p-4 focus:outline-none focus:ring-2 focus:ring-[#8B4513]"
-                    aria-label={`Explore ${cell.name}`}
-                  >
-                    <span
-                      className="font-['Montserrat'] font-semibold text-xl text-[#1A1A1A]"
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
+          {topics.map((topic) => (
+            <motion.div
+              key={topic.id}
+              variants={itemVariants}
+              whileHover={{ 
+                scale: 1.03, 
+                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1)" 
+              }}
+              className="bg-medium-blue rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 relative"
+              onClick={handleCardClick}
+            >
+              <Link href={topic.link} className="block h-full">
+                <div className="p-6 flex flex-col h-full">
+                  <div className="flex justify-center mb-4">
+                    <div 
+                      className="w-16 h-16 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: '#00C4FF20' }}
                     >
-                      {cell.name}
-                    </span>
-                    <span className="text-[#4A4A4A] text-sm mt-2 text-center">
-                      {cell.description}
-                    </span>
-                  </Link>
-                  <Tooltip
-                    id={`tooltip-${index}`}
-                    place="top"
-                    style={{
-                      backgroundColor: '#1A1A1A',
-                      color: '#FFFFFF',
-                      borderRadius: '8px',
-                      padding: '0.75rem',
-                      fontSize: '16px',
-                      boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
-                      zIndex: 10,
-                    }}
-                    positionStrategy="fixed"
+                      <i 
+                        className={`${topic.icon} text-3xl`} 
+                        style={{ color: '#00C4FF' }}
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                  </div>
+                  <h3 
+                    className="text-xl font-bold mb-3 text-white text-center font-display"
+                    style={{ color: '#00C4FF' }}
                   >
-                    {cell.description}
-                  </Tooltip>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        )}
-
-        <div className="text-center mt-12">
-          <motion.a
-            href="/topics"
-            className="inline-block px-8 py-3 bg-[#8B4513] text-white font-medium rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:bg-[#6D3510] hover:scale-105 focus:ring-2 focus:ring-[#8B4513] focus:outline-none"
-            initial={{ opacity: 0, y: 15 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            Explore All Topics
-          </motion.a>
-        </div>
+                    {topic.title}
+                  </h3>
+                  <p className="text-gray-200 text-center flex-grow font-sans">
+                    {topic.description}
+                  </p>
+                  <div className="mt-4 text-center">
+                    <span 
+                      className="inline-block text-sm font-medium transition-colors duration-300 cta-text relative overflow-hidden px-4 py-2"
+                      style={{ color: '#00C4FF' }}
+                    >
+                      Explore Topic <span className="ml-1">→</span>
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

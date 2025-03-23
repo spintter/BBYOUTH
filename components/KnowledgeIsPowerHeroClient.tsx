@@ -1,291 +1,366 @@
 'use client';
 
-import React, { useRef, useState, useEffect, forwardRef } from 'react';
-import { Canvas, extend, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, PerspectiveCamera, shaderMaterial } from '@react-three/drei';
+import React, { Suspense, useState, useEffect, useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { 
+  OrbitControls, 
+  useGLTF, 
+  Environment, 
+  PerspectiveCamera, 
+  Stars,
+  Html
+} from '@react-three/drei';
+import { 
+  EffectComposer,
+  Bloom,
+  Vignette
+} from '@react-three/postprocessing';
 import * as THREE from 'three';
-import { MeshoptDecoder } from 'meshoptimizer';
-import gsap from 'gsap';
-import { EffectComposer, ChromaticAberration } from '@react-three/postprocessing';
-import { BlendFunction } from 'postprocessing';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module';
 
-// Define the shader material with proper uniforms structure
-const skyMaterialShader = shaderMaterial(
-  { uniforms: { uTime: { value: 0 } } },
-  `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  `
-    uniform float uTime;
-    varying vec2 vUv;
+// Define proper type for Vector3 arrays
+type Vector3Array = [number, number, number];
 
-    void main() {
-      vec2 uv = vUv;
-      vec3 color = vec3(0.1, 0.1, 0.18); // Dark base color
-      float stars = fract(sin(dot(uv * 1000.0, vec2(12.9898, 78.233))) * 43758.5453);
-      color += vec3(stars * 0.3);
-      gl_FragColor = vec4(color, 1.0);
-    }
-  `
-);
-
-// Wrap the shader material in a React component using forwardRef
-const SkyMaterial = forwardRef((props: { uTime: number }, ref: React.Ref<THREE.ShaderMaterial>) => {
-  const material = useRef(new skyMaterialShader({ uniforms: { uTime: { value: props.uTime } } }));
-  return <primitive object={material.current} ref={ref} {...props} />;
-});
-extend({ SkyMaterial });
-
-// Define props interface
-interface KnowledgeIsPowerHeroProps {
-  title?: string;
-  subtitle?: string;
+// Define the chess board coordinate system
+interface ChessCoordinate {
+  file: string; // a-h
+  rank: number; // 1-8
 }
 
-// Chess piece props interface
-interface ChessPieceProps {
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale: number;
-  type: 'african-girl' | 'african-queen';
-  onClick?: () => void;
-}
+// Constants for chess board
+const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const RANKS = [1, 2, 3, 4, 5, 6, 7, 8];
+const SQUARE_SIZE = 0.15; // Adjusted for new scale
+const BOARD_OFFSET: Vector3Array = [-0.6, 0, -0.6]; // Adjusted for new SQUARE_SIZE
 
-// Chessboard props interface
-interface ChessboardProps {
-  onPieceClick: () => void;
-}
-
-// Scene props interface
-interface SceneProps {
-  onPieceClick: () => void;
-}
-
-// Preload models
-useGLTF.preload('/models/african-girl-optimized.glb');
-useGLTF.preload('/models/african-queen-optimized.glb');
-useGLTF.preload('/models/stars-optimized.glb');
-useGLTF.preload('/models/chessboard-optimized.glb');
-
-// Chess Piece Component
-const ChessPiece: React.FC<ChessPieceProps> = ({ position, rotation, scale, type, onClick }) => {
-  const group = useRef<THREE.Group>(null);
-  const meshRef = useRef<THREE.Mesh>(null);
-  const { nodes } = useGLTF(`/models/${type}-optimized.glb`);
-
-  useFrame(() => {
-    if (group.current && type === 'african-girl') {
-      group.current.rotation.y += 0.005;
-    }
-  });
-
-  const meshNode = Object.values(nodes).find((node) => node instanceof THREE.Mesh) as THREE.Mesh | undefined;
-
-  if (!meshNode) {
-    console.error(`No mesh found in ${type}-optimized.glb`);
-    return null;
+// User preferences for styling
+const userPreferences = {
+  glowIntensity: 1.5,
+  rotationSpeed: 0.2,
+  colorScheme: {
+    primary: '#FFD700', // Gold
+    secondary: '#800080', // Purple
+    highlight: '#FF00FF', // Magenta
+    boardDark: '#323232', // Dark gray for dark squares 
+    boardLight: '#E8E8E8', // Light gray for light squares
   }
-
-  return (
-    <group
-      ref={group}
-      position={position}
-      rotation={rotation}
-      scale={scale}
-      onClick={onClick}
-    >
-      <mesh
-        ref={meshRef}
-        castShadow
-        receiveShadow
-        geometry={meshNode.geometry}
-      >
-        <meshStandardMaterial
-          color="#D4AF37"
-          metalness={0.7}
-          roughness={0.2}
-        />
-      </mesh>
-    </group>
-  );
 };
 
-// Chessboard Component
-const Chessboard: React.FC<ChessboardProps> = ({ onPieceClick }) => {
-  const boardRef = useRef<THREE.Group>(null);
-  const { nodes } = useGLTF('/models/chessboard-optimized.glb');
+// Initialize the MeshoptDecoder - required for compressed GLB files
+MeshoptDecoder.ready.then(() => {
+  console.log("MeshoptDecoder initialized successfully");
+}).catch((error: Error) => {
+  console.error("MeshoptDecoder initialization failed:", error);
+});
 
+// Convert chess notation to 3D position
+function chessToPosition(coord: ChessCoordinate): Vector3Array {
+  const fileIndex = FILES.indexOf(coord.file);
+  const rankIndex = RANKS.indexOf(coord.rank);
+  
+  if (fileIndex === -1 || rankIndex === -1) {
+    console.error("Invalid chess coordinate:", coord);
+    return [0, 0, 0];
+  }
+  
+  const x = BOARD_OFFSET[0] + fileIndex * SQUARE_SIZE;
+  const z = BOARD_OFFSET[2] + rankIndex * SQUARE_SIZE;
+  
+  return [x, 0, z];
+}
+
+// Chessboard model with Afrocentric styling
+function ChessboardModel({ position = [0, 0, 0] as Vector3Array }) {
+  const { scene } = useGLTF('/models/chessboard.glb');
+  const boardRef = useRef<THREE.Group>(null);
+  
+  // Add debug logging for model loading
+  useEffect(() => {
+    console.log("Chessboard model loaded:", scene ? "success" : "failed");
+    if (scene) {
+      console.log("Chessboard children count:", scene.children.length);
+    }
+  }, [scene]);
+  
+  // Subtle animation
   useFrame((state) => {
     if (boardRef.current) {
-      boardRef.current.rotation.y = Math.sin(state.clock.getElapsedTime() * 0.3) * 0.1;
-      boardRef.current.rotation.x = Math.sin(state.clock.getElapsedTime() * 0.2) * 0.05;
+      boardRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.05;
+      boardRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.05;
     }
   });
-
-  const meshNode = nodes.Object_0 as THREE.Mesh;
-
-  if (!meshNode || !meshNode.geometry) {
-    console.error('No valid mesh found in chessboard-optimized.glb');
-    return null;
-  }
-
+  
   return (
-    <group ref={boardRef}>
-      <mesh
-        receiveShadow
-        geometry={meshNode.geometry}
-      >
-        <meshStandardMaterial color="#ffffff" />
+    <group position={position} ref={boardRef}>
+      {/* Chess board - increased size */}
+      <primitive object={scene} scale={[0.025, 0.025, 0.025]} />
+      
+      {/* Highlight the d4 square where the pawn is */}
+      <mesh position={[chessToPosition({file: 'd', rank: 4})[0], 0.01, chessToPosition({file: 'd', rank: 4})[2]]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[SQUARE_SIZE * 0.7, SQUARE_SIZE * 0.7]} />
+        <meshBasicMaterial color={userPreferences.colorScheme.highlight} transparent opacity={0.3} toneMapped={false} />
       </mesh>
-      <ChessPiece
-        type="african-girl"
-        position={[-2, 0.5, 2]}
-        rotation={[0, 0, 0]}
-        scale={0.5}
-        onClick={onPieceClick}
-      />
     </group>
   );
-};
+}
 
-// Scene Component
-const Scene: React.FC<SceneProps> = ({ onPieceClick }) => {
-  const skyRef = useRef<THREE.Mesh>(null);
-  const { nodes } = useGLTF('/models/stars-optimized.glb');
-
-  useFrame((state) => {
-    if (skyRef.current) {
-      const material = skyRef.current.material as THREE.ShaderMaterial;
-      material.uniforms.uTime.value = state.clock.getElapsedTime();
+// Simple Chess Pawn component
+function ChessPawn() {
+  const pawnPosition = chessToPosition({file: 'd', rank: 4});
+  const pawnGltf = useGLTF('/models/chess_pawn.glb');
+  const pawnRef = useRef<THREE.Group>(null);
+  
+  useEffect(() => {
+    console.log("Pawn model loaded:", pawnGltf.scene ? "success" : "failed");
+    if (pawnGltf.scene) {
+      console.log("Pawn children count:", pawnGltf.scene.children.length);
+    }
+  }, [pawnGltf]);
+  
+  useEffect(() => {
+    if (pawnGltf.scene) {
+      pawnGltf.scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: 0x222222,
+            metalness: 0.3,
+            roughness: 0.4,
+            emissive: 0x444444,
+            emissiveIntensity: 0.3,
+            side: THREE.DoubleSide,
+            toneMapped: false
+          });
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+    }
+  }, [pawnGltf]);
+  
+  useFrame((state, delta) => {
+    if (pawnRef.current) {
+      pawnRef.current.rotation.y += delta * userPreferences.rotationSpeed;
     }
   });
+  
+  return (
+    <group position={[pawnPosition[0], pawnPosition[1] + 0.02, pawnPosition[2]]} ref={pawnRef}>
+      {/* Pawn Model - adjusted scale */}
+      <group scale={[0.12, 0.12, 0.12]}>
+        <primitive 
+          object={pawnGltf.scene.clone()} 
+          rotation={[0, 0, 0]}
+          position={[0, 0, 0]}
+        />
+      </group>
+      
+      {/* Highlight beneath the pawn */}
+      <mesh position={[0, -0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.08, 16]} />
+        <meshBasicMaterial color={userPreferences.colorScheme.primary} transparent opacity={0.2} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
 
-  const meshNode = nodes['l_TeethDown__Body_Low_0'] as THREE.Mesh;
+// Main scene setup
+function Scene() {
+  // Detect if the device is mobile
+  const [isMobile, setIsMobile] = useState(false);
 
-  if (!meshNode || !meshNode.geometry) {
-    console.error('No valid mesh found in stars-optimized.glb');
-    return null;
-  }
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
+  useEffect(() => {
+    console.log("Preloading 3D models...");
+    useGLTF.preload('/models/chess_pawn.glb');
+    useGLTF.preload('/models/chessboard.glb');
+    console.log("Preloading complete");
+  }, []);
+  
   return (
     <>
-      <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={45} />
-      <ambientLight intensity={0.5} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
-      <directionalLight position={[-10, 10, -5]} intensity={0.5} castShadow />
-      {/* Background Sky with Shader */}
-      <mesh ref={skyRef} position={[0, 0, -5]} scale={[10, 10, 1]}>
-        <bufferGeometry attach="geometry" {...meshNode.geometry} />
-        <SkyMaterial uTime={0} />
-      </mesh>
-      <Chessboard onPieceClick={onPieceClick} />
-      <OrbitControls
-        enableZoom={true}
-        enablePan={true}
-        minPolarAngle={Math.PI / 4}
-        maxPolarAngle={Math.PI / 2.5}
-        rotateSpeed={0.5}
+      <color attach="background" args={['#030310']} />
+      <ambientLight intensity={0.8} />
+      <directionalLight 
+        position={[5, 7, 5]}
+        intensity={1.2} 
+        castShadow 
+        shadow-mapSize={[2048, 2048]}
       />
-      {/* Dispersion Effect */}
+      <directionalLight 
+        position={[-5, 5, -5]} 
+        intensity={0.8}
+      />
+      <pointLight 
+        position={[0, 3, 0]} 
+        intensity={1.0}
+        color={userPreferences.colorScheme.primary} 
+      />
+      <spotLight
+        position={[0, 3, 1]}
+        angle={0.3}
+        penumbra={0.7}
+        intensity={0.8}
+        color="#FFFFFF"
+        castShadow
+      />
+      
+      <Stars 
+        radius={100} 
+        depth={50} 
+        count={7000}
+        factor={5}
+        saturation={0.8}
+        fade 
+      />
+      
+      {/* Lowered the group position */}
+      <group position={[0, 0, 0]}>
+        <ChessboardModel position={[0, -0.1, 0]} />
+        <ChessPawn />
+      </group>
+      
+      <OrbitControls 
+        enableZoom={false}
+        enablePan={false}
+        minDistance={2.0}
+        maxDistance={2.0}
+        enableDamping
+        dampingFactor={0.05}
+        minPolarAngle={Math.PI / 6}
+        maxPolarAngle={Math.PI / 2}
+      />
+      
+      <PerspectiveCamera 
+        makeDefault 
+        position={isMobile ? [2, 2, 2] : [2.5, 2.5, 2.5]}
+        fov={isMobile ? 45 : 35}
+        near={0.1}
+        far={100}
+      />
+      
+      <Environment preset="night" />
       <EffectComposer>
-        <ChromaticAberration
-          blendFunction={BlendFunction.NORMAL}
-          offset={new THREE.Vector2(0.001, 0.001)}
-          radialModulation={false}
-          modulationOffset={0.5}
+        <Bloom 
+          intensity={userPreferences.glowIntensity}
+          luminanceThreshold={0.2}
+          luminanceSmoothing={0.9}
+          height={300}
+        />
+        <Vignette
+          darkness={0.5}
+          offset={0.1}
         />
       </EffectComposer>
     </>
   );
-};
+}
 
-// Main Component
-const KnowledgeIsPowerHero: React.FC<KnowledgeIsPowerHeroProps> = ({
-  title = "Knowledge Is Power",
-  subtitle = "Empowering youth through chess and cultural education",
-}) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [transformStage, setTransformStage] = useState(0);
-  const [message, setMessage] = useState("Click the pawn to transform");
-
-  const handlePieceClick = () => {
-    if (transformStage === 0) {
-      setTransformStage(1);
-      setMessage("From Pawn to Queen: The Journey Begins");
-      gsap.timeline()
-        .to({}, { duration: 2, onComplete: () => setMessage("Developing Skills & Knowledge") })
-        .to({}, { duration: 2, onComplete: () => setMessage("Embracing Leadership & Empowerment") })
-        .to({}, { duration: 2, onComplete: () => setMessage("Transformation Complete") });
-    }
-  };
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const onScroll = () => {
-      const scrollY = window.scrollY;
-      gsap.to(container, {
-        rotationX: scrollY * 0.02,
-        rotationY: scrollY * 0.01,
-        ease: 'power2.out',
-      });
-    };
-
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
+// Hero section text overlay with mobile adjustments
+function HeroContent() {
   return (
-    <div className="relative w-full flex flex-col lg:flex-row">
-      <div ref={containerRef} className="relative w-full lg:w-1/2 h-[70vh]">
-        <Canvas shadows dpr={[1, 2]}>
-          {transformStage === 0 ? (
-            <Scene onPieceClick={handlePieceClick} />
-          ) : (
-            <>
-              <PerspectiveCamera makeDefault position={[5, 5, 5]} fov={45} />
-              <ambientLight intensity={0.5} />
-              <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
-              <directionalLight position={[-10, 10, -5]} intensity={0.5} castShadow />
-              <ChessPiece
-                type="african-queen"
-                position={[-2, 0.5, 2]}
-                rotation={[0, 0, 0]}
-                scale={0.5}
-              />
-              <OrbitControls
-                enableZoom={true}
-                enablePan={true}
-                minPolarAngle={Math.PI / 4}
-                maxPolarAngle={Math.PI / 2.5}
-                rotateSpeed={0.5}
-              />
-              <EffectComposer>
-                <ChromaticAberration
-                  blendFunction={BlendFunction.NORMAL}
-                  offset={new THREE.Vector2(0.001, 0.001)}
-                  radialModulation={false}
-                  modulationOffset={0.5}
-                />
-              </EffectComposer>
-            </>
-          )}
-        </Canvas>
-      </div>
-      <div className="w-full lg:w-1/2 p-8 flex flex-col justify-center">
-        <div className="bg-black/60 backdrop-blur-sm p-6 rounded-lg border-l-4 border-[#D4AF37]">
-          <h2 className="text-2xl font-bold text-[#D4AF37] mb-2">{title}</h2>
-          <p className="text-white/90 mb-4">{subtitle}</p>
-          <p className="text-white/70 text-sm italic">{message}</p>
+    <div className="absolute inset-0 flex flex-col items-start justify-center px-4 sm:px-8 md:px-16 z-10 pointer-events-none">
+      <div className="max-w-3xl">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif mb-4 text-white tracking-tight leading-tight">
+          <span className="block">Empowerment</span>
+          <span className="block">through</span>
+          <span className="block text-yellow-400">strategy</span>
+        </h1>
+        <p className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-200 max-w-lg">
+          Guiding Birmingham's youth through <span className="text-cyan-400">critical thinking</span>, <span className="text-purple-400">cultural heritage</span>, and <span className="text-pink-400">creative expression</span> to cultivate the next generation of leaders, thinkers, and innovators in the humanities.
+        </p>
+        <div className="pointer-events-auto">
+          <a 
+            href="#mission" 
+            className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-md inline-flex items-center transition-all duration-300"
+          >
+            Join Our Program
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default KnowledgeIsPowerHero;
+// Loading component with Afrocentric design
+function LoadingFallback() {
+  return (
+    <div className="flex items-center justify-center h-screen bg-[#030310]">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-t-yellow-500 border-b-purple-500 border-l-pink-400 border-r-cyan-400 rounded-full animate-spin mb-4 mx-auto"></div>
+        <p className="text-yellow-400 text-xl font-serif">Awakening wisdom...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main exported component
+export default function KnowledgeIsPowerHero() {
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    console.log("Component mounting, starting to load resources...");
+    
+    try {
+      useGLTF.preload('/models/chess_pawn.glb');
+      useGLTF.preload('/models/chessboard.glb');
+      console.log("Models preloaded successfully");
+    } catch (error: any) {
+      console.error("Error preloading models:", error);
+    }
+    
+    const timer = setTimeout(() => {
+      console.log("Loading complete, showing 3D scene");
+      setIsLoading(false);
+    }, 2000);
+    
+    return () => {
+      console.log("Component unmounting, cleaning up");
+      clearTimeout(timer);
+    };
+  }, []);
+  
+  return (
+    <div className="relative w-full h-[90vh] md:h-screen">
+      <Canvas
+        shadows
+        dpr={[1, 2]}
+        gl={{
+          antialias: true,
+          alpha: false,
+          powerPreference: 'high-performance',
+        }}
+        className="w-full h-full"
+        onCreated={(state) => {
+          console.log("Canvas created successfully");
+        }}
+      >
+        <Suspense fallback={
+          <Html center>
+            <div className="text-white text-xl">Loading Chess Pawn...</div>
+          </Html>
+        }>
+          <Scene />
+        </Suspense>
+      </Canvas>
+      
+      <HeroContent />
+      
+      {isLoading && (
+        <div className="absolute inset-0 bg-[#030310] flex items-center justify-center z-20">
+          <LoadingFallback />
+        </div>
+      )}
+    </div>
+  );
+}
