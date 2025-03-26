@@ -1,3 +1,4 @@
+// components/SectionTransition.tsx
 'use client';
 
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
@@ -27,7 +28,7 @@ export default function SectionTransition({
   nextSectionPreview,
   transitionType = 'fade',
   className = '',
-  accentColor = '#D4AF37',
+  accentColor = 'var(--bbym-gold-primary)',
   themePattern = 'kente',
 }: SectionTransitionProps) {
   return (
@@ -49,7 +50,7 @@ function SectionTransitionContent({
   nextSectionPreview,
   transitionType = 'fade',
   className = '',
-  accentColor = '#D4AF37',
+  accentColor = 'var(--bbym-gold-primary)',
   themePattern = 'kente',
 }: SectionTransitionProps): JSX.Element {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -219,7 +220,7 @@ function SectionTransitionContent({
           
           {/* Curtain effect */}
           <motion.div 
-            className="absolute left-0 right-0 bottom-0 bg-gradient-to-t from-black to-transparent z-20"
+            className="absolute left-0 right-0 bottom-0 bg-gradient-to-t from-[var(--bbym-black)] to-transparent z-20"
             style={{ 
               height: curtainHeight,
               opacity: curtainOpacity
@@ -294,4 +295,4 @@ function SectionTransitionContent({
       {renderContent()}
     </motion.section>
   );
-} 
+}

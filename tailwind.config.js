@@ -15,7 +15,7 @@ module.exports = {
         playfair: ['"Playfair Display"', 'serif'],
       },
       colors: {
-        background: '#1A1A1A',
+        background: '#FFFFFF',
         primary: {
           DEFAULT: '#4A2C2A',
           dark: '#3A1C1A',
@@ -32,15 +32,15 @@ module.exports = {
           light: '#E4BF47',
         },
         text: {
-          primary: '#FFFFFF',
-          secondary: '#F5E6CC',
+          primary: '#1A1A2E',
+          secondary: '#4A4A4A',
           dark: '#222222',
           muted: '#6B7280',
         },
         'primary-blue': '#00C4FF',
-        'primary-gold': '#FFD700',
+        'primary-gold': '#D4A017',
         'dark-blue': '#1A1A2E',
-        'medium-blue': '#2C2F77',
+        'medium-blue': '#F0F0F0',
         'bbym-orange': '#F5A623',
         'bbym-orange-light': '#F7B84E',
         'bbym-black': '#1A1A2E',
