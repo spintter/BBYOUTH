@@ -4,6 +4,26 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+
+// Styled components for the back-to-top button
+const BackToTopButton = styled(IconButton)(({ theme }) => ({
+  position: 'fixed',
+  bottom: '20px',
+  right: '20px',
+  zIndex: 100,
+  background: theme.palette.primary.main,
+  color: theme.palette.text.primary,
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+  '&:hover': {
+    background: theme.palette.primary.dark,
+    transform: 'translateY(-5px)',
+    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
+  },
+  transition: 'all 0.3s ease',
+}));
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -12,9 +32,8 @@ const Footer = () => {
   // Show back-to-top button after scrolling down 50% of the viewport height
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      setShowBackToTop(scrollPosition > windowHeight * 0.5);
+      const scrollThreshold = window.innerHeight * 0.5;
+      setShowBackToTop(window.scrollY > scrollThreshold);
     };
     
     window.addEventListener('scroll', handleScroll);
@@ -195,22 +214,23 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Back to top button */}
+      {/* Back to top button using MUI IconButton */}
       <AnimatePresence>
         {showBackToTop && (
-          <motion.button
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
-            onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-[#00C4FF] text-white p-3 rounded-full shadow-lg hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300 z-50"
-            aria-label="Back to top"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-            </svg>
-          </motion.button>
+            <BackToTopButton
+              onClick={scrollToTop}
+              size="large"
+              aria-label="Scroll back to top"
+            >
+              <KeyboardArrowUpIcon fontSize="large" />
+            </BackToTopButton>
+          </motion.div>
         )}
       </AnimatePresence>
     </footer>

@@ -1,28 +1,28 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    // Temporarily disable optimizeCss to troubleshoot build issues
-    // optimizeCss: true,
-    // Enable modern optimizations
+    optimizeCss: process.env.NODE_ENV === 'production',
     optimizePackageImports: ['three', '@react-three/fiber', '@react-three/drei'],
+    // Removed cacheDependencies
   },
-  // Configure webpack to handle glb/gltf files
-  webpack(config) {
+  serverExternalPackages: [],
+  webpack(config, { dev, isServer }) {
     // Handle 3D model files
     config.module.rules.push({
       test: /\.(glb|gltf)$/,
-      type: 'asset/resource'
+      type: 'asset/resource',
     });
 
     // Handle shader files if needed
     config.module.rules.push({
       test: /\.(glsl|vs|fs|vert|frag)$/,
-      type: 'asset/source'
+      type: 'asset/source',
     });
 
-    // Optimize bundle size
-    if (config.mode === 'production') {
+    // Optimize bundle size in production
+    if (!dev) {
       config.optimization.splitChunks = {
         chunks: 'all',
         minSize: 20000,
@@ -37,6 +37,12 @@ const nextConfig = {
             chunks: 'all',
             priority: 10,
           },
+          mui: {
+            test: /[\\/]node_modules[\\/](@mui|@emotion)[\\/]/,
+            name: 'mui-vendors',
+            chunks: 'all',
+            priority: 9,
+          },
           vendors: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
@@ -49,21 +55,28 @@ const nextConfig = {
 
     return config;
   },
-  // Optimize images
   images: {
     domains: [],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
     formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 86400,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  // Compiler options
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
   },
-  // Performance optimizations
   poweredByHeader: false,
   compress: true,
-}
+  staticPageGenerationTimeout: 120,
+  onDemandEntries: {
+    maxInactiveAge: 60 * 60 * 1000,
+    pagesBufferLength: 5,
+  },
+};
 
 module.exports = nextConfig;

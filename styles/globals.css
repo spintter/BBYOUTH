@@ -502,3 +502,93 @@ canvas,
 .page-container {
   background-color: var(--scene-bg-color) !important;
 }
+
+/* Browser compatibility fallbacks and polyfills */
+
+/* Fallback for drop-shadow filter */
+@supports not (filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5))) {
+  .drop-shadow-lg, .drop-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .svg-container, .king-container {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Animation keyframes for browsers without @property support */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pieceGlow {
+  0% { box-shadow: 0 0 0px rgba(255, 215, 0, 0); }
+  50% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.7); }
+  100% { box-shadow: 0 0 0px rgba(255, 215, 0, 0); }
+}
+
+/* Smooth scrolling with fallback */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Better responsive height for hero section */
+.hero-height {
+  height: 600px;
+}
+
+@media (min-width: 768px) {
+  .hero-height {
+    height: 700px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-height {
+    height: 800px;
+  }
+}
+
+/* Ultra wide screen support */
+@media (min-width: 2000px) {
+  .hero-height {
+    height: 900px;
+  }
+}
+
+/* Small screen support */
+@media (max-width: 480px) {
+  .hero-height {
+    height: 450px;
+  }
+}
+
+/* Viewport height fallback for older browsers */
+@supports not (height: 100vh) {
+  .h-screen, .min-h-screen {
+    height: 100%;
+  }
+  
+  body, html {
+    height: 100%;
+  }
+}
+
+/* Accessibility enhancements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

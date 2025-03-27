@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Montserrat, Playfair_Display, Poppins } from 'next/font/google';
 import Script from 'next/script';
 import '../styles/globals.css';
+import ThemeRegistry from '../components/ThemeRegistry';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#FFFFFF'
+  themeColor: '#8B0000'
 };
 
 export default function RootLayout({
@@ -47,8 +48,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable} ${playfair.variable} ${poppins.variable}`}>
-      <body className="bg-white text-[#333333] min-h-screen">
-        {children}
+      <body className="bg-black text-white min-h-screen">
+        <ThemeRegistry>
+          {children}
+        </ThemeRegistry>
         <Script
           src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
           integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow=="

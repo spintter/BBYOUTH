@@ -28,7 +28,7 @@ export default function SectionTransition({
   nextSectionPreview,
   transitionType = 'fade',
   className = '',
-  accentColor = 'var(--bbym-gold-primary)',
+  accentColor = '#8B0000',
   themePattern = 'kente',
 }: SectionTransitionProps) {
   return (
@@ -50,7 +50,7 @@ function SectionTransitionContent({
   nextSectionPreview,
   transitionType = 'fade',
   className = '',
-  accentColor = 'var(--bbym-gold-primary)',
+  accentColor = '#8B0000',
   themePattern = 'kente',
 }: SectionTransitionProps): JSX.Element {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -144,21 +144,21 @@ function SectionTransitionContent({
     switch (themePattern) {
       case 'dots':
         return {
-          backgroundImage: `radial-gradient(${accentColor}33 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(${accentColor}22 1px, transparent 1px)`,
           backgroundSize: '20px 20px',
         };
       case 'lines':
         return {
-          backgroundImage: `linear-gradient(90deg, ${accentColor}33 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(90deg, ${accentColor}22 1px, transparent 1px)`,
           backgroundSize: '20px 20px',
         };
       case 'kente':
         return {
           backgroundImage: `
-            linear-gradient(45deg, ${accentColor}33 25%, transparent 25%), 
-            linear-gradient(-45deg, ${accentColor}33 25%, transparent 25%), 
-            linear-gradient(45deg, transparent 75%, ${accentColor}33 75%), 
-            linear-gradient(-45deg, transparent 75%, ${accentColor}33 75%)
+            linear-gradient(45deg, ${accentColor}22 25%, transparent 25%), 
+            linear-gradient(-45deg, ${accentColor}22 25%, transparent 25%), 
+            linear-gradient(45deg, transparent 75%, ${accentColor}22 75%), 
+            linear-gradient(-45deg, transparent 75%, ${accentColor}22 75%)
           `,
           backgroundSize: '20px 20px',
           backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
@@ -218,9 +218,9 @@ function SectionTransitionContent({
             {children}
           </motion.div>
           
-          {/* Curtain effect */}
+          {/* Curtain effect - Updated for light theme */}
           <motion.div 
-            className="absolute left-0 right-0 bottom-0 bg-gradient-to-t from-[var(--bbym-black)] to-transparent z-20"
+            className="absolute left-0 right-0 bottom-0 bg-gradient-to-t from-slate-50 to-transparent z-20"
             style={{ 
               height: curtainHeight,
               opacity: curtainOpacity
@@ -246,9 +246,12 @@ function SectionTransitionContent({
                 opacity: overlayOpacity
               }}
             >
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white opacity-40 z-10"></div>
               {nextSectionPreview}
             </motion.div>
           )}
+          
+          {renderPatternOverlay()}
         </>
       );
     }

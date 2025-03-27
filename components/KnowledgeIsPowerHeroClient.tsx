@@ -2,54 +2,40 @@
 
 import React, { Suspense, useState, useEffect, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { 
-  OrbitControls, 
-  useGLTF, 
-  Environment, 
-  PerspectiveCamera, 
-  Html
-} from '@react-three/drei';
+import { OrbitControls, useGLTF, PerspectiveCamera, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module';
 
-// Define proper type for Vector3 arrays
 type Vector3Array = [number, number, number];
 
-// Define the chess board coordinate system
 interface ChessCoordinate {
-  file: string; // a-h
-  rank: number; // 1-8
+  file: string;
+  rank: number;
 }
 
-// Constants for chess board
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const RANKS = [1, 2, 3, 4, 5, 6, 7, 8];
 const SQUARE_SIZE = 0.125;
 const BOARD_OFFSET: Vector3Array = [-0.5, 0, -0.5];
 
-// User preferences for styling
 const userPreferences = {
-  glowIntensity: 1.5,
-  rotationSpeed: 0.1,
+  rotationSpeed: 0.05,
   colorScheme: {
-    primary: '#FFD700', // Gold
-    secondary: '#800080', // Purple
-    highlight: '#FF00FF', // Magenta
-    boardDark: '#2A2A2A', // Darker gray for dark squares 
-    boardLight: '#F0F0F0', // Lighter gray for light squares
-    whitePiece: '#FFFFFF', // White pieces
-    blackPiece: '#0A0A0A'  // Black pieces
+    primary: '#8B0000',
+    secondary: '#006400',
+    boardDark: '#000000',
+    boardLight: '#FFFFFF',
+    whitePiece: '#FFFFFF',
+    blackPiece: '#808080' // Adjusted for contrast
   }
 };
 
-// Initialize the MeshoptDecoder
 MeshoptDecoder.ready.then(() => {
   console.log("MeshoptDecoder initialized successfully");
 }).catch((error: Error) => {
   console.error("MeshoptDecoder initialization failed:", error);
 });
 
-// Convert chess notation to 3D position
 function chessToPosition(coord: ChessCoordinate): Vector3Array {
   const fileIndex = FILES.indexOf(coord.file);
   const rankIndex = RANKS.indexOf(coord.rank);
@@ -59,13 +45,12 @@ function chessToPosition(coord: ChessCoordinate): Vector3Array {
     return [0, 0, 0];
   }
   
-  const x = BOARD_OFFSET[0] + fileIndex * SQUARE_SIZE;
-  const z = BOARD_OFFSET[2] + rankIndex * SQUARE_SIZE;
+  const x = BOARD_OFFSET[0] + (fileIndex * SQUARE_SIZE) + (SQUARE_SIZE * 0.5);
+  const z = BOARD_OFFSET[2] + (rankIndex * SQUARE_SIZE) + (SQUARE_SIZE * 0.5);
   
   return [x, 0, z];
 }
 
-// Define props interfaces
 interface ChessPieceProps {
   position: Vector3Array;
   isWhite: boolean;
@@ -79,41 +64,39 @@ interface ChessboardModelProps {
 }
 
 function ChessboardModel({ position = [0, 0, 0] }: ChessboardModelProps) {
-  const { scene } = useGLTF('/models/chessboard.glb');
   const boardRef = useRef<THREE.Group>(null);
-  const highlightMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
 
-  useEffect(() => {
-    if (scene) {
-      scene.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.material = new THREE.MeshStandardMaterial({
-            color: child.material.color,
-            metalness: 0.2,
-            roughness: 0.5,
-            emissive: new THREE.Color(0x111111),
-            emissiveIntensity: 0.5
-          });
-          if (child.name.includes('dark')) {
-            child.material.color.set(userPreferences.colorScheme.boardDark);
-            child.material.roughness = 0.8;
-            child.material.metalness = 0.1;
-          } else if (child.name.includes('light')) {
-            child.material.color.set(userPreferences.colorScheme.boardLight);
-            child.material.roughness = 0.4;
-            child.material.metalness = 0.2;
-          }
-        }
-      });
-    }
-  }, [scene]);
+  // Use a simple plane with shader material for the checkerboard
+  // This is more efficient than loading a GLB model and overlaying a shader
+  const checkerShader = {
+    uniforms: {
+      color1: { value: new THREE.Color(userPreferences.colorScheme.boardLight) },
+      color2: { value: new THREE.Color(userPreferences.colorScheme.boardDark) },
+      scale: { value: 8.0 },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 color1;
+      uniform vec3 color2;
+      uniform float scale;
+      varying vec2 vUv;
+      void main() {
+        vec2 pos = vUv * scale;
+        float pattern = mod(floor(pos.x) + floor(pos.y), 2.0);
+        gl_FragColor = vec4(mix(color1, color2, pattern), 1.0);
+      }
+    `,
+  };
 
   useFrame((state, delta) => {
     if (boardRef.current) {
       boardRef.current.rotation.y += delta * 0.05;
-    }
-    if (highlightMaterialRef.current) {
-      highlightMaterialRef.current.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
     }
   });
 
@@ -149,54 +132,47 @@ function ChessboardModel({ position = [0, 0, 0] }: ChessboardModelProps) {
     <group
       position={position}
       ref={boardRef}
-      rotation={[-Math.PI / 6, 0, Math.PI / 12]}
+      rotation={[-Math.PI / 7, Math.PI / 24, Math.PI / 12]}
     >
-      <primitive object={scene} scale={[0.03, 0.03, 0.03]} />
-      <mesh
-        position={[chessToPosition({ file: 'h', rank: 4 })[0], 0.01, chessToPosition({ file: 'h', rank: 4 })[2]]}
-        rotation={[-Math.PI / 2, 0, 0]}
-      >
-        <planeGeometry args={[SQUARE_SIZE * 0.7, SQUARE_SIZE * 0.7]} />
-        <meshBasicMaterial
-          ref={highlightMaterialRef}
-          color={userPreferences.colorScheme.highlight}
-          transparent
-          opacity={0.3}
-          toneMapped={false}
+      {/* Single shader plane for checkerboard instead of GLB model */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <shaderMaterial
+          uniforms={checkerShader.uniforms}
+          vertexShader={checkerShader.vertexShader}
+          fragmentShader={checkerShader.fragmentShader}
         />
       </mesh>
-
       {whitePieces.map((piece, index) => {
         const pos = chessToPosition(piece.coord);
         switch (piece.type) {
           case 'king':
-            return <ChessKing key={index} position={pos} isWhite={true} />;
+            return <ChessKing key={`white-king-${index}`} position={pos} isWhite={true} />;
           case 'queen':
-            return <ChessQueen key={index} position={pos} isWhite={true} isHighlighted={true} />;
+            return <ChessQueen key={`white-queen-${index}`} position={pos} isWhite={true} isHighlighted={true} />;
           case 'rook':
-            return <ChessRook key={index} position={pos} isWhite={true} />;
+            return <ChessRook key={`white-rook-${index}`} position={pos} isWhite={true} />;
           case 'knight':
-            return <ChessKnight key={index} position={pos} isWhite={true} />;
+            return <ChessKnight key={`white-knight-${index}`} position={pos} isWhite={true} />;
           case 'pawn':
-            return <ChessPawn key={index} position={pos} isWhite={true} />;
+            return <ChessPawn key={`white-pawn-${index}`} position={pos} isWhite={true} />;
           default:
             return null;
         }
       })}
-
       {blackPieces.map((piece, index) => {
         const pos = chessToPosition(piece.coord);
         switch (piece.type) {
           case 'king':
-            return <ChessKing key={index} position={pos} isWhite={false} isHighlighted={true} />;
+            return <ChessKing key={`black-king-${index}`} position={pos} isWhite={false} isHighlighted={true} />;
           case 'queen':
-            return <ChessQueen key={index} position={pos} isWhite={false} />;
+            return <ChessQueen key={`black-queen-${index}`} position={pos} isWhite={false} />;
           case 'rook':
-            return <ChessRook key={index} position={pos} isWhite={false} />;
+            return <ChessRook key={`black-rook-${index}`} position={pos} isWhite={false} />;
           case 'knight':
-            return <ChessKnight key={index} position={pos} isWhite={false} />;
+            return <ChessKnight key={`black-knight-${index}`} position={pos} isWhite={false} />;
           case 'pawn':
-            return <ChessPawn key={index} position={pos} isWhite={false} />;
+            return <ChessPawn key={`black-pawn-${index}`} position={pos} isWhite={false} />;
           default:
             return null;
         }
@@ -208,10 +184,7 @@ function ChessboardModel({ position = [0, 0, 0] }: ChessboardModelProps) {
 function ChessPiece({ position, isWhite, scale, additionalGeometry, isHighlighted = false }: ChessPieceProps) {
   const { scene } = useGLTF('/models/chess_pawn.glb');
   const pieceRef = useRef<THREE.Group>(null);
-  const highlightMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
-  const shadowMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
 
-  // Clone the entire scene and apply custom material to all meshes
   const clonedScene = useRef<THREE.Group>();
   useEffect(() => {
     if (scene) {
@@ -219,17 +192,11 @@ function ChessPiece({ position, isWhite, scale, additionalGeometry, isHighlighte
       clonedScene.current.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           child.material = new THREE.MeshStandardMaterial({
-            color: isWhite ? '#FFFFFF' : '#0A0A0A',
-            metalness: 0.5,
-            roughness: 0.5,
-            emissive: isWhite ? '#FFFFFF' : '#0A0A0A',
-            emissiveIntensity: isWhite ? 0.1 : 0,
-            map: null,
-            vertexColors: false,
+            color: isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece,
+            metalness: 0.2,
+            roughness: 0.6,
             side: THREE.DoubleSide
           });
-          child.castShadow = true;
-          child.receiveShadow = true;
         }
       });
     }
@@ -238,42 +205,15 @@ function ChessPiece({ position, isWhite, scale, additionalGeometry, isHighlighte
   useFrame((state, delta) => {
     if (pieceRef.current) {
       pieceRef.current.rotation.y += delta * userPreferences.rotationSpeed;
-      pieceRef.current.position.y = 0.01 + Math.sin(state.clock.elapsedTime) * 0.005;
-    }
-    if (highlightMaterialRef.current) {
-      highlightMaterialRef.current.opacity = 0.2 + Math.sin(state.clock.elapsedTime * 1.0) * 0.2;
-    }
-    if (shadowMaterialRef.current) {
-      shadowMaterialRef.current.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
     }
   });
 
   return (
-    <group position={[position[0], 0, position[2]]} ref={pieceRef}>
+    <group position={[position[0], 0.05, position[2]]} ref={pieceRef}>
       <group scale={scale}>
         {clonedScene.current && <primitive object={clonedScene.current} />}
         {additionalGeometry}
       </group>
-      <mesh position={[0, -0.0145, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.09, 16]} />
-        <meshBasicMaterial
-          ref={shadowMaterialRef}
-          color="#000000"
-          transparent
-          opacity={0.3}
-          toneMapped={false}
-        />
-      </mesh>
-      <mesh position={[0, -0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.08, 16]} />
-        <meshBasicMaterial
-          ref={highlightMaterialRef}
-          color={userPreferences.colorScheme.primary}
-          transparent
-          opacity={0.2}
-          toneMapped={false}
-        />
-      </mesh>
     </group>
   );
 }
@@ -283,7 +223,7 @@ function ChessPawn({ position, isWhite }: { position: Vector3Array; isWhite: boo
     <ChessPiece
       position={position}
       isWhite={isWhite}
-      scale={[0.144, 0.144, 0.144]}
+      scale={[0.15, 0.15, 0.15]}
     />
   );
 }
@@ -293,19 +233,11 @@ function ChessKing({ position, isWhite, isHighlighted }: { position: Vector3Arra
     <group position={[0, 0.5, 0]}>
       <mesh>
         <boxGeometry args={[0.05, 0.2, 0.05]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
+        <meshStandardMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
       </mesh>
       <mesh position={[0, 0.1, 0]}>
         <boxGeometry args={[0.15, 0.05, 0.05]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
-      </mesh>
-      <mesh position={[0.05, 0.15, 0]}>
-        <boxGeometry args={[0.05, 0.05, 0.05]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
-      </mesh>
-      <mesh position={[-0.05, 0.15, 0]}>
-        <boxGeometry args={[0.05, 0.05, 0.05]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
+        <meshStandardMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
       </mesh>
     </group>
   );
@@ -314,7 +246,7 @@ function ChessKing({ position, isWhite, isHighlighted }: { position: Vector3Arra
     <ChessPiece
       position={position}
       isWhite={isWhite}
-      scale={[0.144, 0.18, 0.144]}
+      scale={[0.18, 0.22, 0.18]}
       additionalGeometry={cross}
       isHighlighted={isHighlighted}
     />
@@ -326,11 +258,11 @@ function ChessQueen({ position, isWhite, isHighlighted }: { position: Vector3Arr
     <group position={[0, 0.5, 0]}>
       <mesh>
         <cylinderGeometry args={[0.05, 0.03, 0.1, 12]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
+        <meshStandardMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
       </mesh>
       <mesh position={[0, 0.05, 0]}>
         <cylinderGeometry args={[0.04, 0.04, 0.05, 12]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
+        <meshStandardMaterial color={isWhite ? userPreferences.colorScheme.primary : userPreferences.colorScheme.secondary} />
       </mesh>
     </group>
   );
@@ -339,7 +271,7 @@ function ChessQueen({ position, isWhite, isHighlighted }: { position: Vector3Arr
     <ChessPiece
       position={position}
       isWhite={isWhite}
-      scale={[0.12, 0.2, 0.12]}
+      scale={[0.16, 0.2, 0.16]}
       additionalGeometry={crown}
       isHighlighted={isHighlighted}
     />
@@ -351,23 +283,11 @@ function ChessRook({ position, isWhite }: { position: Vector3Array; isWhite: boo
     <group position={[0, 0.4, 0]}>
       <mesh>
         <boxGeometry args={[0.15, 0.05, 0.15]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece} />
+        <meshStandardMaterial color={isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece} />
       </mesh>
       <mesh position={[0.05, 0.025, 0.05]}>
         <boxGeometry args={[0.05, 0.05, 0.05]} />
-        <meshBasicMaterial color="#000000" transparent opacity={0.5} />
-      </mesh>
-      <mesh position={[-0.05, 0.025, -0.05]}>
-        <boxGeometry args={[0.05, 0.05, 0.05]} />
-        <meshBasicMaterial color="#000000" transparent opacity={0.5} />
-      </mesh>
-      <mesh position={[0.05, 0.025, -0.05]}>
-        <boxGeometry args={[0.05, 0.05, 0.05]} />
-        <meshBasicMaterial color="#000000" transparent opacity={0.5} />
-      </mesh>
-      <mesh position={[-0.05, 0.025, 0.05]}>
-        <boxGeometry args={[0.05, 0.05, 0.05]} />
-        <meshBasicMaterial color="#000000" transparent opacity={0.5} />
+        <meshStandardMaterial color="#000000" transparent opacity={0.3} />
       </mesh>
     </group>
   );
@@ -376,7 +296,7 @@ function ChessRook({ position, isWhite }: { position: Vector3Array; isWhite: boo
     <ChessPiece
       position={position}
       isWhite={isWhite}
-      scale={[0.16, 0.12, 0.16]}
+      scale={[0.17, 0.14, 0.17]}
       additionalGeometry={crenelation}
     />
   );
@@ -386,20 +306,12 @@ function ChessKnight({ position, isWhite }: { position: Vector3Array; isWhite: b
   const horseHead = (
     <group position={[0, 0.4, 0]}>
       <mesh position={[0, 0.05, 0.05]}>
-        <sphereGeometry args={[0.05, 8, 8]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece} />
+        <sphereGeometry args={[0.05, 12, 12]} />
+        <meshStandardMaterial color={isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece} />
       </mesh>
       <mesh position={[0, 0, 0.05]}>
-        <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece} />
-      </mesh>
-      <mesh position={[0.03, 0.1, 0.05]}>
-        <coneGeometry args={[0.02, 0.05, 8]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece} />
-      </mesh>
-      <mesh position={[-0.03, 0.1, 0.05]}>
-        <coneGeometry args={[0.02, 0.05, 8]} />
-        <meshBasicMaterial color={isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece} />
+        <cylinderGeometry args={[0.02, 0.02, 0.1, 10]} />
+        <meshStandardMaterial color={isWhite ? userPreferences.colorScheme.whitePiece : userPreferences.colorScheme.blackPiece} />
       </mesh>
     </group>
   );
@@ -408,29 +320,19 @@ function ChessKnight({ position, isWhite }: { position: Vector3Array; isWhite: b
     <ChessPiece
       position={position}
       isWhite={isWhite}
-      scale={[0.14, 0.16, 0.14]}
+      scale={[0.15, 0.17, 0.15]}
       additionalGeometry={horseHead}
     />
   );
 }
 
 function Scene() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const [isMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     console.log("Preloading 3D models...");
     try {
-      useGLTF.preload('/models/chess_pawn.glb');
-      useGLTF.preload('/models/chessboard.glb');
+      useGLTF.preload('/models/chess_pawn.glb', true);
       console.log("Preloading complete");
     } catch (error) {
       console.error("Preloading failed:", error);
@@ -439,20 +341,14 @@ function Scene() {
 
   return (
     <>
-      <color attach="background" args={['#030310']} />
-      <ambientLight intensity={0.3} />
+      <color attach="background" args={['#000000']} />
+      <ambientLight intensity={0.002} />
       <directionalLight 
-        position={[5, 5, 5]}
-        intensity={1.0}
-        castShadow 
-        shadow-mapSize={[2048, 2048]}
+        position={[0, 5, 0]}
+        intensity={0.7}
+        castShadow={false}
       />
-      <pointLight
-        position={[0, 2, 0]}
-        intensity={0.5}
-        castShadow
-      />
-      <group position={[0.5, -0.2, 0]}>
+      <group position={[0.5, -0.15, 0]}>
         <ChessboardModel position={[0, -0.1, 0]} />
       </group>
       <OrbitControls 
@@ -460,8 +356,6 @@ function Scene() {
         enablePan={false}
         minDistance={2.0}
         maxDistance={2.0}
-        enableDamping
-        dampingFactor={0.05}
         minPolarAngle={Math.PI / 6}
         maxPolarAngle={Math.PI / 2}
       />
@@ -472,7 +366,6 @@ function Scene() {
         near={0.1}
         far={100}
       />
-      <Environment preset="studio" />
     </>
   );
 }
@@ -496,12 +389,12 @@ function HeroContent() {
           <span className="block text-yellow-400 animate-fadeInUp" style={{ animationDelay: '0.4s' }}>strategy</span>
         </h1>
         <p className="text-base sm:text-xl md:text-2xl mb-8 text-gray-200 max-w-md sm:max-w-lg animate-fadeInUp" style={{ animationDelay: '0.6s' }}>
-          Guiding Birmingham's youth through <span className="text-cyan-400">critical thinking</span>, <span className="text-purple-400">cultural heritage</span>, and <span className="text-pink-400">creative expression</span> to cultivate the next generation of leaders, thinkers, and innovators in the humanities.
+          Guiding Birmingham's youth through <span className="text-red-500">critical thinking</span>, <span className="text-green-500">cultural heritage</span>, and <span className="text-red-500">creative expression</span> to cultivate the next generation of leaders, thinkers, and innovators in the humanities.
         </p>
         <div className="pointer-events-auto animate-fadeInUp" style={{ animationDelay: '0.8s' }}>
           <a 
             href="#mission" 
-            className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-md inline-flex items-center transition-all duration-300 hover:scale-105 hover:shadow-[0_0_10px_rgba(255,215,0,0.5)]"
+            className="bg-red-700 hover:bg-red-800 text-white font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-md inline-flex items-center transition-all duration-300 hover:scale-105"
           >
             Join Our Program
             <svg className="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -518,8 +411,8 @@ function LoadingFallback() {
   return (
     <div className="flex items-center justify-center h-screen bg-[#030310]">
       <div className="text-center">
-        <div className="w-16 h-16 border-4 border-t-yellow-500 border-b-purple-500 border-l-pink-400 border-r-cyan-400 rounded-full animate-spin mb-4 mx-auto"></div>
-        <p className="text-yellow-400 text-xl font-serif">Awakening wisdom...</p>
+        <div className="w-16 h-16 border-4 border-t-red-700 border-b-green-700 border-l-white border-r-red-500 rounded-full animate-spin mb-4 mx-auto"></div>
+        <p className="text-red-600 text-xl font-serif">Awakening wisdom...</p>
       </div>
     </div>
   );
@@ -531,8 +424,7 @@ export default function KnowledgeIsPowerHero() {
   useEffect(() => {
     console.log("Component mounting, starting to load resources...");
     try {
-      useGLTF.preload('/models/chess_pawn.glb');
-      useGLTF.preload('/models/chessboard.glb');
+      useGLTF.preload('/models/chess_pawn.glb', true);
       console.log("Models preloaded successfully");
     } catch (error) {
       console.error("Error preloading models:", error);
@@ -550,17 +442,15 @@ export default function KnowledgeIsPowerHero() {
   return (
     <div className="relative w-full h-[90vh] md:h-screen">
       <Canvas
-        shadows
-        dpr={[1, 2]}
+        shadows={false}
+        dpr={[1, 1.5]}
         gl={{
           antialias: true,
           alpha: false,
-          powerPreference: 'high-performance',
+          powerPreference: 'default',
+          precision: 'highp',
         }}
         className="w-full h-full"
-        onCreated={(state) => {
-          console.log("Canvas created successfully");
-        }}
       >
         <Suspense fallback={
           <Html center>

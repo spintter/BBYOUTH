@@ -30,7 +30,7 @@ const ChurchPhotoSection = () => {
         <div className="relative group overflow-hidden rounded-lg shadow-lg">
           <img
             className="w-full h-full object-cover rounded-lg shadow-lg"
-            src="/images/optimized/16th_Street_Baptist_Church_optimized.jpg"
+            src="/images/16th_Street_Baptist_Church_optimized.jpg"
             alt="16th Street Baptist Church"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">

@@ -11,7 +11,7 @@ const newsArticles = [
     id: 1,
     title: 'Virtual Reality History Tours Launch for Birmingham Schools',
     excerpt: 'Students can now explore historical sites through immersive VR experiences developed by our digital humanities team.',
-    imageUrl: '/images/16thst_bap.jpg',
+    imageUrl: '/images/16thst_bap_optimized.jpg',
     date: 'June 15, 2023',
     category: 'Technology',
     link: '/news/vr-history-tours'
@@ -20,7 +20,7 @@ const newsArticles = [
     id: 2,
     title: 'Digital Archive of Civil Rights Movement Expands',
     excerpt: 'Our collaborative project with local libraries has digitized over 5,000 documents and photographs from the Civil Rights era.',
-    imageUrl: '/images/16th_Street_Baptist_Church.jpg',
+    imageUrl: '/images/16th_Street_Baptist_Church_optimized.jpg',
     date: 'May 28, 2023',
     category: 'Archives',
     link: '/news/digital-archive-expansion'
@@ -29,7 +29,7 @@ const newsArticles = [
     id: 3,
     title: 'Youth Coding Workshop Creates Interactive Literature Map',
     excerpt: 'Participants in our summer program developed an interactive map showcasing Birmingham\'s literary landmarks and history.',
-    imageUrl: '/images/church4.webp',
+    imageUrl: '/images/church4_optimized.webp',
     date: 'July 3, 2023',
     category: 'Education',
     link: '/news/coding-workshop-map'
@@ -40,68 +40,56 @@ const projects = [
   {
     title: 'Oral History Archive',
     description: 'Digital collection of community stories and testimonies',
-    imageUrl: '/images/optimized/blackhistory_optimized.jpeg',
+    imageUrl: '/images/blackhistory_optimized.jpeg',
     link: '/projects/oral-history'
   },
   {
     title: 'Civil Rights Timeline',
     description: 'Interactive timeline of the Civil Rights Movement',
-    imageUrl: '/images/optimized/mlk_optimized.jpeg',
+    imageUrl: '/images/mlk_optimized.jpeg',
     link: '/projects/civil-rights'
   },
   {
     title: 'Virtual Museum Tours',
     description: 'Digital access to cultural heritage sites',
-    imageUrl: '/images/optimized/16thst_bap_optimized.jpg',
+    imageUrl: '/images/16thst_bap_optimized.jpg',
     link: '/projects/virtual-tours'
   }
 ];
 
 const DigitalHumanitiesSection = () => {
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { 
-        duration: 0.6,
-        ease: [0.43, 0.13, 0.23, 0.96]
-      } 
-    },
-  };
-
   return (
-    <section className="py-20 bg-gradient-to-b from-[#2C2F77] to-[#1A1A2E]">
+    <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
       <div className="container mx-auto px-6">
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-playfair">Digital Humanities</h2>
-          <p className="text-lg text-[#F5F5F5] max-w-3xl mx-auto font-poppins">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-playfair">Digital Humanities</h2>
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-poppins">
             Exploring the intersection of technology and humanities to create innovative
             educational experiences for our youth community.
           </p>
+          {/* Visual thread element - thin accent line */}
+          <div className="w-24 h-1 bg-red-700 mx-auto mt-8 rounded-full"></div>
         </motion.div>
 
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.2,
+                delayChildren: 0.3,
+                ease: [0.25, 0.1, 0.25, 1]
+              }
+            }
+          }}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
@@ -109,12 +97,24 @@ const DigitalHumanitiesSection = () => {
           {newsArticles.map((article) => (
             <motion.div
               key={article.id}
-              variants={itemVariants}
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { 
+                  opacity: 1, 
+                  y: 0,
+                  transition: { 
+                    duration: 0.6,
+                    ease: [0.25, 0.1, 0.25, 1]
+                  } 
+                }
+              }}
               whileHover={{ 
                 scale: 1.03, 
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" 
+                boxShadow: "0 10px 30px -12px rgba(0, 0, 0, 0.15)",
+                y: -5
               }}
-              className="bg-[#2C2F77] rounded-lg overflow-hidden shadow-lg transform transition-all duration-300"
+              whileTap={{ scale: 0.98 }}
+              className="bg-white rounded-lg overflow-hidden shadow-sm border border-slate-100 transform transition-all duration-300"
             >
               <Link href={article.link} className="block h-full">
                 <div className="relative h-56 overflow-hidden">
@@ -125,30 +125,30 @@ const DigitalHumanitiesSection = () => {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover transition-transform duration-500 hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] to-transparent opacity-70"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-800/70 to-transparent"></div>
                   <div className="absolute bottom-4 left-4 right-4">
-                    <span className="inline-block px-3 py-1 text-xs font-medium bg-[#00C4FF] text-white rounded-full mb-2">
+                    <span className="inline-block px-3 py-1 text-xs font-medium bg-red-700 text-white rounded-full mb-2">
                       {article.category}
                     </span>
-                    <span className="block text-sm text-[#F5F5F5] font-medium">
+                    <span className="block text-sm text-white font-medium">
                       {article.date}
                     </span>
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold mb-3 text-white font-playfair">
+                  <h3 className="text-xl font-bold mb-3 text-slate-800 font-playfair">
                     {article.title}
                   </h3>
-                  <p className="text-[#F5F5F5] mb-4 font-poppins">
+                  <p className="text-slate-600 mb-4 font-poppins">
                     {article.excerpt}
                   </p>
-                  <div className="flex items-center">
-                    <span className="text-[#00C4FF] font-medium text-sm font-poppins">
+                  <div className="flex items-center group">
+                    <span className="text-red-700 font-medium text-sm font-poppins group-hover:translate-x-1 transition-transform duration-300">
                       Read More
                     </span>
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
-                      className="h-4 w-4 ml-1 text-[#00C4FF]" 
+                      className="h-4 w-4 ml-1 text-red-700 group-hover:translate-x-1 transition-transform duration-300" 
                       fill="none" 
                       viewBox="0 0 24 24" 
                       stroke="currentColor"
@@ -163,17 +163,20 @@ const DigitalHumanitiesSection = () => {
         </motion.div>
 
         <motion.div 
-          className="mt-12 text-center"
+          className="mt-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.6 }}
+          transition={{ duration: 0.5, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <Link 
             href="/digital-humanities" 
-            className="inline-block px-8 py-3 bg-[#00C4FF] text-white font-medium rounded-full hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300 shadow-lg hover:shadow-xl font-poppins"
+            className="group relative inline-block px-8 py-3 bg-red-700 text-white font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md font-poppins overflow-hidden"
           >
-            Explore All Digital Projects
+            <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">
+              Explore All Digital Projects
+            </span>
+            <div className="absolute inset-0 bg-red-800 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></div>
           </Link>
         </motion.div>
       </div>

@@ -1,131 +1,109 @@
 
-# This site is for a youth ministry group that is supprting the humantities in Birmingham Alabama. 
 
-# This site is a responsive flex-grid layout that dynamically adapts to diverse viewport sizes, featuring a 3D motion hero section @KnowledgeIsPowerHero.tsx with a customizable, adaptive overlay element strategically positioned (beside or below) based on real-time viewport analysis. Constrain the 3D composition @index.tsx is where we keep it  within a flexible container (initially 800px x 600px, scaling to 100% viewport width/height on mobile devices via advanced CSS media queries), integrating smooth rotational animations (upward spirals, 360-degree orbits, and procedurally generated patterns) with robust boundary overflow prevention using cutting-edge CSS clamping and JavaScript collision detection algorithms. Infuse the design with intellectual elegance and cultural depth, centering on Afro-centric perspectives with chess as a thematic cornerstone, narrating a transformative arc where a pawn (symbolized as a young African girl) evolves into a queen through high-fidelity 3D models with seamless 3-5 second morphing transitions driven by cubic-bezier easing, adjustable via user-defined parameters. 
-Structural Foundation: Hierarchical Clarity and Modular Flexibility
-- **Grid System**: Use a responsive 12-column grid with flexible breakpoints (e.g., 320px, 768px, 1024px, 1440px, 1920px) to ensure scalability across devices. Maintain consistent gutter widths (e.g., 20-30px) and padding to create breathing room.
-- **Content Hierarchy**: Establish a clear visual hierarchy using typography scale (e.g., H1: 48px, H2: 32px, H3: 24px, body: 16-18px) and spacing (e.g., 8px baseline increments). Prioritize key content blocks (hero, featured articles, navigation) with proportional weighting.
-- **Modular Architecture**: Design with reusable, self-contained components (e.g., cards, carousels, nav bars) that can be mixed and matched without breaking flow. Ensure each module adheres to atomic design principles—atoms (buttons, icons), molecules (search bars), organisms (header with nav).
+# System Instructions for Comprehensive Technical Analysis
 
-#### 2. Layout: Balanced Asymmetry with Intentional Focus
-- **Hero Section**: Anchor the page with a full-width, high-impact hero (60-70vh height) featuring a bold headline, subtle subtext, and a visually striking image or video background. Overlay with a gradient scrim (e.g., 0-20% opacity) for text legibility.
-- **Content Zones**: Divide the layout into distinct zones using horizontal or vertical separators (subtle lines or whitespace). Alternate between symmetrical and asymmetrical layouts (e.g., a 2:1 split with a large image and adjacent text) to maintain dynamism.
-- **Whitespace Strategy**: Leverage generous negative space (20-40% of total layout) to prevent visual clutter and guide the eye naturally. Increase spacing between unrelated sections (e.g., 80-120px) and tighten it within related clusters (e.g., 20-40px).
-- **Sticky Elements**: Incorporate a sticky navigation bar (top or side) that collapses on scroll to a minimal state, ensuring constant access without dominating the viewport.
+## Core Analysis Principles
+1. **Evidence-First Reasoning**: Always base conclusions on direct evidence obtained through tool usage, not assumptions.
+   - Use appropriate tools to gather facts before forming conclusions
+   - When making claims, cite specific evidence with file paths, line numbers, or direct quotes
+   - Distinguish clearly between observed facts and inferred conclusions
 
-D#### 3. Component Design: Functional Elegance and Cohesive Variety
-- **Typography**: Pair a modern sans-serif (e.g., Inter, Roboto) for body text with a serif or bold sans-serif (e.g., Georgia, Montserrat) for headings. Maintain a contrast ratio of at least 4.5:1 (WCAG AA) for accessibility.
-- **Cards**: Design article cards with a 3:4 or 16:9 aspect ratio, featuring a thumbnail image, headline (18-22px), and truncated teaser text (14-16px). Add subtle hover effects (e.g., 2px lift, 10% brightness increase) to signal interactivity.
-- **Buttons and CTAs**: Use rounded rectangular buttons (4-8px radius) with a primary color fill (e.g., #007AFF) and secondary outline variant. Ensure padding (12-16px vertical, 24-32px horizontal) for touch-friendliness and micro-animations (e.g., 0.2s scale-up on hover).
-- **Media Integration**: Embed images and videos with lazy loading and a 0.5s fade-in on load. Use object-fit: cover for consistency and subtle parallax effects (e.g., 10-20px shift on scroll) for depth.
-- **Consistency with Variation**: Standardize component padding, margins, and corner radii across the site, but vary sizes or orientations (e.g., horizontal vs. vertical cards) to keep the design lively yet unified.
+2. **Progressive Understanding**: Build knowledge systematically through layered investigation.
+   - Begin with broad exploration to understand the scope and structure
+   - Progressively narrow focus to examine specific components in detail
+   - Synthesize findings into a holistic understanding before proposing solutions
 
-#### 4. Integration: Seamless Component Flow and Visual Continuity
-- **Color Palette**: Limit to 4-6 colors—1 primary (brand-defining), 1 secondary (accents), 2 neutrals (backgrounds, text), and 1-2 situational tones (e.g., alerts). Use HSL for flexibility and ensure 70%+ of the palette is light/neutral for a bright, crisp aesthetic.
-- **Visual Thread**: Tie components together with recurring motifs (e.g., a thin accent line, a signature curve) or a consistent animation style (e.g., easing: cubic-bezier(0.25, 0.1, 0.25, 1)).
-- **Zoning Transitions**: Blend sections with overlapping elements (e.g., a card from one zone slightly encroaching into the next) or gradient fades (e.g., 100px height) to soften hard edges and suggest continuity.
-- **Micro-Interactions**: Add purposeful micro-interactions (e.g., a 0.3s rotate on arrow clicks, a ripple effect on taps) to reinforce functionality without overwhelming the user.
+3. **Cross-Verification**: Actively compare information across multiple sources.
+   - Check for consistency between implementation, documentation, and assets
+   - When inconsistencies are found, prioritize actual implementation evidence
+   - Verify claims against multiple sources when possible
 
-#### 5. User Flow: Intuitive Navigation and Progressive Disclosure
-- **Navigation Design**: Implement a top-level menu with 5-7 items max, supplemented by a hamburger menu on mobile that expands with a 0.4s slide-in. Include a breadcrumb trail for deeper pages and a persistent “Back to Top” button after 50% scroll.
-- **Content Progression**: Guide users from high-level overviews (hero, featured) to detailed explorations (articles, sidebars) using progressive disclosure—e.g., “Read More” links expand inline rather than jumping to new pages.
-- **Search and Filters**: Position a search bar prominently (top-right or hero-integrated) with autocomplete and a filter overlay (e.g., by date, category) that slides in from the right with a 0.3s transition.
-- **Error States**: Design graceful fallbacks (e.g., 404 pages with search suggestions) that maintain the site’s aesthetic and flow, avoiding jarring interruptions.
+4. **Thorough Documentation**: Document the investigation process and findings comprehensively.
+   - Record all critical observations during investigation
+   - Include specific evidence for each finding
+   - Structure documentation to show the logical progression of analysis
 
-#### 6. Transitions and Animations: Fluid Motion with Purpose
-- **Page Transitions**: Use a 0.5-0.7s fade or slide (left-to-right for forward, right-to-left for back) between pages to maintain context. Preload content to minimize perceived lag.
-- **Section Transitions**: Trigger subtle animations as sections enter the viewport—e.g., a 0.4s fade-up (20px offset) for text, a 0.6s slide-in for images. Stagger timings (e.g., 0.1s delay per element) for a cascading effect.
-- **Scroll Dynamics**: Apply smooth-scroll behavior (e.g., scroll-behavior: smooth in CSS) and slight parallax (e.g., background images move at 0.8x speed) to enhance depth without dizziness.
-- **Hover and Click Feedback**: Animate interactive elements with a 0.2-0.3s ease-in-out (e.g., scale 1.05x, opacity shift) to confirm engagement. Avoid excessive motion—limit to 1-2 animated properties per interaction.
-- **Major Transitions (Above-to-Below)**: For significant shifts (e.g., hero to content), use a “curtain” effect—content slides up as the hero fades out—or a 0.8s overlap where the next section’s top edge peeks in early, creating anticipation.
+## Analytical Process Instructions
 
-#### 7. Major Transition Design: From “Here” to “Below It”
-- **Contextual Continuity**: Ensure the transition from the hero (or any anchor section) to the next block feels like a natural descent. Use a persistent element (e.g., a thin colored bar or floating headline) that carries over briefly to bridge the shift.
-- **Visual Cue**: Introduce the “below” section with a teaser element (e.g., the top 10% of an image or headline) visible at the bottom of the viewport, enticing the scroll.
-- **Animation Choreography**: As the user scrolls, fade out the upper section (0.5s opacity drop) while the lower section slides in (0.6s from 20px below). Add a subtle scale effect (e.g., 0.98x to 1x) to the incoming content for a polished reveal.
-- **Emotional Impact**: Match the transition’s tone to the content shift—e.g., a sharp, energetic snap for breaking news, a slow dissolve for in-depth features.
+### Stage 1: Initial Exploration
+- Use directory listing tools to map available resources
+- Identify key files, their types, and apparent relationships
+- Note any unexpected patterns or missing elements
+- Form initial hypotheses about system structure and function
 
----
+### Stage 2: Component Analysis
+- Examine individual files in detail using file reading tools
+- For code files, trace execution flows and identify core functionality
+- For asset files, check for quality, consistency, and proper formatting
+- For configuration files, verify settings against requirements
+- Document specific issues found in each component
 
-### Core Rules for Execution
-1. **Consistency is King**: Every element must align with the established grid, palette, and motion language—no exceptions.
-2. **Clarity Over Cleverness**: Prioritize legibility and intuitive flow over flashy gimmicks; animations should enhance, not distract.
-3. **Performance Parity**: Optimize for 60fps animations and sub-2-second page loads (e.g., compress images to <200KB, defer non-critical JS).
-4. **User-Centric Testing**: Validate flow and transitions across devices (mobile, tablet, desktop) and user types (casual skimmers, deep readers).
-5. **Scalable Simplicity**: Design components and transitions that can evolve with content volume without losing cohesion.<cursor-tools Integration>
-# Instructions
-Use the following commands to get AI assistance:
+### Stage 3: Integration Analysis
+- Examine how components interact with each other
+- Verify that interfaces between components match expectations
+- Identify any mismatches in assumptions between components
+- Test integration points for potential failure modes
+- Document integration issues with specific evidence
 
-**Web Search:**
-`cursor-tools web "<your question>"` - Get answers from the web using Perplexity AI (e.g., `cursor-tools web "latest weather in London"`)
-when using web for complex queries suggest writing the output to a file somewhere like local-research/<query summary>.md.
+### Stage 4: Issue Synthesis
+- Categorize identified issues by type, severity, and component
+- Identify patterns that suggest systemic problems
+- Distinguish between surface symptoms and root causes
+- Prioritize issues based on impact and dependencies
+- Create a structured issue report with evidence for each item
 
-**Repository Context:**
-`cursor-tools repo "<your question>"` - Get context-aware answers about this repository using Google Gemini (e.g., `cursor-tools repo "explain authentication flow"`)
+### Stage 5: Solution Design
+- Develop targeted solutions for each identified issue
+- Group related solutions for efficiency when appropriate
+- Consider dependencies between solutions
+- Provide specific implementation guidance with code examples
+- Create a prioritized implementation plan
 
-**Documentation Generation:**
-`cursor-tools doc [options]` - Generate comprehensive documentation for this repository (e.g., `cursor-tools doc --output docs.md`)
-when using doc for remote repos suggest writing the output to a file somewhere like local-docs/<repo-name>.md.
+## Tool Usage Guidelines
 
-**GitHub Information:**
-`cursor-tools github pr [number]` - Get the last 10 PRs, or a specific PR by number (e.g., `cursor-tools github pr 123`)
-`cursor-tools github issue [number]` - Get the last 10 issues, or a specific issue by number (e.g., `cursor-tools github issue 456`)
+### Directory Listing Tool
+- Use early in analysis to understand available resources
+- Apply recursively to understand nested structure when needed
+- Note patterns in naming and organization
 
-**Browser Automation (Stateless):**
-`cursor-tools browser open <url> [options]` - Open a URL and capture page content, console logs, and network activity (e.g., `cursor-tools browser open "https://example.com" --html`)
-`cursor-tools browser act "<instruction>" --url=<url> [options]` - Execute actions on a webpage using natural language instructions (e.g., `cursor-tools browser act "Click Login" --url=https://example.com`)
-`cursor-tools browser observe "<instruction>" --url=<url> [options]` - Observe interactive elements on a webpage and suggest possible actions (e.g., `cursor-tools browser observe "interactive elements" --url=https://example.com`)
-`cursor-tools browser extract "<instruction>" --url=<url> [options]` - Extract data from a webpage based on natural language instructions (e.g., `cursor-tools browser extract "product names" --url=https://example.com/products`)
+### File Reading Tool
+- Examine key files completely rather than sampling
+- When files are large, focus on critical sections
+- Compare similar files to identify inconsistencies
+- Check for hidden patterns across files
 
-**Notes on Browser Commands:**
-- All browser commands are stateless: each command starts with a fresh browser instance and closes it when done.
-- When using `--connect-to`, special URL values are supported:
-  - `current`: Use the existing page without reloading
-  - `reload-current`: Use the existing page and refresh it (useful in development)
-- Multi step workflows involving state or combining multiple actions are supported in the `act` command using the pipe (|) separator (e.g., `cursor-tools browser act "Click Login | Type 'user@example.com' into email | Click Submit" --url=https://example.com`)
-- Video recording is available for all browser commands using the `--video=<directory>` option. This will save a video of the entire browser interaction at 1280x720 resolution. The video file will be saved in the specified directory with a timestamp.
-- DO NOT ask browser act to "wait" for anything, the wait command is currently disabled in Stagehand.
+### Sequential Thinking Tool
+- Use to break complex analyses into manageable steps
+- Document reasoning at each step
+- Revisit and revise understanding as new evidence emerges
+- Trace logical connections between observations and conclusions
 
-**Tool Recommendations:**
-- `cursor-tools web` is best for general web information not specific to the repository.
-- `cursor-tools repo` is ideal for repository-specific questions, planning, code review and debugging.
-- `cursor-tools doc` generates documentation for local or remote repositories.
-- `cursor-tools browser` is useful for testing and debugging web apps.
+### Other Specialized Tools
+- Use language-specific tools when analyzing code
+- Employ visual tools when examining graphical assets
+- Apply mathematical tools for performance or algorithm analysis
+- Leverage domain-specific tools when available
 
-**Running Commands:**
-1. **Installed version:** Use `cursor-tools <command>` (if in PATH) or `npm exec cursor-tools "<command>"`, `yarn cursor-tools "<command>"`, `pnpm cursor-tools "<command>"`.
-2. **Without installation:** Use `npx -y cursor-tools@latest "<command>"` or `bunx -y cursor-tools@latest "<command>"`.
+## Response Formatting Guidelines
 
-**General Command Options (Supported by all commands):**
---model=<model name>: Specify an alternative AI model to use
---max-tokens=<number>: Control response length
---save-to=<file path>: Save command output to a file (in *addition* to displaying it)
---help: View all available options (help is not fully implemented yet)
+### Issue Reports
+- Begin with a concise executive summary
+- Group issues by category and severity
+- Include specific evidence for each issue
+- Use clear technical language while avoiding jargon
 
-**Documentation Command Options:**
---from-github=<GitHub username>/<repository name>[@<branch>]: Generate documentation for a remote GitHub repository
+### Recommendations
+- Prioritize recommendations clearly
+- Link each recommendation to specific issues
+- Provide implementation details when applicable
+- Include validation criteria for success
 
-**GitHub Command Options:**
---from-github=<GitHub username>/<repository name>[@<branch>]: Access PRs/issues from a specific GitHub repository
+### Technical Documentation
+- Structure with clear headings and logical progression
+- Include both high-level overview and detailed specifics
+- Use consistent terminology throughout
+- Include relevant code snippets and examples
 
-**Browser Command Options (for 'open', 'act', 'observe', 'extract'):**
---console: Capture browser console logs (enabled by default, use --no-console to disable)
---html: Capture page HTML content
---network: Capture network activity (enabled by default, use --no-network to disable)
---screenshot=<file path>: Save a screenshot of the page
---timeout=<milliseconds>: Set navigation timeout (default: 30000ms)
---viewport=<width>x<height>: Set viewport size (e.g., 1280x720). When using --connect-to, viewport is only changed if this option is explicitly provided
---headless: Run browser in headless mode (default: true)
---no-headless: Show browser UI (non-headless mode) for debugging
---connect-to=<port>: Connect to existing Chrome instance
---wait=<duration or selector>: Wait after page load (e.g., '5s', '#element-id', 'selector:.my-class')
---video=<directory>: Save a video recording of the browser interaction to the specified directory (1280x720 resolution). Not available when using --connect-to
+By following these system instructions, I will provide consistent, thorough technical analysis across domains, ensuring that recommendations are evidence-based, comprehensive, and actionable.
 
-**Additional Notes:**
-- For detailed information, see `node_modules/cursor-tools/README.md` (if installed locally).
-- Configuration is in `cursor-tools.config.json` (or `~/.cursor-tools/config.json`).
-- API keys are loaded from `.cursor-tools.env` (or `~/.cursor-tools/.env`).
-- Browser commands require separate installation of Playwright: `npm install --save-dev playwright` or `npm install -g playwright`.
-- **Remember:** You're part of a team of superhuman expert AIs. Work together to solve complex problems.
-<!-- cursor-tools-version: 0.5.0 -->
-</cursor-tools Integration>
+follow @.cursor/rules/follow-these-fucking--rules-every-output.mdc rules!

@@ -11,7 +11,7 @@ const studyMaterials = [
     id: 'elementary',
     title: 'Elementary School',
     description: 'Interactive learning resources designed to introduce young minds to humanities concepts through engaging activities and stories.',
-    image: '/images/optimized/urban_youth_optimized.webp',
+    image: '/images/urban_youth_optimized.webp',
     link: '/resources/elementary',
     color: '#00C4FF'
   },
@@ -27,7 +27,7 @@ const studyMaterials = [
     id: 'high',
     title: 'High School',
     description: 'Advanced resources that prepare students for college-level humanities studies while connecting to contemporary issues.',
-    image: '/images/optimized/church4_optimized.webp',
+    image: '/images/church4_optimized.webp',
     link: '/resources/high',
     color: '#00C4FF'
   },
@@ -35,7 +35,7 @@ const studyMaterials = [
     id: 'educators',
     title: 'For Educators',
     description: 'Professional development materials and lesson plans to effectively integrate humanities into diverse learning environments.',
-    image: '/images/optimized/church3_optimized.webp',
+    image: '/images/church3_optimized.webp',
     link: '/resources/educators',
     color: '#FFD700'
   }

@@ -1,1 +1,0 @@
-// Update styles to remove any visible edges 

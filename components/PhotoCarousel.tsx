@@ -8,25 +8,25 @@ import Image from 'next/image';
 const images = [
   {
     id: 1,
-    src: '/images/optimized/church4_optimized.webp',
+    src: '/images/church4_optimized.webp',
     alt: 'Historic Church',
     caption: 'Historic churches have been central to our community'
   },
   {
     id: 2,
-    src: '/images/optimized/church5_optimized.webp',
+    src: '/images/church5_optimized.webp',
     alt: 'Community Church',
     caption: 'Our churches continue to be pillars of education and empowerment'
   },
   {
     id: 3,
-    src: '/images/optimized/church3_optimized.webp',
+    src: '/images/church3_optimized.webp',
     alt: 'Sixth Avenue Baptist Church',
     caption: 'Sixth Avenue Baptist Church - A center for community organizing and education'
   },
   {
     id: 4,
-    src: '/images/optimized/16thst_bap_optimized.jpg',
+    src: '/images/16thst_bap_optimized.jpg',
     alt: '16th Street Baptist Church',
     caption: '16th Street Baptist Church - A symbol of resilience and progress'
   }

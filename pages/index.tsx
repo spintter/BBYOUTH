@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/navbar';
 import Footer from '../components/Footer';
 import HumanitiesGrid from '../components/HumanitiesGrid';
 import HighlightsSection from '../components/HighlightsSection';
@@ -42,11 +42,52 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="page-container bg-[#1A1A2E]">
+    <div className="page-container bg-[#F9F9F9] relative">
       <Head>
         <title>Birmingham Black Youth Ministry | Empowering Through Humanities</title>
         <meta name="description" content="Birmingham Black Youth Ministry empowers young minds through humanities education, fostering critical thinking, cultural awareness, and leadership skills." />
       </Head>
+
+      {/* Add global styles for consistent transitions */}
+      <style jsx global>{`
+        /* Consistent animation curve across components */
+        .section-container {
+          position: relative;
+        }
+        
+        /* Subtle background pattern for visual texture */
+        .page-container::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: radial-gradient(#8B0000 0.5px, transparent 0.5px);
+          background-size: 50px 50px;
+          opacity: 0.03;
+          pointer-events: none;
+          z-index: 0;
+        }
+        
+        /* Enhanced focus styles for accessibility */
+        a:focus, button:focus {
+          outline: 2px solid #8B0000;
+          outline-offset: 2px;
+        }
+        
+        /* Consistent micro-interactions */
+        a, button {
+          transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+                      box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+                      opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        /* Improved scrolling behavior */
+        html {
+          scroll-behavior: smooth;
+        }
+      `}</style>
 
       {/* Navbar */}
       <Navbar />
@@ -59,7 +100,7 @@ export default function Home() {
       {/* Mission Section with SectionTransition */}
       <SectionTransition 
         transitionType="curtain" 
-        accentColor="#FFD700"
+        accentColor="#8B0000"
         nextSectionPreview={sectionPreviews.humanities}
       >
         <MissionSection />
@@ -68,8 +109,8 @@ export default function Home() {
       {/* Humanities Grid with SectionTransition */}
       <SectionTransition 
         transitionType="overlap" 
-        accentColor="#00C4FF"
-        themePattern="kente"
+        accentColor="#8B0000"
+        themePattern="lines"
         nextSectionPreview={sectionPreviews.digital}
       >
         <HumanitiesGrid />
@@ -78,7 +119,7 @@ export default function Home() {
       {/* Digital Humanities Section with SectionTransition */}
       <SectionTransition 
         transitionType="fade" 
-        accentColor="#A78BFA"
+        accentColor="#8B0000"
         themePattern="dots"
         nextSectionPreview={sectionPreviews.events}
       >
@@ -88,7 +129,7 @@ export default function Home() {
       {/* Featured Events with SectionTransition */}
       <SectionTransition 
         transitionType="dissolve" 
-        accentColor="#F5A623"
+        accentColor="#8B0000"
         themePattern="lines"
         nextSectionPreview={sectionPreviews.photos}
       >
@@ -98,8 +139,8 @@ export default function Home() {
       {/* Photo Carousel with SectionTransition */}
       <SectionTransition 
         transitionType="slide" 
-        accentColor="#FF6F61"
-        themePattern="kente"
+        accentColor="#8B0000"
+        themePattern="dots"
         nextSectionPreview={sectionPreviews.highlights}
       >
         <PhotoCarousel />
@@ -108,7 +149,7 @@ export default function Home() {
       {/* Highlights Section with SectionTransition */}
       <SectionTransition 
         transitionType="curtain" 
-        accentColor="#D4AF37"
+        accentColor="#8B0000"
       >
         <HighlightsSection />
       </SectionTransition>
