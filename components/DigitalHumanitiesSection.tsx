@@ -9,27 +9,27 @@ import Link from 'next/link';
 const newsArticles = [
   {
     id: 1,
-    title: 'Virtual Reality History Tours Launch for Birmingham Schools',
-    excerpt: 'Students can now explore historical sites through immersive VR experiences developed by our digital humanities team.',
-    imageUrl: '/images/16thst_bap_optimized.jpg',
-    date: 'June 15, 2023',
+    title: 'Now the Humanities Can Disrupt "AI"',
+    excerpt: 'Explore how humanities scholars are becoming key players in the critical examination of artificial intelligence technologies and their impact.',
+    imageUrl: '/images/ai_humanities_compressed.webp',
+    date: 'February 20, 2023',
     category: 'Technology',
-    link: '/news/vr-history-tours'
+    link: 'https://www.publicbooks.org/now-the-humanities-can-disrupt-ai/'
   },
   {
     id: 2,
-    title: 'Digital Archive of Civil Rights Movement Expands',
-    excerpt: 'Our collaborative project with local libraries has digitized over 5,000 documents and photographs from the Civil Rights era.',
-    imageUrl: '/images/16th_Street_Baptist_Church_optimized.jpg',
-    date: 'May 28, 2023',
-    category: 'Archives',
-    link: '/news/digital-archive-expansion'
+    title: 'Harvard Launches Introduction to Digital Humanities Course',
+    excerpt: 'New online course teaches students to develop skills in digital research and visualization techniques across humanities disciplines.',
+    imageUrl: '/images/dighum1_compressed.webp',
+    date: 'August 21, 2024',
+    category: 'Education',
+    link: 'https://pll.harvard.edu/course/introduction-digital-humanities'
   },
   {
     id: 3,
     title: 'Youth Coding Workshop Creates Interactive Literature Map',
     excerpt: 'Participants in our summer program developed an interactive map showcasing Birmingham\'s literary landmarks and history.',
-    imageUrl: '/images/church4_optimized.webp',
+    imageUrl: '/images/digital_humanities_map_compressed.webp',
     date: 'July 3, 2023',
     category: 'Education',
     link: '/news/coding-workshop-map'
@@ -40,7 +40,7 @@ const projects = [
   {
     title: 'Oral History Archive',
     description: 'Digital collection of community stories and testimonies',
-    imageUrl: '/images/blackhistory_optimized.jpeg',
+    imageUrl: '/images/data_visualization_compressed.webp',
     link: '/projects/oral-history'
   },
   {
@@ -52,7 +52,7 @@ const projects = [
   {
     title: 'Virtual Museum Tours',
     description: 'Digital access to cultural heritage sites',
-    imageUrl: '/images/16thst_bap_optimized.jpg',
+    imageUrl: '/images/digital_humanities_map_optimized.jpg',
     link: '/projects/virtual-tours'
   }
 ];
@@ -68,8 +68,8 @@ const DigitalHumanitiesSection = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-playfair">Digital Humanities</h2>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-poppins">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-montserrat">Digital Humanities</h2>
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-inter">
             Exploring the intersection of technology and humanities to create innovative
             educational experiences for our youth community.
           </p>
@@ -136,14 +136,14 @@ const DigitalHumanitiesSection = () => {
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold mb-3 text-slate-800 font-playfair">
+                  <h3 className="text-xl font-bold mb-3 text-slate-800 font-montserrat">
                     {article.title}
                   </h3>
-                  <p className="text-slate-600 mb-4 font-poppins">
+                  <p className="text-slate-600 mb-4 font-inter">
                     {article.excerpt}
                   </p>
                   <div className="flex items-center group">
-                    <span className="text-red-700 font-medium text-sm font-poppins group-hover:translate-x-1 transition-transform duration-300">
+                    <span className="text-red-700 font-medium text-sm font-inter group-hover:translate-x-1 transition-transform duration-300">
                       Read More
                     </span>
                     <svg 
@@ -171,7 +171,7 @@ const DigitalHumanitiesSection = () => {
         >
           <Link 
             href="/digital-humanities" 
-            className="group relative inline-block px-8 py-3 bg-red-700 text-white font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md font-poppins overflow-hidden"
+            className="group relative inline-block px-8 py-3 bg-red-700 text-white font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md font-inter overflow-hidden"
           >
             <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">
               Explore All Digital Projects

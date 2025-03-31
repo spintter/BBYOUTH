@@ -54,31 +54,31 @@ const Footer = () => {
       { name: 'Our Mission', href: '/about#mission' },
       { name: 'History', href: '/about#history' },
       { name: 'Team', href: '/team' },
-      { name: 'Partners', href: '/partners' }
+      { name: 'Contact', href: '/contact' }
     ],
     programs: [
-      { name: 'Youth Programs', href: '/programs#youth' },
-      { name: 'Workshops', href: '/programs#workshops' },
-      { name: 'Mentorship', href: '/programs#mentorship' },
-      { name: 'Chess Club', href: '/programs#chess' }
+      { name: 'Youth Programs', href: '/programs' },
+      { name: 'Workshops', href: '/programs' },
+      { name: 'Mentorship', href: '/programs' },
+      { name: 'Study Resources', href: '/study-resources' }
     ],
     resources: [
-      { name: 'Study Materials', href: '/resources' },
-      { name: 'Digital Library', href: '/library' },
+      { name: 'Study Materials', href: '/study-resources' },
       { name: 'Events Calendar', href: '/events' },
-      { name: 'Blog', href: '/blog' }
+      { name: 'Ministry', href: '/ministry' },
+      { name: 'Get Involved', href: '/get-involved' }
     ],
     connect: [
       { name: 'Contact Us', href: '/contact' },
-      { name: 'Newsletter', href: '/newsletter' },
-      { name: 'Volunteer', href: '/volunteer' },
-      { name: 'Donate', href: '/donate' }
+      { name: 'About Us', href: '/about' },
+      { name: 'Team', href: '/team' },
+      { name: 'Get Involved', href: '/get-involved' }
     ]
   };
   
   // Social media links
   const socialLinks = [
-    { name: 'Facebook', href: 'https://facebook.com', icon: 'facebook' },
+    { name: 'Facebook', href: 'https://facebook.com/youths', icon: 'facebook' },
     { name: 'Twitter', href: 'https://twitter.com', icon: 'twitter' },
     { name: 'Instagram', href: 'https://instagram.com', icon: 'instagram' },
     { name: 'YouTube', href: 'https://youtube.com', icon: 'youtube' }
@@ -95,10 +95,10 @@ const Footer = () => {
                 <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center">
                   <span className="text-[#00C4FF] text-2xl font-bold">B</span>
                 </div>
-                <span className="ml-3 text-xl font-bold font-playfair">BBYM</span>
+                <span className="ml-3 text-xl font-bold font-montserrat">BBYM</span>
               </div>
             </Link>
-            <p className="text-[#F5F5F5] mb-6 font-poppins">
+            <p className="text-[#F5F5F5] mb-6 font-inter">
               Birmingham Black Youth Ministry is dedicated to empowering young minds through 
               humanities education, fostering critical thinking, cultural awareness, and 
               leadership skills in our community.
@@ -140,13 +140,13 @@ const Footer = () => {
 
           {/* Footer links */}
           <div>
-            <h3 className="text-lg font-bold mb-4 text-[#00C4FF] font-playfair">About</h3>
+            <h3 className="text-lg font-bold mb-4 text-[#8B0000] font-montserrat">About</h3>
             <ul className="space-y-2">
               {footerLinks.about.map((link) => (
                 <li key={link.name}>
                   <Link 
                     href={link.href} 
-                    className="text-[#F5F5F5] hover:text-[#00C4FF] transition-colors duration-300 font-poppins"
+                    className="text-[#F5F5F5] hover:text-[#8B0000] transition-colors duration-300 font-inter"
                   >
                     {link.name}
                   </Link>
@@ -156,13 +156,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold mb-4 text-[#FFD700] font-playfair">Programs</h3>
+            <h3 className="text-lg font-bold mb-4 text-[#FFD700] font-montserrat">Programs</h3>
             <ul className="space-y-2">
               {footerLinks.programs.map((link) => (
                 <li key={link.name}>
                   <Link 
                     href={link.href} 
-                    className="text-[#F5F5F5] hover:text-[#FFD700] transition-colors duration-300 font-poppins"
+                    className="text-[#F5F5F5] hover:text-[#FFD700] transition-colors duration-300 font-inter"
                   >
                     {link.name}
                   </Link>
@@ -172,13 +172,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold mb-4 text-[#00C4FF] font-playfair">Resources</h3>
+            <h3 className="text-lg font-bold mb-4 text-[#8B0000] font-montserrat">Resources</h3>
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.name}>
                   <Link 
                     href={link.href} 
-                    className="text-[#F5F5F5] hover:text-[#00C4FF] transition-colors duration-300 font-poppins"
+                    className="text-[#F5F5F5] hover:text-[#8B0000] transition-colors duration-300 font-inter"
                   >
                     {link.name}
                   </Link>
@@ -192,20 +192,20 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-[#2C2F77]">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <p className="text-[#F5F5F5] font-poppins">
+              <p className="text-[#F5F5F5] font-inter">
                 &copy; {currentYear} Birmingham Black Youth Ministry. All rights reserved.
               </p>
             </div>
             <div className="flex space-x-6">
               <Link 
                 href="/privacy" 
-                className="text-[#F5F5F5] hover:text-[#00C4FF] transition-colors duration-300 font-poppins"
+                className="text-[#F5F5F5] hover:text-[#00C4FF] transition-colors duration-300 font-inter"
               >
                 Privacy Policy
               </Link>
               <Link 
                 href="/terms" 
-                className="text-[#F5F5F5] hover:text-[#00C4FF] transition-colors duration-300 font-poppins"
+                className="text-[#F5F5F5] hover:text-[#00C4FF] transition-colors duration-300 font-inter"
               >
                 Terms of Service
               </Link>

@@ -20,8 +20,8 @@ const FeaturedEvents = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7, ease: animationEasing }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-playfair">Community Events</h2>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-poppins mb-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-montserrat">Community Events</h2>
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-inter mb-8">
             Discover workshops, lectures, performances, and gatherings that celebrate 
             the humanities and foster connections within our community.
           </p>
@@ -41,10 +41,13 @@ const FeaturedEvents = () => {
           }}
         >
           <div className="relative h-[400px] md:h-[500px] w-full">
-            <img 
-              className="w-full h-64 object-cover rounded-lg"
-              src="/images/16thst_bap_optimized.jpg"
-              alt="Featured Events Banner"
+            <Image 
+              className="rounded-lg object-cover w-full h-full absolute inset-0 transform transition-transform duration-500 group-hover:scale-110"
+              src="/images/dighum1_compressed.webp"
+              alt="Featured event image"
+              width={600}
+              height={400}
+              priority
             />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-800/70 via-slate-800/40 to-transparent"></div>
           </div>
@@ -57,13 +60,13 @@ const FeaturedEvents = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3, ease: animationEasing }}
             >
-              <span className="inline-block px-4 py-1 bg-red-700 text-white text-sm font-medium rounded-full mb-4 font-poppins">
+              <span className="inline-block px-4 py-1 bg-red-700 text-white text-sm font-medium rounded-full mb-4 font-inter">
                 Upcoming
               </span>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-playfair">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-montserrat">
                 Join Our Community Events
               </h2>
-              <p className="text-lg text-white mb-8 font-poppins">
+              <p className="text-lg text-white mb-8 font-inter">
                 Discover workshops, lectures, performances, and gatherings that celebrate 
                 the humanities and foster connections within our community.
               </p>
@@ -73,7 +76,7 @@ const FeaturedEvents = () => {
               >
                 <Link 
                   href="/events" 
-                  className="group relative inline-block px-8 py-3 bg-white text-slate-800 font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md font-poppins overflow-hidden"
+                  className="group relative inline-block px-8 py-3 bg-white text-slate-800 font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md font-inter overflow-hidden"
                 >
                   <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">
                     View All Events

@@ -76,8 +76,8 @@ const HighlightsSection = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-playfair">Study Materials</h2>
-          <p className="text-lg text-[#F5F5F5] max-w-3xl mx-auto font-poppins">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-montserrat">Study Materials</h2>
+          <p className="text-lg text-[#F5F5F5] max-w-3xl mx-auto font-inter">
             Access our curated collection of humanities resources designed for different age groups,
             supporting both students and educators in their learning journey.
           </p>
@@ -113,12 +113,12 @@ const HighlightsSection = () => {
                   </div>
                   <div className="p-6 md:w-3/5 flex flex-col justify-center">
                     <h3 
-                      className="text-xl font-bold mb-3 font-playfair"
+                      className="text-xl font-bold mb-3 font-montserrat"
                       style={{ color: material.color }}
                     >
                       {material.title}
                     </h3>
-                    <p className="text-[#F5F5F5] mb-4 font-poppins">
+                    <p className="text-[#F5F5F5] mb-4 font-inter">
                       {material.description}
                     </p>
                     <div className="mt-auto">
@@ -154,7 +154,7 @@ const HighlightsSection = () => {
         >
           <Link 
             href="/resources" 
-            className="inline-block px-8 py-3 bg-[#00C4FF] text-white font-medium rounded-full hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300 shadow-lg hover:shadow-xl font-poppins"
+            className="inline-block px-8 py-3 bg-[#00C4FF] text-white font-medium rounded-full hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300 shadow-lg hover:shadow-xl font-inter"
           >
             Browse All Resources
           </Link>

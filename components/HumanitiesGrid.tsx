@@ -4,79 +4,73 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-// Define the humanities topics with rich content - EXACT content from Image 2
+// Define the humanities topics with rich content - Updated to match new topics in [slug].tsx
 const topics = [
   { 
     id: 1, 
-    title: 'History & Heritage', 
-    link: '/topics/history-heritage',
-    description: 'Exploring African American history and cultural contributions throughout time.'
+    title: 'Religion', 
+    link: '/topics/religion',
+    description: 'Explore the role of religion in African American communities, focusing on Birmingham\'s historic Black churches.'
   },
   { 
     id: 2, 
-    title: 'Literature & Arts', 
-    link: '/topics/literature-arts',
-    description: 'Celebrating Black literature, music, and artistic expression across generations.'
+    title: 'Music', 
+    link: '/topics/music',
+    description: 'Celebrate the rich musical heritage of African Americans, from gospel to jazz to hip-hop.'
   },
   { 
     id: 3, 
-    title: 'Social Justice', 
-    link: '/topics/social-justice',
-    description: 'Understanding civil rights and social movements for equality and fairness.'
+    title: 'Theatre Arts', 
+    link: '/topics/theatre-arts',
+    description: 'Examine the role of theatre in African American storytelling and cultural expression.'
   },
   { 
     id: 4, 
-    title: 'Community Leadership', 
-    link: '/topics/community-leadership',
-    description: 'Developing leadership skills and civic engagement.'
+    title: 'STEM', 
+    link: '/topics/stem',
+    description: 'Explore African American contributions to science, technology, engineering, and mathematics.'
   },
   { 
     id: 5, 
-    title: 'Cultural Identity', 
-    link: '/topics/cultural-identity',
-    description: 'Exploring and celebrating Black identity and culture.'
+    title: 'Law & Politics', 
+    link: '/topics/law-politics',
+    description: 'Examine the role of African Americans in shaping law and politics, with focus on civil rights.'
   },
   { 
     id: 6, 
-    title: 'Digital Storytelling', 
-    link: '/topics/digital-storytelling',
-    description: 'Creating and sharing our stories digitally.'
+    title: 'Philosophy', 
+    link: '/topics/philosophy',
+    description: 'Engage with philosophical questions through African American perspectives, fostering critical thinking.'
   },
   { 
     id: 7, 
-    title: 'Research Methods', 
-    link: '/topics/research-methods',
-    description: 'Learning scholarly research techniques.'
+    title: 'Dance', 
+    link: '/topics/dance',
+    description: 'Celebrate African American dance traditions and their cultural significance.'
   },
   { 
     id: 8, 
-    title: 'Community Archives', 
-    link: '/topics/community-archives',
-    description: 'Preserving and sharing community histories.'
+    title: 'History', 
+    link: '/topics/history',
+    description: 'Dive into African American history, focusing on Birmingham\'s role in the Civil Rights Movement.'
   },
   { 
     id: 9, 
-    title: 'Oral Traditions', 
-    link: '/topics/oral-traditions',
-    description: 'Understanding and preserving oral histories.'
+    title: 'Economics', 
+    link: '/topics/economics',
+    description: 'Examine economic contributions and challenges faced by African Americans in Birmingham and beyond.'
   },
   { 
     id: 10, 
-    title: 'Ethics & Philosophy', 
-    link: '/topics/ethics-philosophy',
-    description: 'Exploring moral and philosophical questions.'
+    title: 'Digital Humanities', 
+    link: '/topics/digital-humanities',
+    description: 'Harness digital tools to explore and preserve African American humanities and culture.'
   },
   { 
     id: 11, 
-    title: 'Media Studies', 
-    link: '/topics/media-studies',
-    description: 'Analyzing and creating media content.'
-  },
-  { 
-    id: 12, 
-    title: 'Cultural Exchange', 
-    link: '/topics/cultural-exchange',
-    description: 'Building bridges between communities.'
+    title: 'Literature', 
+    link: '/topics/literature',
+    description: 'Dive into African American literature, celebrating Birmingham\'s literary contributions.'
   }
 ];
 
