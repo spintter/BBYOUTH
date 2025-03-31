@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import Navbar from '../components/navbar';
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import HumanitiesGrid from '../components/HumanitiesGrid';
 import HighlightsSection from '../components/HighlightsSection';
