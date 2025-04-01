@@ -94,7 +94,7 @@ const HighlightsSection = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-b from-[#2C2F77] to-[#1A1A2E]">
+    <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
       <div className="container mx-auto px-6">
         <motion.div
           className="text-center mb-16"
@@ -103,11 +103,12 @@ const HighlightsSection = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-montserrat">Study Materials</h2>
-          <p className="text-lg text-[#F5F5F5] max-w-3xl mx-auto font-inter">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-['Playfair_Display']">Study Materials</h2>
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-['Poppins']">
             Access our curated collection of humanities resources designed for different age groups,
             supporting both students and educators in their learning journey.
           </p>
+          <div className="w-24 h-1 bg-red-700 mx-auto mt-6 mb-4 rounded-full"></div>
         </motion.div>
 
         <motion.div
@@ -123,9 +124,9 @@ const HighlightsSection = () => {
               variants={itemVariants}
               whileHover={{ 
                 scale: 1.03, 
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" 
+                boxShadow: "0 10px 25px -12px rgba(0, 0, 0, 0.15)" 
               }}
-              className="bg-[#2C2F77] rounded-lg overflow-hidden shadow-lg transform transition-all duration-300"
+              className="bg-white rounded-lg overflow-hidden shadow-md border border-slate-100 transform transition-all duration-300"
             >
               <Link href={material.link} className="block h-full">
                 <div className="flex flex-col md:flex-row h-full">
@@ -140,23 +141,22 @@ const HighlightsSection = () => {
                   </div>
                   <div className="p-6 md:w-3/5 flex flex-col justify-center">
                     <h3 
-                      className="text-xl font-bold mb-3 font-montserrat"
-                      style={{ color: material.color }}
+                      className="text-xl font-bold mb-3 font-['Playfair_Display']"
+                      style={{ color: '#B91C1C' }}
                     >
                       {material.title}
                     </h3>
-                    <p className="text-[#F5F5F5] mb-4 font-inter">
+                    <p className="text-slate-600 mb-4 font-['Poppins'] text-base">
                       {material.description}
                     </p>
                     <div className="mt-auto">
                       <span 
-                        className="inline-flex items-center text-sm font-medium transition-colors duration-300"
-                        style={{ color: material.color }}
+                        className="inline-flex items-center text-red-700 hover:text-red-800 text-sm font-medium transition-all duration-300 border-b border-transparent hover:border-red-700"
                       >
                         Access Materials
                         <svg 
                           xmlns="http://www.w3.org/2000/svg" 
-                          className="h-4 w-4 ml-1" 
+                          className="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform duration-300" 
                           fill="none" 
                           viewBox="0 0 24 24" 
                           stroke="currentColor"
@@ -181,7 +181,7 @@ const HighlightsSection = () => {
         >
           <Link 
             href="/resources" 
-            className="inline-block px-8 py-3 bg-[#00C4FF] text-white font-medium rounded-full hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300 shadow-lg hover:shadow-xl font-inter"
+            className="inline-block bg-red-700 text-white font-semibold py-2 px-6 rounded-full hover:bg-red-800 transition-colors duration-300 shadow-md font-['Poppins']"
           >
             Browse All Resources
           </Link>

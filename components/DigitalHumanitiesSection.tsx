@@ -68,14 +68,14 @@ const DigitalHumanitiesSection = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-montserrat">Digital Humanities</h2>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-inter">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-['Playfair_Display']">Digital Humanities</h2>
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-['Poppins']">
             Exploring the intersection of technology and humanities to create innovative
             educational experiences for our youth community. Historical images from the Library of Congress showcase
             the rich heritage of African American education.
           </p>
           {/* Visual thread element - thin accent line */}
-          <div className="w-24 h-1 bg-red-700 mx-auto mt-8 rounded-full"></div>
+          <div className="w-24 h-1 bg-red-700 mx-auto mt-6 rounded-full"></div>
         </motion.div>
 
         <motion.div
@@ -115,7 +115,7 @@ const DigitalHumanitiesSection = () => {
                 y: -5
               }}
               whileTap={{ scale: 0.98 }}
-              className="bg-white rounded-lg overflow-hidden shadow-sm border border-slate-100 transform transition-all duration-300"
+              className="bg-white rounded-lg overflow-hidden shadow-md border border-slate-100 transform transition-all duration-300"
             >
               <Link href={article.link} className="block h-full">
                 <div className="relative h-56 overflow-hidden">
@@ -137,19 +137,19 @@ const DigitalHumanitiesSection = () => {
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold mb-3 text-slate-800 font-montserrat">
+                  <h3 className="text-xl font-bold mb-3 text-slate-800 font-['Playfair_Display']">
                     {article.title}
                   </h3>
-                  <p className="text-slate-600 mb-4 font-inter">
+                  <p className="text-slate-600 mb-4 font-['Poppins'] text-base">
                     {article.excerpt}
                   </p>
                   <div className="flex items-center group">
-                    <span className="text-red-700 font-medium text-sm font-inter group-hover:translate-x-1 transition-transform duration-300">
+                    <span className="text-red-700 hover:text-red-800 font-medium text-sm font-['Poppins'] border-b border-transparent hover:border-red-700 transition-all duration-300">
                       Read More
                     </span>
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
-                      className="h-4 w-4 ml-1 text-red-700 group-hover:translate-x-1 transition-transform duration-300" 
+                      className="h-4 w-4 ml-1 text-red-700 transform group-hover:translate-x-1 transition-transform duration-300" 
                       fill="none" 
                       viewBox="0 0 24 24" 
                       stroke="currentColor"
@@ -172,12 +172,9 @@ const DigitalHumanitiesSection = () => {
         >
           <Link 
             href="/digital-humanities" 
-            className="group relative inline-block px-8 py-3 bg-red-700 text-white font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md font-inter overflow-hidden"
+            className="inline-block bg-red-700 text-white font-semibold py-2 px-6 rounded-full hover:bg-red-800 transition-colors duration-300 shadow-md font-['Poppins']"
           >
-            <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">
-              Explore All Digital Projects
-            </span>
-            <div className="absolute inset-0 bg-red-800 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></div>
+            Explore All Digital Projects
           </Link>
         </motion.div>
       </div>

@@ -10,7 +10,7 @@ const FeaturedEvents = () => {
   const animationEasing = [0.25, 0.1, 0.25, 1]; // cubic-bezier(0.25, 0.1, 0.25, 1)
   
   return (
-    <section className="py-20 bg-white relative">
+    <section className="py-20 bg-gradient-to-b from-slate-50 to-white relative">
       <div className="container mx-auto px-6">
         {/* Section header with visual thread element */}
         <motion.div
@@ -20,8 +20,8 @@ const FeaturedEvents = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7, ease: animationEasing }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-montserrat">Community Events</h2>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-inter mb-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-['Playfair_Display']">Community Events</h2>
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-['Poppins'] mb-8">
             Discover workshops, lectures, performances, and gatherings that celebrate 
             the humanities and foster connections within our community.
           </p>
@@ -30,7 +30,7 @@ const FeaturedEvents = () => {
         </motion.div>
         
         <motion.div
-          className="relative overflow-hidden rounded-2xl shadow-sm border border-slate-100"
+          className="relative overflow-hidden rounded-2xl shadow-md border border-slate-100"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -60,13 +60,13 @@ const FeaturedEvents = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3, ease: animationEasing }}
             >
-              <span className="inline-block px-4 py-1 bg-red-700 text-white text-sm font-medium rounded-full mb-4 font-inter">
+              <span className="inline-block px-4 py-1 bg-red-700 text-white text-sm font-medium rounded-full mb-4 font-['Poppins']">
                 Upcoming
               </span>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-montserrat">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-['Playfair_Display']">
                 Join Our Community Events
               </h2>
-              <p className="text-lg text-white mb-8 font-inter">
+              <p className="text-lg text-white mb-8 font-['Poppins']">
                 Discover workshops, lectures, performances, and gatherings that celebrate 
                 the humanities and foster connections within our community.
               </p>
@@ -76,12 +76,9 @@ const FeaturedEvents = () => {
               >
                 <Link 
                   href="/events" 
-                  className="group relative inline-block px-8 py-3 bg-white text-slate-800 font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md font-inter overflow-hidden"
+                  className="inline-block bg-red-700 text-white font-semibold py-2 px-6 rounded-full hover:bg-red-800 transition-colors duration-300 shadow-md font-['Poppins']"
                 >
-                  <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300">
-                    View All Events
-                  </span>
-                  <div className="absolute inset-0 bg-slate-100 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></div>
+                  View All Events
                 </Link>
               </motion.div>
             </motion.div>
@@ -102,7 +99,7 @@ const FeaturedEvents = () => {
             }}
           />
           <motion.div 
-            className="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-green-700 opacity-5 blur-xl"
+            className="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-red-700 opacity-5 blur-xl"
             animate={{ 
               scale: [1, 1.3, 1],
               opacity: [0.05, 0.1, 0.05]
@@ -123,7 +120,7 @@ const FeaturedEvents = () => {
         </div>
         
         {/* Visual continuity element - subtle gradient fade at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-50 to-transparent opacity-70 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent opacity-70 pointer-events-none"></div>
       </div>
     </section>
   );

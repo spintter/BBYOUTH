@@ -75,7 +75,7 @@ const PhotoCarousel = () => {
   const nextSlide = () => goToSlide((currentIndex + 1) % images.length);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-[#1A1A2E] to-[#2C2F77]">
+    <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
       <div className="container mx-auto px-6">
         <motion.div
           className="text-center mb-16"
@@ -84,15 +84,17 @@ const PhotoCarousel = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-montserrat">Birmingham Churches</h2>
-          <p className="text-lg text-[#F5F5F5] max-w-3xl mx-auto font-inter">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-['Playfair_Display']">Birmingham Churches</h2>
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto font-['Poppins']">
             Celebrating the historic churches of Birmingham that played pivotal roles 
             in the civil rights movement and continue to serve as pillars of spiritual guidance and community strength.
           </p>
+          {/* Visual thread element - accent line to match other sections */}
+          <div className="w-24 h-1 bg-red-700 mx-auto mt-6 mb-4 rounded-full"></div>
         </motion.div>
 
         <div 
-          className="relative max-w-5xl mx-auto rounded-2xl overflow-hidden shadow-2xl"
+          className="relative max-w-5xl mx-auto rounded-2xl overflow-hidden shadow-xl"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -115,11 +117,11 @@ const PhotoCarousel = () => {
                   className="object-cover"
                   priority={currentIndex === 0}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E] via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                 
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                   <motion.p 
-                    className="text-lg md:text-xl font-medium font-inter"
+                    className="text-lg md:text-xl font-medium font-['Poppins']"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
@@ -158,7 +160,7 @@ const PhotoCarousel = () => {
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? 'bg-[#00C4FF] w-6' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+                  index === currentIndex ? 'bg-red-700 w-6' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
