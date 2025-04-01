@@ -15,8 +15,8 @@ const Ministry: React.FC = () => {
     >
       <div className="w-full overflow-hidden rounded-lg mb-8">
         <Image
-          src="/images/church3_optimized.webp"
-          alt="Church Ministry"
+          src="/images/16thst_bap_color.jpg"
+          alt="16th Street Baptist Church in Birmingham"
           width={900}
           height={500}
           className="w-full h-auto object-cover"
@@ -38,7 +38,7 @@ const Ministry: React.FC = () => {
           title="Faith-Based Learning"
           description="Integrating spiritual principles with humanities education to provide a foundation for moral and ethical development."
           isDark={false}
-          image="/images/church4_optimized.webp"
+          image="/images/church3_optimized.webp"
           imageAlt="Faith-Based Learning"
         />
         
@@ -46,7 +46,7 @@ const Ministry: React.FC = () => {
           title="Cultural Heritage"
           description="Celebrating and preserving Black history, traditions, and contributions through immersive educational experiences."
           isDark={false}
-          image="/images/blackhistory_optimized.jpeg"
+          image="/images/blackhistory_logo.jpeg"
           imageAlt="Cultural Heritage"
         />
         
@@ -54,7 +54,7 @@ const Ministry: React.FC = () => {
           title="Community Service"
           description="Engaging youth in service projects that apply humanities knowledge to address community needs and foster civic responsibility."
           isDark={false}
-          image="/images/urban_youth_optimized.webp"
+          image="/images/youth_group.webp"
           imageAlt="Community Service"
         />
       </div>

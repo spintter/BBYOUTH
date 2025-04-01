@@ -21,7 +21,7 @@ const Events: React.FC = () => {
       time: "To Be Announced",
       location: "Community Center Hall",
       description: "Join us for a special evening celebrating Black History Month featuring presentations, performances, and interactive exhibits by our youth program participants.",
-      image: "/images/dighum1_compressed.webp",
+      image: "/images/blackhistory_logo.jpeg",
       registrationLink: "/contact"
     },
     {
@@ -30,7 +30,7 @@ const Events: React.FC = () => {
       time: "To Be Announced",
       location: "Birmingham Public Library",
       description: "A day-long symposium where youth present their research projects on various humanities topics related to Black history and culture.",
-      image: "/images/data_visualization_compressed.webp",
+      image: "/images/young_group.jpg",
       registrationLink: "/contact"
     },
     {
@@ -39,7 +39,7 @@ const Events: React.FC = () => {
       time: "To Be Announced",
       location: "Departs from Main Office",
       description: "A guided tour of significant civil rights and cultural landmarks in Birmingham, including the 16th Street Baptist Church and Civil Rights Institute.",
-      image: "/images/digital_humanities_map_compressed.webp",
+      image: "/images/16thst_bap_color.jpg",
       registrationLink: "/contact"
     }
   ];
@@ -58,8 +58,8 @@ const Events: React.FC = () => {
           width={900}
           height={500}
           className="w-full h-auto object-cover rounded-lg"
-          src="/images/ai_humanities_compressed.webp"
-          alt="Upcoming Events"
+          src="/images/youth_group.webp"
+          alt="African American Youth Group"
           priority
         />
       </div>
@@ -132,7 +132,7 @@ const Events: React.FC = () => {
           title="Black History Month Celebration"
           description="Each February, we host a month-long series of events celebrating Black history and culture."
           isDark={false}
-          image="/images/dighum1_compressed.webp"
+          image="/images/black_graduates.webp"
           imageAlt="Black History Month"
           link="/contact"
         />
@@ -141,7 +141,7 @@ const Events: React.FC = () => {
           title="Summer Humanities Festival"
           description="A community-wide celebration featuring performances, exhibits, and interactive activities."
           isDark={false}
-          image="/images/data_visualization_compressed.webp"
+          image="/images/urban_youth_relaxing.webp"
           imageAlt="Summer Festival"
           link="/contact"
         />
@@ -150,7 +150,7 @@ const Events: React.FC = () => {
           title="Youth Achievement Awards"
           description="Annual ceremony recognizing youth for their achievements in humanities education and leadership."
           isDark={false}
-          image="/images/digital_humanities_map_compressed.webp"
+          image="/images/young_adults.webp"
           imageAlt="Achievement Awards"
           link="/contact"
         />

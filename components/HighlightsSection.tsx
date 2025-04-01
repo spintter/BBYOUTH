@@ -11,7 +11,7 @@ const studyMaterials = [
     id: 'elementary',
     title: 'Elementary School',
     description: 'Interactive learning resources designed to introduce young minds to humanities concepts through engaging activities and stories.',
-    image: '/images/urban_youth_optimized.webp',
+    image: '/images/young_schoolboy.webp',
     link: '/resources/elementary',
     color: '#00C4FF'
   },
@@ -19,7 +19,7 @@ const studyMaterials = [
     id: 'middle',
     title: 'Middle School',
     description: 'Curriculum materials that build critical thinking skills and cultural awareness through age-appropriate humanities exploration.',
-    image: '/images/optimized/group_graduate_optimized.webp',
+    image: '/images/black_graduates.webp',
     link: '/resources/middle',
     color: '#FFD700'
   },
@@ -27,7 +27,7 @@ const studyMaterials = [
     id: 'high',
     title: 'High School',
     description: 'Advanced resources that prepare students for college-level humanities studies while connecting to contemporary issues.',
-    image: '/images/church4_optimized.webp',
+    image: '/images/studying_group.webp',
     link: '/resources/high',
     color: '#00C4FF'
   },
@@ -35,10 +35,37 @@ const studyMaterials = [
     id: 'educators',
     title: 'For Educators',
     description: 'Professional development materials and lesson plans to effectively integrate humanities into diverse learning environments.',
-    image: '/images/church3_optimized.webp',
+    image: '/images/young_adults.webp',
     link: '/resources/educators',
     color: '#FFD700'
   }
+];
+
+const featuredItems = [
+  {
+    title: 'Youth Leadership Development',
+    description: 'Programs that equip young people with leadership skills, critical thinking abilities, and cultural awareness.',
+    link: '/programs',
+    image: '/images/urban_youth_relaxing.webp',
+  },
+  {
+    title: 'Cultural Education',
+    description: 'Enriching experiences that explore Black history, arts, and cultural contributions to society.',
+    link: '/topics/history',
+    image: '/images/black_graduates.webp',
+  },
+  {
+    title: 'Spiritual Growth',
+    description: 'Guidance that helps youth explore their faith journey while embracing their cultural identity.',
+    link: '/topics/religion',
+    image: '/images/church3_optimized.webp',
+  },
+  {
+    title: 'Community Service',
+    description: 'Opportunities for youth to engage with and make meaningful contributions to their community.',
+    link: '/get-involved',
+    image: '/images/youth_group.webp',
+  },
 ];
 
 const HighlightsSection = () => {

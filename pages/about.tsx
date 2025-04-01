@@ -15,8 +15,8 @@ const About: React.FC = () => {
     >
       <div className="w-full overflow-hidden rounded-lg mb-8">
         <Image
-          src="/images/digital_humanities_map_compressed.webp"
-          alt="Digital Humanities Map"
+          src="/images/16thst_bap_color.jpg"
+          alt="16th Street Baptist Church - Historic Birmingham Landmark"
           width={900}
           height={500}
           className="w-full h-auto object-cover"
@@ -37,7 +37,7 @@ const About: React.FC = () => {
           title="Our Mission"
           description="We support informal occasions for the exchange of ideas and the sharing of scholarly and artistic work, advancing the humanities in Birmingham's Black community and beyond."
           isDark={false}
-          image="/images/dighum1_compressed.webp"
+          image="/images/young_group.jpg"
           imageAlt="Mission"
         />
         
@@ -45,7 +45,7 @@ const About: React.FC = () => {
           title="Our Vision"
           description="To cultivate the next generation of leaders, thinkers, and innovators grounded in a strong understanding of Black history, culture, and contributions to society."
           isDark={false}
-          image="/images/ai_humanities_compressed.webp"
+          image="/images/black_graduates.webp"
           imageAlt="Vision"
         />
       </div>

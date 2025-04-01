@@ -15,8 +15,8 @@ const GetInvolved: React.FC = () => {
     >
       <div className="w-full overflow-hidden rounded-lg mb-8">
         <Image
-          src="/images/group_graduate_optimized.webp"
-          alt="Community involvement"
+          src="/images/black_graduates.webp"
+          alt="Youth Volunteers"
           width={900}
           height={500}
           className="w-full h-auto object-cover"
@@ -35,32 +35,29 @@ const GetInvolved: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <Card
           title="Volunteer"
-          description="Share your time and talents to support our youth programs and events. We have opportunities for all skill sets."
+          description="Share your time and talents with our programs, offering mentorship, expertise, or assistance with events and activities."
           isDark={false}
-          image="/images/urban_youth_optimized.webp"
-          imageAlt="Volunteers working with youth"
+          image="/images/urban_youth_relaxing.webp"
+          imageAlt="Volunteer"
           link="/contact"
-          linkText="Become a Volunteer →"
         />
         
         <Card
           title="Donate"
-          description="Your financial support helps fund our educational programs, cultural events, and community initiatives."
+          description="Support our mission with financial contributions that help fund programs, resources, and opportunities for youth."
           isDark={false}
-          image="/images/church5_optimized.webp"
-          imageAlt="Community support"
+          image="/images/youth_group.webp"
+          imageAlt="Donate"
           link="/contact"
-          linkText="Make a Donation →"
         />
         
         <Card
           title="Partner"
-          description="Organizations can partner with us through sponsorships, shared programming, or resource contributions."
+          description="Collaborate with us as an organization, business, or institution to create meaningful educational experiences."
           isDark={false}
-          image="/images/group_graduate_optimized.webp"
-          imageAlt="Community partnership"
+          image="/images/black_graduates.webp"
+          imageAlt="Partner"
           link="/contact"
-          linkText="Become a Partner →"
         />
       </div>
       

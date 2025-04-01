@@ -34,9 +34,9 @@ export default function Home() {
     setSectionPreviews({
       mission: <div className="preview-content"><MissionSection /></div>,
       humanities: <div className="preview-content"><HumanitiesGrid /></div>,
+      photos: <div className="preview-content"><PhotoCarousel /></div>,
       digital: <div className="preview-content"><DigitalHumanitiesSection /></div>,
       events: <div className="preview-content"><FeaturedEvents /></div>,
-      photos: <div className="preview-content"><PhotoCarousel /></div>,
       highlights: <div className="preview-content"><HighlightsSection /></div>,
     });
   }, []);
@@ -111,9 +111,19 @@ export default function Home() {
         transitionType="overlap" 
         accentColor="#8B0000"
         themePattern="lines"
-        nextSectionPreview={sectionPreviews.digital}
+        nextSectionPreview={sectionPreviews.photos}
       >
         <HumanitiesGrid />
+      </SectionTransition>
+
+      {/* Photo Carousel with SectionTransition */}
+      <SectionTransition 
+        transitionType="slide" 
+        accentColor="#8B0000"
+        themePattern="dots"
+        nextSectionPreview={sectionPreviews.digital}
+      >
+        <PhotoCarousel />
       </SectionTransition>
 
       {/* Digital Humanities Section with SectionTransition */}
@@ -131,19 +141,9 @@ export default function Home() {
         transitionType="dissolve" 
         accentColor="#8B0000"
         themePattern="lines"
-        nextSectionPreview={sectionPreviews.photos}
-      >
-        <FeaturedEvents />
-      </SectionTransition>
-
-      {/* Photo Carousel with SectionTransition */}
-      <SectionTransition 
-        transitionType="slide" 
-        accentColor="#8B0000"
-        themePattern="dots"
         nextSectionPreview={sectionPreviews.highlights}
       >
-        <PhotoCarousel />
+        <FeaturedEvents />
       </SectionTransition>
 
       {/* Highlights Section with SectionTransition */}

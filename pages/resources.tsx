@@ -29,49 +29,49 @@ export default function Resources() {
                 <div className="resource-icon">📚</div>
                 <h2>Reading Lists</h2>
                 <p>Curated reading lists focused on African American literature and history.</p>
-                <a href="#" className="resource-link">View Reading Lists</a>
+                <a href="/study-resources" className="resource-link">View Reading Lists</a>
               </div>
               
               <div className="resource-card">
                 <div className="resource-icon">🎮</div>
                 <h2>Educational Games</h2>
                 <p>Interactive games that teach critical thinking and cultural awareness.</p>
-                <a href="#" className="resource-link">Explore Games</a>
+                <a href="/study-resources" className="resource-link">Explore Games</a>
               </div>
               
               <div className="resource-card">
                 <div className="resource-icon">🎬</div>
                 <h2>Video Lessons</h2>
                 <p>Video lessons on various humanities subjects and cultural topics.</p>
-                <a href="#" className="resource-link">Watch Videos</a>
+                <a href="/study-resources" className="resource-link">Watch Videos</a>
               </div>
               
               <div className="resource-card">
                 <div className="resource-icon">♟️</div>
                 <h2>Chess Resources</h2>
                 <p>Learn chess strategies and the cultural significance of the game.</p>
-                <a href="#" className="resource-link">Chess Materials</a>
+                <a href="/study-resources" className="resource-link">Chess Materials</a>
               </div>
               
               <div className="resource-card">
                 <div className="resource-icon">🏛️</div>
                 <h2>Cultural Guides</h2>
                 <p>Guides to understanding cultural heritage and historical contexts.</p>
-                <a href="#" className="resource-link">View Guides</a>
+                <a href="/study-resources" className="resource-link">View Guides</a>
               </div>
               
               <div className="resource-card">
                 <div className="resource-icon">🧩</div>
                 <h2>Activity Worksheets</h2>
                 <p>Printable worksheets and activities for hands-on learning.</p>
-                <a href="#" className="resource-link">Download Worksheets</a>
+                <a href="/study-resources" className="resource-link">Download Worksheets</a>
               </div>
             </div>
             
             <div className="educator-resources">
               <h2>For Educators</h2>
               <p>Special resources designed for teachers, mentors, and educational facilitators.</p>
-              <button className="educator-button">Access Educator Portal</button>
+              <a href="/study-resources" className="educator-button">Access Educator Portal</a>
             </div>
           </section>
         </main>

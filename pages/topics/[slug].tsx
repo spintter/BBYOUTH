@@ -8,7 +8,7 @@ const topics = {
   'religion': {
     title: 'Religion',
     description: 'Explore the role of religion in African American communities, focusing on Birmingham\'s historic Black churches and their cultural impact.',
-    image: '/images/dighum1_compressed.webp',
+    image: '/images/16th_Street_Baptist_Church_whiteanblack.jpg',
     introduction: 'Religion has been a cornerstone of African American life, providing spiritual sustenance and a platform for social change, particularly in Birmingham. The Black church, exemplified by institutions like the 16th Street Baptist Church, has been a center for community organizing, cultural expression, and resistance against oppression. From gospel music to sermons that inspired the Civil Rights Movement, religion shapes African American identity and resilience. For Black youth, understanding this legacy offers a lens to explore faith, ethics, and community leadership, empowering them to contribute to the humanities through a spiritual and cultural perspective.',
     subtopics: [
       {
@@ -60,7 +60,7 @@ const topics = {
   'theatre-arts': {
     title: 'Theatre Arts',
     description: 'Examine the role of theatre in African American storytelling, focusing on Birmingham\'s local theatre scene and its cultural significance.',
-    image: '/images/urban_youth_optimized.webp',
+    image: '/images/urban_youth_relaxing.webp',
     introduction: 'Theatre Arts have long been a powerful medium for African American storytelling, offering a stage to explore identity, history, and social issues. In Birmingham, local theatre groups like the Red Mountain Theatre Company have produced works that highlight Black experiences, from historical dramas to contemporary plays. This topic explores how theatre serves as a tool for cultural expression and community engagement, empowering Black youth to share their stories and contribute to the humanities through performance and dramatic arts.',
     subtopics: [
       {
@@ -86,7 +86,7 @@ const topics = {
   'stem': {
     title: 'STEM (Science, Technology, Engineering, and Mathematics)',
     description: 'Explore the contributions of African Americans to STEM fields, highlighting Birmingham\'s role in fostering Black innovation.',
-    image: '/images/group_graduate_optimized.webp',
+    image: '/images/ai_humanities_compressed.webp',
     introduction: 'STEM (Science, Technology, Engineering, and Mathematics) has been significantly shaped by African American innovators, despite systemic barriers. In Birmingham, initiatives like the Alabama STEM Council work to engage Black youth in these fields, building on the legacy of pioneers like Katherine Johnson. This topic examines how STEM intersects with African American humanities by addressing issues like technological access, representation, and innovation. For Black youth, engaging with STEM offers opportunities to contribute to the humanities through interdisciplinary approaches, such as using technology to preserve cultural history.',
     subtopics: [
       {
@@ -112,7 +112,7 @@ const topics = {
   'law-politics': {
     title: 'Law & Politics',
     description: 'Examine the role of African Americans in shaping law and politics, with a focus on Birmingham\'s civil rights legal battles.',
-    image: '/images/mlk_optimized.jpeg',
+    image: '/images/mlk_hitstory.jpeg',
     introduction: 'Law & Politics have been critical arenas for African American advancement, particularly in Birmingham, a key battleground for civil rights legislation. From the legal strategies of Thurgood Marshall to the activism of local leaders like Angela Davis, this topic explores how Black communities have influenced legal and political systems. For Black youth, understanding this history provides tools to advocate for justice and engage in civic leadership, contributing to the humanities through informed activism and policy analysis.',
     subtopics: [
       {
@@ -138,7 +138,7 @@ const topics = {
   'philosophy': {
     title: 'Philosophy',
     description: 'Engage with philosophical questions through African American perspectives, fostering critical thinking among Birmingham\'s Black youth.',
-    image: '/images/church4_optimized.webp',
+    image: '/images/young_group.jpg',
     introduction: 'Philosophy through an African American lens offers profound insights into identity, justice, and community, with Birmingham natives like Angela Davis contributing to this discourse. This topic explores thinkers like W.E.B. Du Bois, whose concept of double consciousness addresses the Black experience, and encourages youth to grapple with ethical and existential questions. For Black youth, engaging with philosophy fosters critical thinking and ethical reasoning, enabling them to contribute to the humanities by addressing contemporary challenges with cultural and philosophical depth.',
     subtopics: [
       {
@@ -164,7 +164,7 @@ const topics = {
   'dance': {
     title: 'Dance',
     description: 'Celebrate African American dance traditions, exploring their cultural significance and Birmingham\'s local dance scene.',
-    image: '/images/dad_son_playing_optimized.webp',
+    image: '/images/youth_group.webp',
     introduction: 'Dance is a powerful expression of African American culture, rooted in African traditions and evolving through history to include forms like tap, hip-hop, and liturgical dance. In Birmingham, dance groups like the Alabama Dance Council celebrate this heritage, blending traditional and contemporary styles. This topic explores how dance serves as a medium for storytelling, resistance, and community bonding, empowering Black youth to connect with their roots and contribute to the humanities through movement and performance.',
     subtopics: [
       {
@@ -190,7 +190,7 @@ const topics = {
   'history': {
     title: 'History',
     description: 'Dive into African American history, focusing on Birmingham\'s pivotal role in the Civil Rights Movement and cultural heritage.',
-    image: '/images/data_visualization_compressed.webp',
+    image: '/images/soldier_history.jpg',
     introduction: 'History explores the African American experience, with Birmingham as a focal point for civil rights activism and cultural heritage. From the 1963 bombing of the 16th Street Baptist Church to the city\'s role in desegregation, this topic uncovers the struggles and triumphs that define Black history. For Black youth, understanding this history fosters pride and purpose, empowering them to contribute to the humanities by preserving and sharing these narratives, ensuring they remain a vital part of cultural discourse.',
     subtopics: [
       {
@@ -216,7 +216,7 @@ const topics = {
   'economics': {
     title: 'Economics',
     description: 'Examine the economic contributions and challenges faced by African Americans, with a focus on Birmingham\'s Black business community.',
-    image: '/images/dad_hig_son_optimized.webp',
+    image: '/images/black_graduates.webp',
     introduction: 'Economics explores the economic experiences of African Americans, highlighting Birmingham\'s history of Black entrepreneurship and the systemic challenges they face. From the historic 4th Avenue Business District to modern initiatives supporting Black-owned businesses, this topic examines how economic empowerment intersects with African American humanities. For Black youth, understanding these dynamics offers tools to address economic disparities and contribute to the humanities through research and advocacy for equitable economic policies.',
     subtopics: [
       {
@@ -242,7 +242,7 @@ const topics = {
   'digital-humanities': {
     title: 'Digital Humanities',
     description: 'Harness digital tools to explore and preserve African American humanities, amplifying Black voices in Birmingham.',
-    image: '/images/download_optimized.jpeg',
+    image: '/images/data_visualization_.jpg',
     introduction: 'Digital Humanities uses technology to study and preserve African American culture, history, and narratives, with Birmingham as a focal point for innovation. This topic explores how digital tools like online archives, data visualization, and virtual exhibits can amplify Black voices and make humanities accessible. For Black youth, engaging with digital humanities offers opportunities to document their stories, challenge stereotypes, and contribute to the humanities through innovative, tech-driven approaches.',
     subtopics: [
       {
@@ -268,7 +268,7 @@ const topics = {
   'literature': {
     title: 'Literature',
     description: 'Dive into African American literature, celebrating Birmingham\'s literary contributions and their impact on cultural identity.',
-    image: '/images/ruby_UA_optimized.webp',
+    image: '/images/tuskegee_library.jpg',
     introduction: 'Literature has been a powerful tool for African Americans to articulate their experiences, with Birmingham producing notable writers like Angela Davis and poet Ashley M. Jones. This topic explores the rich tradition of Black literature, from the Harlem Renaissance to contemporary works, focusing on themes of identity, resistance, and community. For Black youth, engaging with literature offers a way to connect with their heritage and contribute to the humanities, using writing to explore their stories and advocate for change.',
     subtopics: [
       {

@@ -43,8 +43,8 @@ const FeaturedEvents = () => {
           <div className="relative h-[400px] md:h-[500px] w-full">
             <Image 
               className="rounded-lg object-cover w-full h-full absolute inset-0 transform transition-transform duration-500 group-hover:scale-110"
-              src="/images/dighum1_compressed.webp"
-              alt="Featured event image"
+              src="/images/young_group.jpg"
+              alt="Featured event - Group of Young African American Students"
               width={600}
               height={400}
               priority

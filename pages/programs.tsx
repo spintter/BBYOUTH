@@ -15,8 +15,8 @@ const Programs: React.FC = () => {
     >
       <div className="w-full overflow-hidden rounded-lg mb-8">
         <Image
-          src="/images/group_graduate_optimized.webp"
-          alt="Youth in Programs"
+          src="/images/random_education.jpg"
+          alt="Educational Program at Birmingham Black Youth Ministry"
           width={900}
           height={500}
           className="w-full h-auto object-cover"
@@ -39,7 +39,7 @@ const Programs: React.FC = () => {
             <div className="md:w-1/3">
               <div className="rounded-lg overflow-hidden">
                 <Image
-                  src="/images/urban_youth_optimized.webp"
+                  src="/images/urban_youth_relaxing.webp"
                   alt="Youth Humanities Academy"
                   width={400}
                   height={300}
@@ -75,7 +75,7 @@ const Programs: React.FC = () => {
             <div className="md:w-1/3">
               <div className="rounded-lg overflow-hidden">
                 <Image
-                  src="/images/dad_son_playing_optimized.webp"
+                  src="/images/young_group.jpg"
                   alt="Digital Storytelling Workshop"
                   width={400}
                   height={300}
@@ -111,7 +111,7 @@ const Programs: React.FC = () => {
             <div className="md:w-1/3">
               <div className="rounded-lg overflow-hidden">
                 <Image
-                  src="/images/digital_humanities_map_compressed.webp"
+                  src="/images/16thst_bap_color.jpg"
                   alt="Cultural Heritage Tours"
                   width={400}
                   height={300}
@@ -186,7 +186,7 @@ const Programs: React.FC = () => {
         width={600}
         height={400}
         className="w-full h-auto rounded-lg shadow-lg"
-        src="/images/ai_humanities_compressed.webp"
+        src="/images/studying_group.webp"
         alt="Digital Humanities Research"
       />
     </PageTemplate>

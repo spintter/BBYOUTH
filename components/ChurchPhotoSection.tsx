@@ -30,14 +30,14 @@ const ChurchPhotoSection = () => {
         <div className="relative group overflow-hidden rounded-lg shadow-lg">
           <img
             className="w-full h-full object-cover rounded-lg shadow-lg"
-            src="/images/data_visualization_compressed.webp"
-            alt="Digital Humanities Data Visualization"
+            src="/images/Bethal_baptist.jpg"
+            alt="Bethel Baptist Church"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
             <div className="text-center text-white p-4">
-              <h2 className="text-3xl font-bold mb-2">Embracing Digital Humanities</h2>
-              <p className="text-lg mb-4">Exploring the intersection of technology and cultural heritage to preserve and share our stories.</p>
-              <a href="/digital-humanities" className="text-red-500 hover:underline font-semibold text-lg">
+              <h2 className="text-3xl font-bold mb-2">Preserving Our History</h2>
+              <p className="text-lg mb-4">Exploring the rich heritage of African American education and the legacy of Black intellectualism in America.</p>
+              <a href="/topics/history" className="text-red-500 hover:underline font-semibold text-lg">
                 Learn More
               </a>
             </div>

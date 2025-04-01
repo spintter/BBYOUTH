@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
-// Updated news articles with more relevant content
+// Updated news articles with more relevant content and actual images
 const newsArticles = [
   {
     id: 1,
@@ -20,7 +20,7 @@ const newsArticles = [
     id: 2,
     title: 'Harvard Launches Introduction to Digital Humanities Course',
     excerpt: 'New online course teaches students to develop skills in digital research and visualization techniques across humanities disciplines.',
-    imageUrl: '/images/dighum1_compressed.webp',
+    imageUrl: '/images/data_visualization_.jpg',
     date: 'August 21, 2024',
     category: 'Education',
     link: 'https://pll.harvard.edu/course/introduction-digital-humanities'
@@ -29,7 +29,7 @@ const newsArticles = [
     id: 3,
     title: 'Youth Coding Workshop Creates Interactive Literature Map',
     excerpt: 'Participants in our summer program developed an interactive map showcasing Birmingham\'s literary landmarks and history.',
-    imageUrl: '/images/digital_humanities_map_compressed.webp',
+    imageUrl: '/images/world_map.webp',
     date: 'July 3, 2023',
     category: 'Education',
     link: '/news/coding-workshop-map'
@@ -40,19 +40,19 @@ const projects = [
   {
     title: 'Oral History Archive',
     description: 'Digital collection of community stories and testimonies',
-    imageUrl: '/images/data_visualization_compressed.webp',
+    imageUrl: '/images/blackhistory_logo.jpeg',
     link: '/projects/oral-history'
   },
   {
     title: 'Civil Rights Timeline',
     description: 'Interactive timeline of the Civil Rights Movement',
-    imageUrl: '/images/mlk_optimized.jpeg',
+    imageUrl: '/images/mlk_hitstory.jpeg',
     link: '/projects/civil-rights'
   },
   {
     title: 'Virtual Museum Tours',
     description: 'Digital access to cultural heritage sites',
-    imageUrl: '/images/digital_humanities_map_optimized.jpg',
+    imageUrl: '/images/magic_city_sign.jpeg',
     link: '/projects/virtual-tours'
   }
 ];
@@ -71,7 +71,8 @@ const DigitalHumanitiesSection = () => {
           <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-6 font-montserrat">Digital Humanities</h2>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto font-inter">
             Exploring the intersection of technology and humanities to create innovative
-            educational experiences for our youth community.
+            educational experiences for our youth community. Historical images from the Library of Congress showcase
+            the rich heritage of African American education.
           </p>
           {/* Visual thread element - thin accent line */}
           <div className="w-24 h-1 bg-red-700 mx-auto mt-8 rounded-full"></div>

@@ -25,39 +25,39 @@ const StudyResources: React.FC = () => {
       { 
         title: 'Early Reader Stories', 
         description: 'Interactive stories introducing cultural awareness for young readers.',
-        link: '#early-readers',
-        image: '/images/dad_son_playing_optimized.webp'
+        link: '/topics/literature',
+        image: '/images/young_schoolboy.webp'
       },
       { 
         title: 'Black History Heroes', 
         description: 'Age-appropriate stories about important figures in Black history.',
-        link: '#history-heroes',
-        image: '/images/mlk_optimized.jpeg'
+        link: '/topics/history',
+        image: '/images/mlk_hitstory.jpeg'
       },
       { 
         title: 'Community Helpers', 
         description: 'Learn about important roles in our community through interactive activities.',
-        link: '#community-helpers',
-        image: '/images/urban_youth_optimized.webp'
+        link: '/topics/economics',
+        image: '/images/dad_hug_son_optimized.webp'
       },
     ],
     '3-5': [
       { 
         title: 'Cultural Heritage', 
         description: 'Explore African and African American culture through stories and art.',
-        link: '#cultural-heritage',
-        image: '/images/blackhistory_optimized.jpeg'
+        link: '/topics/dance',
+        image: '/images/blackhistory_logo.jpeg'
       },
       { 
         title: 'Civil Rights for Kids', 
         description: 'Age-appropriate introduction to civil rights history and concepts.',
-        link: '#civil-rights-kids',
-        image: '/images/ai_humanities_compressed.webp'
+        link: '/topics/law-politics',
+        image: '/images/ruby_UA_history.webp'
       },
       { 
         title: 'Music & Movement', 
         description: 'Explore the rich tradition of music in Black culture through activities.',
-        link: '#music-movement',
+        link: '/topics/music',
         image: '/images/church3_optimized.webp'
       },
     ],
@@ -65,60 +65,60 @@ const StudyResources: React.FC = () => {
       { 
         title: 'African American Literature', 
         description: 'Age-appropriate literature selections from prominent Black authors.',
-        link: '#aa-literature',
-        image: '/images/ruby_UA_optimized.webp'
+        link: '/topics/literature',
+        image: '/images/tuskegee_library.jpg'
       },
       { 
         title: 'Civil Rights Movement', 
         description: 'In-depth resources about the Civil Rights Movement in America.',
-        link: '#civil-rights',
-        image: '/images/digital_humanities_map_compressed.webp'
+        link: '/topics/history',
+        image: '/images/16th_Street_Baptist_Church_whiteanblack.jpg'
       },
       { 
         title: 'Community Leadership', 
         description: 'Resources to develop leadership skills and civic engagement.',
-        link: '#leadership',
-        image: '/images/group_graduate_optimized.webp'
+        link: '/topics/philosophy',
+        image: '/images/black_graduates.webp'
       },
     ],
     '9-12': [
       { 
         title: 'Advanced Black Literature', 
         description: 'Study guides and analysis of works by influential Black authors.',
-        link: '#advanced-literature',
-        image: '/images/church4_optimized.webp'
+        link: '/topics/literature',
+        image: '/images/studying_group.webp'
       },
       { 
         title: 'Social Justice Research', 
         description: 'Resources for conducting research on social justice topics.',
-        link: '#social-justice',
-        image: '/images/download_optimized.jpeg'
+        link: '/topics/law-politics',
+        image: '/images/soldier_history.jpg'
       },
       { 
         title: 'Digital Storytelling', 
         description: 'Tools and guides for creating digital media projects about cultural topics.',
-        link: '#digital-storytelling',
-        image: '/images/church5_optimized.webp'
+        link: '/topics/digital-humanities',
+        image: '/images/data_visualization_.jpg'
       },
     ],
     'Educators': [
       { 
         title: 'Curriculum Resources', 
         description: 'Lesson plans and teaching materials for incorporating Black history into the classroom.',
-        link: '#curriculum',
-        image: '/images/sixth_baptist2_optimized.webp'
+        link: '/topics/history',
+        image: '/images/random_education.jpg'
       },
       { 
         title: 'Professional Development', 
         description: 'Training resources for culturally responsive teaching methods.',
-        link: '#professional-dev',
-        image: '/images/group_graduate_optimized.webp'
+        link: '/get-involved',
+        image: '/images/young_adults.webp'
       },
       { 
         title: 'Community Engagement', 
         description: 'Resources for connecting classroom learning with community involvement.',
-        link: '#community-engagement',
-        image: '/images/dad_hig_son_optimized.webp'
+        link: '/contact',
+        image: '/images/urban_youth_relaxing.webp'
       },
     ],
   };
@@ -134,7 +134,7 @@ const StudyResources: React.FC = () => {
     >
       <div className="w-full overflow-hidden rounded-lg mb-8">
         <Image
-          src="/images/group_graduate_optimized.webp"
+          src="/images/young_group.jpg"
           alt="Students studying together"
           width={900}
           height={500}

@@ -4,31 +4,31 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
-// Updated images with digital humanities visuals
+// Updated images focused on Birmingham churches
 const images = [
   {
     id: 1,
-    src: '/images/data_visualization_compressed.webp',
-    alt: 'Digital Humanities Data Visualization',
-    caption: 'Data visualization helps reveal patterns in cultural and historical datasets'
+    src: '/images/16th_Street_Baptist_Church_whiteanblack.jpg',
+    alt: '16th Street Baptist Church',
+    caption: 'Historic 16th Street Baptist Church, a significant landmark in Birmingham\'s civil rights history'
   },
   {
     id: 2,
-    src: '/images/digital_humanities_map_compressed.webp',
-    alt: 'Digital Humanities Map',
-    caption: 'Digital mapping technologies provide new ways to explore history and culture'
+    src: '/images/16thst_bap_color.jpg',
+    alt: '16th Street Baptist Church in Color',
+    caption: 'The iconic 16th Street Baptist Church, which served as a center for civil rights organizing in Birmingham'
   },
   {
     id: 3,
-    src: '/images/dighum1_compressed.webp',
-    alt: 'Digital Humanities Research',
-    caption: 'Digital tools enable innovative research approaches in the humanities'
+    src: '/images/Bethal_baptist.jpg',
+    alt: 'Bethel Baptist Church',
+    caption: 'Bethel Baptist Church, led by Rev. Fred Shuttlesworth, was a headquarters for civil rights activism'
   },
   {
     id: 4,
-    src: '/images/ai_humanities_compressed.webp',
-    alt: 'AI and Humanities',
-    caption: 'The intersection of AI and humanities creates new possibilities for cultural study'
+    src: '/images/St-Paul-UMC-1-20-1949_.jpeg',
+    alt: 'St. Paul United Methodist Church',
+    caption: 'St. Paul United Methodist Church, an important spiritual and community center in Birmingham'
   }
 ];
 
@@ -84,10 +84,10 @@ const PhotoCarousel = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-montserrat">Digital Humanities</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-montserrat">Birmingham Churches</h2>
           <p className="text-lg text-[#F5F5F5] max-w-3xl mx-auto font-inter">
-            Exploring how digital technologies transform our understanding and preservation of 
-            culture, history, and the humanities through innovative research methods.
+            Celebrating the historic churches of Birmingham that played pivotal roles 
+            in the civil rights movement and continue to serve as pillars of spiritual guidance and community strength.
           </p>
         </motion.div>
 

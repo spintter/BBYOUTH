@@ -14,8 +14,8 @@ const Contact: React.FC = () => {
     >
       <div className="w-full overflow-hidden rounded-lg mb-8">
         <Image
-          src="/images/sixth_baptist2_optimized.webp"
-          alt="BBYM Office"
+          src="/images/16thst_bap_color.jpg"
+          alt="Birmingham Church"
           width={900}
           height={500}
           className="w-full h-auto object-cover"
