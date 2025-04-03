@@ -1,6 +1,6 @@
 name: Deploy BBYOUTH to VPS
 on:
-  workflow_dispatch: # Manual trigger since you're still developing
+  workflow_dispatch: # Manual trigger for development
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -10,9 +10,9 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20' # Latest LTS as of Apr 2025, adjust if needed
+        node-version: '18.19.1'
     - name: Install dependencies
-      run: npm ci # Faster, cleaner than npm install
+      run: npm ci
     - name: Build Next.js app
       run: npm run build
     - name: Set up SSH
@@ -22,20 +22,17 @@ jobs:
     - name: Deploy to VPS
       run: |
         ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-          mkdir -p /var/www/bbyouths
-          chown -R root:root /var/www/bbyouths
-          chmod -R 755 /var/www/bbyouths
-          which node || echo "Node.js not found on VPS"
-          which npm || echo "npm not found on VPS"
-        EOF
-        scp -P ${{ secrets.VPS_PORT }} -r .next package.json node_modules ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/bbyouths
-    - name: Start/Restart app on VPS
-      run: |
-        ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           cd /var/www/bbyouths
-          npm install --production # Ensure prod-only deps
-          npm run start || echo "Start failed, check Node.js or PM2"
+          git fetch origin
+          git reset --hard origin/main
+          npm ci --production
+          npm run build
+          pm2 restart bbyouths || pm2 start npm --name bbyouths -- start
+          pm2 save
         EOF
     - name: Verify deployment
       run: |
-        ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -l /var/www/bbyouths/.next" || echo "Build artifacts missing"
+        ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          pm2 list | grep bbyouths || echo "PM2 process not running"
+          curl -I http://localhost:3000 || echo "App not responding on 3000"
+        EOF
