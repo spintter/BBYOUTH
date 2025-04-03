@@ -1,13 +1,20 @@
 name: Deploy BBYOUTH to VPS
 on:
-  push:
-    branches: [main]
+  workflow_dispatch: # Manual trigger since you're still developing
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Latest LTS as of Apr 2025, adjust if needed
+    - name: Install dependencies
+      run: npm ci # Faster, cleaner than npm install
+    - name: Build Next.js app
+      run: npm run build
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.9.0
       with:
@@ -15,11 +22,20 @@ jobs:
     - name: Deploy to VPS
       run: |
         ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-          mkdir -p /var/www/bbyouths || echo "Directory exists, continuing..."
+          mkdir -p /var/www/bbyouths
           chown -R root:root /var/www/bbyouths
           chmod -R 755 /var/www/bbyouths
+          which node || echo "Node.js not found on VPS"
+          which npm || echo "npm not found on VPS"
         EOF
-        scp -P ${{ secrets.VPS_PORT }} -r ./* ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/bbyouths || echo "SCP failed, check logs"
+        scp -P ${{ secrets.VPS_PORT }} -r .next package.json node_modules ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/bbyouths
+    - name: Start/Restart app on VPS
+      run: |
+        ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          cd /var/www/bbyouths
+          npm install --production # Ensure prod-only deps
+          npm run start || echo "Start failed, check Node.js or PM2"
+        EOF
     - name: Verify deployment
       run: |
-        ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -l /var/www/bbyouths" || echo "Verification failed"
+        ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -l /var/www/bbyouths/.next" || echo "Build artifacts missing"
