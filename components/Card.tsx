@@ -35,6 +35,8 @@ const Card: React.FC<CardProps> = ({
             height={225}
             className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
             loading="lazy"
+            quality={75}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
       )}

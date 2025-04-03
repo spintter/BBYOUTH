@@ -1,0 +1,25 @@
+name: Deploy BBYOUTH to VPS
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+    - name: Deploy to VPS
+      run: |
+        ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          mkdir -p /var/www/bbyouths || echo "Directory exists, continuing..."
+          chown -R root:root /var/www/bbyouths
+          chmod -R 755 /var/www/bbyouths
+        EOF
+        scp -P ${{ secrets.VPS_PORT }} -r ./* ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/bbyouths || echo "SCP failed, check logs"
+    - name: Verify deployment
+      run: |
+        ssh -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "ls -l /var/www/bbyouths" || echo "Verification failed"

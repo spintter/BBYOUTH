@@ -12,7 +12,7 @@ const studyMaterials = [
     title: 'Elementary School',
     description: 'Interactive learning resources designed to introduce young minds to humanities concepts through engaging activities and stories.',
     image: '/images/young_schoolboy.webp',
-    link: '/resources/elementary',
+    link: '/study-resources',
     color: '#00C4FF'
   },
   {
@@ -20,7 +20,7 @@ const studyMaterials = [
     title: 'Middle School',
     description: 'Curriculum materials that build critical thinking skills and cultural awareness through age-appropriate humanities exploration.',
     image: '/images/black_graduates.webp',
-    link: '/resources/middle',
+    link: '/study-resources',
     color: '#FFD700'
   },
   {
@@ -28,7 +28,7 @@ const studyMaterials = [
     title: 'High School',
     description: 'Advanced resources that prepare students for college-level humanities studies while connecting to contemporary issues.',
     image: '/images/studying_group.webp',
-    link: '/resources/high',
+    link: '/study-resources',
     color: '#00C4FF'
   },
   {
@@ -36,7 +36,7 @@ const studyMaterials = [
     title: 'For Educators',
     description: 'Professional development materials and lesson plans to effectively integrate humanities into diverse learning environments.',
     image: '/images/young_adults.webp',
-    link: '/resources/educators',
+    link: '/study-resources',
     color: '#FFD700'
   }
 ];
@@ -137,6 +137,10 @@ const HighlightsSection = () => {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover"
+                      loading={material.id === 'elementary' ? 'eager' : 'lazy'}
+                      placeholder="blur"
+                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                      quality={80}
                     />
                   </div>
                   <div className="p-6 md:w-3/5 flex flex-col justify-center">
@@ -180,7 +184,7 @@ const HighlightsSection = () => {
           transition={{ duration: 0.5, delay: 0.6 }}
         >
           <Link 
-            href="/resources" 
+            href="/study-resources" 
             className="inline-block bg-red-700 text-white font-semibold py-2 px-6 rounded-full hover:bg-red-800 transition-colors duration-300 shadow-md font-['Poppins']"
           >
             Browse All Resources
