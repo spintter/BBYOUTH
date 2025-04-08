@@ -1,0 +1,22 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+      "color-hex-length": "short",
+      "indentation": 2,
+      "number-leading-zero": "always",
+      "string-quotes": "double",
+      "declaration-block-no-duplicate-properties": true,
+      "property-no-unknown": true,
+      "rule-empty-line-before": ["always", { "except": ["after-single-line"] }],
+      "selector-class-pattern": "^[a-z][a-zA-Z0-9]+$",
+      "order/properties-alphabetical-order": true
+  },
+  "overrides": [
+      {
+          "files": "**/*.module.{css,scss}",
+          "rules": {
+              "selector-class-pattern": null
+          }
+      }
+  ]
+}

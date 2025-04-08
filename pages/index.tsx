@@ -15,13 +15,12 @@ import SectionTransition from '../components/SectionTransition';
 // Import the KnowledgeIsPowerHero component with SSR disabled
 const KnowledgeIsPowerHeroClient = dynamic(
   () => import('../components/KnowledgeIsPowerHeroClient'),
-  { ssr: false }
+  { ssr: false },
 );
 
 export default function Home() {
   // State to hold section previews
   const [sectionPreviews, setSectionPreviews] = useState({
-    mission: null as React.ReactNode,
     humanities: null as React.ReactNode,
     digital: null as React.ReactNode,
     events: null as React.ReactNode,
@@ -32,12 +31,31 @@ export default function Home() {
   // Generate section previews after initial render
   useEffect(() => {
     setSectionPreviews({
-      mission: <div className="preview-content"><MissionSection /></div>,
-      humanities: <div className="preview-content"><HumanitiesGrid /></div>,
-      photos: <div className="preview-content"><PhotoCarousel /></div>,
-      digital: <div className="preview-content"><DigitalHumanitiesSection /></div>,
-      events: <div className="preview-content"><FeaturedEvents /></div>,
-      highlights: <div className="preview-content"><HighlightsSection /></div>,
+      humanities: (
+        <div className="preview-content">
+          <HumanitiesGrid />
+        </div>
+      ),
+      photos: (
+        <div className="preview-content">
+          <PhotoCarousel />
+        </div>
+      ),
+      digital: (
+        <div className="preview-content">
+          <DigitalHumanitiesSection />
+        </div>
+      ),
+      events: (
+        <div className="preview-content">
+          <FeaturedEvents />
+        </div>
+      ),
+      highlights: (
+        <div className="preview-content">
+          <HighlightsSection />
+        </div>
+      ),
     });
   }, []);
 
@@ -45,16 +63,22 @@ export default function Home() {
     <div className="page-container bg-[#F9F9F9] relative">
       <Head>
         <title>Birmingham Black Youth Ministry | Empowering Through Humanities</title>
-        <meta name="description" content="Birmingham Black Youth Ministry empowers young minds through humanities education, fostering critical thinking, cultural awareness, and leadership skills." />
+        <meta
+          name="description"
+          content="Birmingham Black Youth Ministry empowers young minds through humanities education, fostering critical thinking, cultural awareness, and leadership skills."
+        />
       </Head>
 
       {/* Add global styles for consistent transitions */}
-      <style jsx global>{`
+      <style
+        jsx
+        global
+      >{`
         /* Consistent animation curve across components */
         .section-container {
           position: relative;
         }
-        
+
         /* Subtle background pattern for visual texture */
         .page-container::before {
           content: '';
@@ -63,26 +87,29 @@ export default function Home() {
           left: 0;
           right: 0;
           bottom: 0;
-          background-image: radial-gradient(#8B0000 0.5px, transparent 0.5px);
+          background-image: radial-gradient(#8b0000 0.5px, transparent 0.5px);
           background-size: 50px 50px;
           opacity: 0.03;
           pointer-events: none;
           z-index: 0;
         }
-        
+
         /* Enhanced focus styles for accessibility */
-        a:focus, button:focus {
-          outline: 2px solid #8B0000;
+        a:focus,
+        button:focus {
+          outline: 2px solid #8b0000;
           outline-offset: 2px;
         }
-        
+
         /* Consistent micro-interactions */
-        a, button {
-          transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
-                      box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
-                      opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        a,
+        button {
+          transition:
+            transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+            box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+            opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
-        
+
         /* Improved scrolling behavior */
         html {
           scroll-behavior: smooth;
@@ -97,38 +124,29 @@ export default function Home() {
         <KnowledgeIsPowerHeroClient />
       </section>
 
-      {/* Mission Section with SectionTransition */}
-      <SectionTransition 
-        transitionType="curtain" 
-        accentColor="#8B0000"
-        nextSectionPreview={sectionPreviews.humanities}
-      >
-        <MissionSection />
-      </SectionTransition>
-
-      {/* Humanities Grid with SectionTransition */}
-      <SectionTransition 
-        transitionType="overlap" 
-        accentColor="#8B0000"
-        themePattern="lines"
-        nextSectionPreview={sectionPreviews.photos}
-      >
-        <HumanitiesGrid />
-      </SectionTransition>
-
-      {/* Photo Carousel with SectionTransition */}
-      <SectionTransition 
-        transitionType="slide" 
+      {/* Photo Carousel moved below Hero */}
+      <SectionTransition
+        transitionType="slide"
         accentColor="#8B0000"
         themePattern="dots"
-        nextSectionPreview={sectionPreviews.digital}
+        nextSectionPreview={sectionPreviews.humanities}
       >
         <PhotoCarousel />
       </SectionTransition>
 
+      {/* Humanities Grid with SectionTransition */}
+      <SectionTransition
+        transitionType="overlap"
+        accentColor="#8B0000"
+        themePattern="lines"
+        nextSectionPreview={sectionPreviews.digital}
+      >
+        <HumanitiesGrid />
+      </SectionTransition>
+
       {/* Digital Humanities Section with SectionTransition */}
-      <SectionTransition 
-        transitionType="fade" 
+      <SectionTransition
+        transitionType="fade"
         accentColor="#8B0000"
         themePattern="dots"
         nextSectionPreview={sectionPreviews.events}
@@ -137,8 +155,8 @@ export default function Home() {
       </SectionTransition>
 
       {/* Featured Events with SectionTransition */}
-      <SectionTransition 
-        transitionType="dissolve" 
+      <SectionTransition
+        transitionType="dissolve"
         accentColor="#8B0000"
         themePattern="lines"
         nextSectionPreview={sectionPreviews.highlights}
@@ -147,8 +165,8 @@ export default function Home() {
       </SectionTransition>
 
       {/* Highlights Section with SectionTransition */}
-      <SectionTransition 
-        transitionType="curtain" 
+      <SectionTransition
+        transitionType="curtain"
         accentColor="#8B0000"
       >
         <HighlightsSection />

@@ -1,0 +1,1 @@
+module.exports = require('/Users/nodeusr/dotfiles/config/.eslintrc.config.js');
