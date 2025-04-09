@@ -3,20 +3,16 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    optimizeCss: true,
+    optimizeCss: process.env.NODE_ENV === 'production',
     optimizePackageImports: ['three', '@react-three/fiber', '@react-three/drei'],
-    optimizeServerReact: true,
-    scrollRestoration: true,
+    // Removed cacheDependencies
   },
   serverExternalPackages: [],
   webpack(config, { dev, isServer }) {
-    // Handle 3D model files with improved caching
+    // Handle 3D model files
     config.module.rules.push({
       test: /\.(glb|gltf)$/,
       type: 'asset/resource',
-      generator: {
-        filename: 'static/chunks/models/[hash][ext]',
-      },
     });
 
     // Handle shader files if needed
@@ -40,21 +36,18 @@ const nextConfig = {
             name: 'three-vendors',
             chunks: 'all',
             priority: 10,
-            reuseExistingChunk: true,
           },
           mui: {
             test: /[\\/]node_modules[\\/](@mui|@emotion)[\\/]/,
             name: 'mui-vendors',
             chunks: 'all',
             priority: 9,
-            reuseExistingChunk: true,
           },
           vendors: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
             priority: -10,
-            reuseExistingChunk: true,
           },
         },
       };
@@ -84,8 +77,8 @@ const nextConfig = {
   compress: true,
   staticPageGenerationTimeout: 120,
   onDemandEntries: {
-    maxInactiveAge: 15 * 60 * 1000,
-    pagesBufferLength: 2,
+    maxInactiveAge: 60 * 60 * 1000,
+    pagesBufferLength: 5,
   },
 };
 

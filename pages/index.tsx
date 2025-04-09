@@ -15,20 +15,7 @@ import SectionTransition from '../components/SectionTransition';
 // Import the KnowledgeIsPowerHero component with SSR disabled
 const KnowledgeIsPowerHeroClient = dynamic(
   () => import('../components/KnowledgeIsPowerHeroClient'),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-screen flex items-center justify-center bg-black">
-        <div className="flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-t-red-700 border-b-yellow-400 border-l-white border-r-white rounded-full animate-spin mb-4"></div>
-          <p className="text-white text-xl">Loading 3D Experience...</p>
-          <p className="text-white text-sm mt-2">
-            This component is optimized for memory efficiency
-          </p>
-        </div>
-      </div>
-    ),
-  },
+  { ssr: false },
 );
 
 export default function Home() {
