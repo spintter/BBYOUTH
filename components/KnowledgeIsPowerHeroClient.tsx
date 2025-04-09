@@ -481,7 +481,12 @@ function Scene() {
   if (error) {
     return (
       <Html center>
-        <div className="text-white text-lg font-serif">Error loading scene: {error.message}</div>
+        <div className="text-white text-lg font-serif">
+          Error loading scene:{' '}
+          {error && typeof error === 'object' && 'message' in error
+            ? error.message
+            : 'Unknown error'}
+        </div>
       </Html>
     );
   }
@@ -723,7 +728,12 @@ export default function KnowledgeIsPowerHero(): JSX.Element {
           onError={(error) => {
             console.error('Canvas error:', error);
             setWebGLAvailable(false);
-            setWebGLError('Error creating WebGL context: ' + error.message);
+            setWebGLError(
+              'Error creating WebGL context: ' +
+                (error && typeof error === 'object' && 'message' in error
+                  ? error.message
+                  : 'Unknown error'),
+            );
           }}
         >
           <Suspense
