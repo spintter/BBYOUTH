@@ -198,22 +198,24 @@ const PageTemplate: React.FC<PageTemplateProps> = ({
         {/* SEO Structured Data */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'WebPage',
-              name: title,
-              description: description,
-              publisher: {
-                '@type': 'Organization',
-                name: 'BBYM',
-                logo: {
-                  '@type': 'ImageObject',
-                  url: '/logo.png',
+          dangerouslySetInnerHTML={
+            {
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'WebPage',
+                name: title,
+                description: description,
+                publisher: {
+                  '@type': 'Organization',
+                  name: 'BBYM',
+                  logo: {
+                    '@type': 'ImageObject',
+                    url: '/logo.png',
+                  },
                 },
-              },
-            }),
-          }}
+              }),
+            } as any
+          }
         />
         {/* Print styles */}
         <style>{`
@@ -503,7 +505,7 @@ const PageTemplate: React.FC<PageTemplateProps> = ({
                       if (foundTerms) {
                         return React.cloneElement(child, {
                           dangerouslySetInnerHTML: { __html: processedContent },
-                        });
+                        } as any);
                       }
                     }
                     return child;
@@ -656,8 +658,9 @@ const PageTemplate: React.FC<PageTemplateProps> = ({
       />
 
       <script
-        dangerouslySetInnerHTML={{
-          __html: `
+        dangerouslySetInnerHTML={
+          {
+            __html: `
             // Glossary tooltip functionality
             document.addEventListener('DOMContentLoaded', function() {
               const tooltip = document.getElementById('glossary-tooltip');
@@ -745,7 +748,8 @@ const PageTemplate: React.FC<PageTemplateProps> = ({
               }
             });
           `,
-        }}
+          } as any
+        }
       />
 
       <Footer />
