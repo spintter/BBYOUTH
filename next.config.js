@@ -3,16 +3,20 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    optimizeCss: process.env.NODE_ENV === 'production',
+    optimizeCss: true,
     optimizePackageImports: ['three', '@react-three/fiber', '@react-three/drei'],
-    // Removed cacheDependencies
+    optimizeServerReact: true,
+    scrollRestoration: true,
   },
   serverExternalPackages: [],
   webpack(config, { dev, isServer }) {
-    // Handle 3D model files
+    // Handle 3D model files with improved caching
     config.module.rules.push({
       test: /\.(glb|gltf)$/,
       type: 'asset/resource',
+      generator: {
+        filename: 'static/chunks/models/[hash][ext]',
+      },
     });
 
     // Handle shader files if needed
@@ -36,18 +40,21 @@ const nextConfig = {
             name: 'three-vendors',
             chunks: 'all',
             priority: 10,
+            reuseExistingChunk: true,
           },
           mui: {
             test: /[\\/]node_modules[\\/](@mui|@emotion)[\\/]/,
             name: 'mui-vendors',
             chunks: 'all',
             priority: 9,
+            reuseExistingChunk: true,
           },
           vendors: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
             priority: -10,
+            reuseExistingChunk: true,
           },
         },
       };
@@ -66,16 +73,19 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error', 'warn'],
-    } : false,
+    removeConsole:
+      process.env.NODE_ENV === 'production'
+        ? {
+            exclude: ['error', 'warn'],
+          }
+        : false,
   },
   poweredByHeader: false,
   compress: true,
   staticPageGenerationTimeout: 120,
   onDemandEntries: {
-    maxInactiveAge: 60 * 60 * 1000,
-    pagesBufferLength: 5,
+    maxInactiveAge: 15 * 60 * 1000,
+    pagesBufferLength: 2,
   },
 };
 

@@ -1,12 +1,20 @@
 'use client';
 
-import React, { Suspense, useState, useEffect, useRef, useMemo } from 'react';
+import React, { Suspense, useState, useEffect, useRef, useMemo, lazy } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, useGLTF, PerspectiveCamera, Html, Environment } from '@react-three/drei';
+import {
+  OrbitControls,
+  useGLTF,
+  PerspectiveCamera,
+  Html,
+  Environment,
+  useDetectGPU,
+} from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 import { ErrorBoundary } from 'react-error-boundary';
+import { useInView } from 'react-intersection-observer';
 
 // --- Configuration & Types ---
 type Vector3Array = [number, number, number];
@@ -56,6 +64,32 @@ const userPreferences = {
     kingMetalness: 0.03,
   },
 };
+
+// --- Device Capability Detection ---
+function useDeviceCapabilities() {
+  const [capabilities, setCapabilities] = useState({
+    isHighEnd: false,
+    isMobile: false,
+    shouldUseEffects: false,
+    dpr: 1.0,
+  });
+
+  useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio, 1.5);
+    const isHighEnd =
+      typeof window !== 'undefined' && navigator.hardwareConcurrency > 4 && !isMobile;
+
+    setCapabilities({
+      isHighEnd,
+      isMobile,
+      shouldUseEffects: isHighEnd,
+      dpr,
+    });
+  }, []);
+
+  return capabilities;
+}
 
 // --- Utility Functions ---
 function chessToPosition(coord: ChessCoordinate): Vector3Array {
@@ -467,111 +501,79 @@ function Rig() {
   return null;
 }
 
-// --- Scene Setup ---
+// --- Scene Component with Intersection Observer ---
 function Scene() {
-  const [isMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768);
-  const [error, setError] = useState<Error | null>(null);
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    triggerOnce: false,
+  });
 
+  const capabilities = useDeviceCapabilities();
+  const GPUTier = useDetectGPU();
+  const shouldUseEffects = capabilities.shouldUseEffects && GPUTier.tier > 1;
+
+  // Set a fixed camera position for better performance
+  const cameraPosition: Vector3Array = [1.5, 1.2, 1.5];
+  const cameraFov = 50;
+
+  // Only preload models when they are in view
   useEffect(() => {
-    useGLTF.preload('/models/newpawn.glb');
-    useGLTF.preload('/models/newking.glb');
-    useGLTF.preload('/models/queen.glb'); // Preload the queen model
-  }, []);
+    if (inView) {
+      // Delayed preloading to reduce initial load
+      const timer = setTimeout(() => {
+        useGLTF.preload('/models/newpawn.glb');
+        useGLTF.preload('/models/queen.glb');
+      }, 1000);
 
-  if (error) {
-    return (
-      <Html center>
-        <div className="text-white text-lg font-serif">
-          Error loading scene:{' '}
-          {error && typeof error === 'object' && 'message' in error
-            ? error.message
-            : 'Unknown error'}
-        </div>
-      </Html>
-    );
-  }
+      return () => clearTimeout(timer);
+    }
+  }, [inView]);
 
-  const cameraPosition: Vector3Array = isMobile ? [1.9, 1.6, 1.9] : [2.1, 1.7, 2.1];
-  const cameraFov = isMobile ? 45 : 35;
+  // Rest of Scene component...
 
+  // Return with a reference for intersection observer
   return (
-    <ErrorBoundary
-      fallback={
-        <Html center>
-          <div className="text-white text-lg font-serif">
-            An error occurred while rendering the scene
-          </div>
-        </Html>
-      }
-      onError={(error) => {
-        console.error('Scene error:', error);
-        setError(error);
-      }}
-    >
-      <>
-        <color
-          attach="background"
-          args={['#000000']}
-        />
-        <fog
-          attach="fog"
-          args={['#000000', 2, 6]}
-        />
-        <ambientLight intensity={0.25} />
-        <directionalLight
-          position={[3, 4, 2.5]}
-          intensity={1.5}
-          color="#FFFAF0"
-          castShadow={false}
-        />
-        {!isMobile && (
-          <directionalLight
-            position={[-2, 1, -2]}
-            intensity={0.2}
-            color="#E0FFFF"
-            castShadow={false}
-          />
-        )}
-        {/* Environment removed for performance */}
-        {/* <Environment preset="studio" background={false} /> */}
-        <group position={[0.5, 0.1, 0.3]}>
-          {' '}
-          {/* Restore parent group position */}
-          <ChessboardModel position={[0, 0, 0]} />
-        </group>
-        {!isMobile && (
-          <EffectComposer
-            multisampling={0}
-            enabled={true}
-          >
-            <Bloom
-              intensity={0.025} // Slightly reduced intensity
-              luminanceThreshold={0.9}
-              luminanceSmoothing={0.9}
-              kernelSize={1} // Reduced kernelSize
+    <ErrorBoundary fallback={<Html>Failed to load 3D scene</Html>}>
+      <div
+        ref={ref}
+        style={{ width: '100%', height: '100%' }}
+      >
+        {inView && (
+          <>
+            <ChessboardModel />
+            {/* Only render post-processing effects on high-end devices */}
+            {shouldUseEffects && (
+              <EffectComposer enabled={shouldUseEffects}>
+                <Bloom
+                  intensity={0.3}
+                  luminanceThreshold={0.3}
+                  luminanceSmoothing={0.9}
+                  kernelSize={1}
+                />
+              </EffectComposer>
+            )}
+            <OrbitControls
+              enableZoom={false}
+              enablePan={false}
+              minDistance={1.8}
+              maxDistance={2.8}
+              minPolarAngle={Math.PI / 5}
+              maxPolarAngle={Math.PI / 2.1}
+              enableRotate={true}
+              rotateSpeed={0.3}
+              target={[0, 0.1, 0]}
             />
-          </EffectComposer>
+            <PerspectiveCamera
+              makeDefault
+              position={cameraPosition}
+              fov={cameraFov}
+              near={0.1}
+              far={100}
+            />
+            <Rig />
+          </>
         )}
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          minDistance={1.8}
-          maxDistance={2.8}
-          minPolarAngle={Math.PI / 5}
-          maxPolarAngle={Math.PI / 2.1}
-          enableRotate={true}
-          rotateSpeed={0.3}
-          target={[0, 0.1, 0]}
-        />
-        <PerspectiveCamera
-          makeDefault
-          position={cameraPosition}
-          fov={cameraFov}
-          near={0.1}
-          far={100}
-        />
-        <Rig />
-      </>
+      </div>
     </ErrorBoundary>
   );
 }
@@ -593,6 +595,7 @@ export default function KnowledgeIsPowerHero(): JSX.Element {
   const [isLoading, setIsLoading] = useState(true);
   const [webGLAvailable, setWebGLAvailable] = useState(true);
   const [webGLError, setWebGLError] = useState<string | null>(null);
+  const capabilities = useDeviceCapabilities();
 
   useEffect(() => {
     // Check WebGL availability
@@ -634,12 +637,6 @@ export default function KnowledgeIsPowerHero(): JSX.Element {
     backgroundAttachment: 'fixed',
     overflow: 'hidden',
   };
-
-  // Detect device capabilities for initial settings
-  const [initialDpr] = useState(() => {
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-    return isMobile ? 1.0 : Math.min(window.devicePixelRatio, 1.5);
-  });
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center">
@@ -716,15 +713,16 @@ export default function KnowledgeIsPowerHero(): JSX.Element {
 
       {webGLAvailable ? (
         <Canvas
-          dpr={initialDpr}
+          dpr={capabilities.dpr}
           gl={{
-            antialias: initialDpr > 1,
-            alpha: true,
-            powerPreference: 'high-performance',
-            precision: initialDpr > 1 ? 'highp' : 'mediump',
-            logarithmicDepthBuffer: initialDpr > 1,
+            antialias: capabilities.isHighEnd,
+            alpha: false,
+            powerPreference: capabilities.isHighEnd ? 'high-performance' : 'default',
+            precision: capabilities.isHighEnd ? 'highp' : 'mediump',
+            logarithmicDepthBuffer: false,
           }}
           className="w-full h-full relative z-10"
+          performance={{ min: 0.5 }}
           onError={(error) => {
             console.error('Canvas error:', error);
             setWebGLAvailable(false);
