@@ -28,24 +28,25 @@ const socialSharing = [
   {
     platform: 'Twitter',
     icon: 'twitter',
-    link: (url, title) =>
+    link: (url: string, title: string) =>
       `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
   },
   {
     platform: 'Facebook',
     icon: 'facebook',
-    link: (url) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    link: (url: string) =>
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
   },
   {
     platform: 'LinkedIn',
     icon: 'linkedin',
-    link: (url, title) =>
+    link: (url: string, title: string) =>
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
   },
   {
     platform: 'Email',
     icon: 'mail',
-    link: (url, title) =>
+    link: (url: string, title: string) =>
       `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`I thought you might be interested in this: ${url}`)}`,
   },
 ];
