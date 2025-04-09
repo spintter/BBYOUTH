@@ -186,7 +186,7 @@ const PageTemplate: React.FC<PageTemplateProps> = ({
         backgroundImage: isDarkMode ? 'url("/dark-texture.png")' : 'url("/light-texture.png")',
         backgroundAttachment: 'fixed',
         backgroundSize: '200px',
-        backgroundOpacity: '0.05',
+        opacity: 0.95,
       }}
     >
       <Head>
