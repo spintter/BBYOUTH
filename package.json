@@ -7,10 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "process-models": "ts-node scripts/processModels.ts",
-    "lint": "next lint",
-    "optimize-assets": "node scripts/optimize-assets.js",
-    "generate-textures": "node scripts/generate-textures.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -59,7 +56,6 @@
     "vblob": "^1.1.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.51.1",
     "@react-three/drei": "^9.92.7",
     "@react-three/fiber": "^8.15.19",
     "@types/gsap": "^1.20.2",
@@ -70,9 +66,7 @@
     "@types/three": "^0.159.0",
     "autoprefixer": "^10.4.21",
     "canvas": "^2.11.2",
-    "cursor-tools": "latest",
     "gltfjsx": "^6.5.3",
-    "playwright": "^1.50.1",
     "postcss": "^8.5.3",
     "sharp": "^0.33.5",
     "tailwindcss": "^3.4.17",
