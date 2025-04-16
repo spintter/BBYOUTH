@@ -1,7 +1,6 @@
 //pages/index.tsx
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import HumanitiesGrid from '../components/HumanitiesGrid';
@@ -11,12 +10,6 @@ import DigitalHumanitiesSection from '../components/DigitalHumanitiesSection';
 import MissionSection from '../components/MissionSection';
 import FeaturedEvents from '../components/FeaturedEvents';
 import SectionTransition from '../components/SectionTransition';
-
-// Import the KnowledgeIsPowerHero component with SSR disabled
-const KnowledgeIsPowerHeroClient = dynamic(
-  () => import('../components/KnowledgeIsPowerHeroClient'),
-  { ssr: false },
-);
 
 export default function Home() {
   // State to hold section previews
@@ -120,9 +113,7 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section - Added position-relative class to fix Framer Motion warning */}
-      <section className="hero-section relative">
-        <KnowledgeIsPowerHeroClient />
-      </section>
+      <section className="hero-section relative">{/* Hero content removed */}</section>
 
       {/* Photo Carousel moved below Hero */}
       <SectionTransition

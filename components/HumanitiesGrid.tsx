@@ -3,116 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { topics, Topic, chessPieceIcons } from '../data/topics';
 
-// Define types for the topics
-interface Topic {
-  id: number;
-  title: string;
-  link: string;
-  description: string;
+interface ChessCoordinate {
+  file: string;
+  rank: number;
 }
-
-// Define chess piece icons for each topic
-const chessPieceIcons: Record<string, string> = {
-  religion: '♖', // Rook - represents Church structures
-  music: '♘', // Knight - represents movement and creativity
-  'theatre-arts': '♕', // Queen - represents drama and performance
-  stem: '♙', // Pawn - represents progress and innovation
-  'law-politics': '♔', // King - represents authority and governance
-  philosophy: '♗', // Bishop - represents wisdom and thought
-  dance: '♘', // Knight - represents movement and creativity
-  history: '♖', // Rook - represents strong foundations
-  economics: '♙', // Pawn - represents growth and economic mobility
-  'digital-humanities': '♗', // Bishop - represents strategic connections
-  literature: '♕', // Queen - represents powerful storytelling
-  art: '♔', // King - represents cultural significance
-};
-
-// Define the humanities topics with rich content
-const topics: Topic[] = [
-  {
-    id: 1,
-    title: 'Religion',
-    link: '/topics/religion',
-    description:
-      "Explore the role of religion in African American communities, focusing on Birmingham's historic Black churches.",
-  },
-  {
-    id: 2,
-    title: 'Music',
-    link: '/topics/music',
-    description:
-      'Celebrate the rich musical heritage of African Americans, from gospel to jazz to hip-hop.',
-  },
-  {
-    id: 3,
-    title: 'Theatre Arts',
-    link: '/topics/theatre-arts',
-    description:
-      'Examine the role of theatre in African American storytelling and cultural expression.',
-  },
-  {
-    id: 4,
-    title: 'STEM',
-    link: '/topics/stem',
-    description:
-      'Explore African American contributions to science, technology, engineering, and mathematics.',
-  },
-  {
-    id: 5,
-    title: 'Law & Politics',
-    link: '/topics/law-politics',
-    description:
-      'Examine the role of African Americans in shaping law and politics, with focus on civil rights.',
-  },
-  {
-    id: 6,
-    title: 'Philosophy',
-    link: '/topics/philosophy',
-    description:
-      'Engage with philosophical questions through African American perspectives, fostering critical thinking.',
-  },
-  {
-    id: 7,
-    title: 'Dance',
-    link: '/topics/dance',
-    description: 'Celebrate African American dance traditions and their cultural significance.',
-  },
-  {
-    id: 8,
-    title: 'History',
-    link: '/topics/history',
-    description:
-      "Dive into African American history, focusing on Birmingham's role in the Civil Rights Movement.",
-  },
-  {
-    id: 9,
-    title: 'Economics',
-    link: '/topics/economics',
-    description:
-      'Examine economic contributions and challenges faced by African Americans in Birmingham and beyond.',
-  },
-  {
-    id: 10,
-    title: 'Digital Humanities',
-    link: '/topics/digital-humanities',
-    description:
-      'Harness digital tools to explore and preserve African American humanities and culture.',
-  },
-  {
-    id: 11,
-    title: 'Literature',
-    link: '/topics/literature',
-    description:
-      "Dive into African American literature, celebrating Birmingham's literary contributions.",
-  },
-  {
-    id: 12,
-    title: 'Art',
-    link: '/topics/art',
-    description: 'Discover the impact of African American art on cultural expression and identity.',
-  },
-];
 
 const HumanitiesGrid: React.FC = () => {
   const [activeSquare, setActiveSquare] = useState<number | null>(null);

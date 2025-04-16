@@ -1,12 +1,11 @@
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 
 interface CardProps {
   title: string;
   description: string;
-  link?: string;
-  linkText?: string;
+  subject?: string;
+  externalLinks?: { name: string; url: string }[];
   isDark?: boolean;
   image?: string;
   imageAlt?: string;
@@ -15,8 +14,8 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({
   title,
   description,
-  link,
-  linkText = 'Learn More →',
+  subject,
+  externalLinks = [],
   isDark = false,
   image,
   imageAlt = '',
@@ -40,21 +39,37 @@ const Card: React.FC<CardProps> = ({
           />
         </div>
       )}
+
+      {subject && (
+        <p className={`text-sm font-semibold mb-2 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+          {subject.toUpperCase()}
+        </p>
+      )}
+
       <h3 className="text-xl font-semibold font-montserrat mb-4">{title}</h3>
       <p className="text-base font-inter mb-4 opacity-90">{description}</p>
-      {link && (
-        <Link 
-          href={link} 
-          className={`text-[#8B0000] font-medium font-inter hover:underline flex items-center gap-1 group ${
-            isDark ? 'text-[#FFD700]' : ''
-          }`}
-        >
-          <span>{linkText}</span>
-          <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-        </Link>
+
+      {externalLinks.length > 0 && (
+        <div className="mt-4">
+          <h4 className="font-semibold mb-2 text-sm">Resources:</h4>
+          <ul className="space-y-1 list-disc list-inside">
+            {externalLinks.map((link, index) => (
+              <li key={index}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`hover:underline ${isDark ? 'text-[#FFD700] hover:text-yellow-300' : 'text-[#8B0000] hover:text-red-700'}`}
+                >
+                  {link.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </article>
   );
 };
 
-export default Card; 
+export default Card;
